@@ -14,9 +14,8 @@
     <ClInclude Include="..\..\GSM\compmgr.hpp" />
     <ClInclude Include="..\..\GSM\gsm.hpp" />
     <ClInclude Include="..\..\GSM\icomp.hpp" />
-    <ClInclude Include="..\..\GSM\idispmgr.hpp" />
+    <ClInclude Include="..\..\GSM\isessionmgr.hpp" />
     <ClInclude Include="..\..\GSM\isurface.hpp" />
-    <ClInclude Include="..\..\GSM\session.hpp" />
     <ClInclude Include="..\..\GSM\src\mswin\mswinerr.hpp" />
     <ClInclude Include="..\..\GSM\src\mswin\mswinsurf.hpp" />
     <ClInclude Include="..\..\GSM\util\format.hpp" />
@@ -24,10 +23,9 @@
   <ItemGroup>
     <ClCompile Include="..\..\GSM\src\compmgr.cpp" />
     <ClCompile Include="..\..\GSM\src\format.cpp" />
-    <ClCompile Include="..\..\GSM\src\mswin\mswindispmgr.cpp" />
+    <ClCompile Include="..\..\GSM\src\mswin\mswinsessmgr.cpp" />
     <ClCompile Include="..\..\GSM\src\mswin\mswinerr.cpp" />
     <ClCompile Include="..\..\GSM\src\mswin\mswinsurf.cpp" />
-    <ClCompile Include="..\..\GSM\src\session.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C685E2C1-D20A-4F49-B50C-9CF8D41B6E73}</ProjectGuid>

@@ -1,5 +1,5 @@
 #include <Windows.h>
-#include "../../idispmgr.hpp"
+#include "../../isessionmgr.hpp"
 #include "../../compmgr.hpp"
 #include "../../util/format.hpp"
 #include "mswinerr.hpp"
@@ -7,18 +7,21 @@
 
 namespace gsm {
 
-class MSWinDisplayManager: public IDisplayManager {
+class MSWinSessionManager: public ISessionManager {
 private:
-    MSWinDisplayManager();
-    ~MSWinDisplayManager();
+    MSWinSessionManager();
+    ~MSWinSessionManager();
     friend class Registrator;
 
 public:
     virtual ISurface *
     openWindow();
+
+    virtual void
+    run();
 };
 
-REGISTER_COMPONENT("DisplayManager", MSWinDisplayManager);
+REGISTER_COMPONENT("SessionManager", MSWinSessionManager);
 
 //--- INTERNAL CONSTANTS ------------------------------------------------------
 
@@ -102,18 +105,18 @@ unregisterWindowClass()
 
 //--- DISPLAY MANAGER IMPLEMENTATION ------------------------------------------
 
-MSWinDisplayManager::MSWinDisplayManager()
+MSWinSessionManager::MSWinSessionManager()
 {
     registerWindowClass();
 }
 
-MSWinDisplayManager::~MSWinDisplayManager()
+MSWinSessionManager::~MSWinSessionManager()
 {
     unregisterWindowClass();
 }
 
 ISurface *
-MSWinDisplayManager::openWindow()
+MSWinSessionManager::openWindow()
 {
     HWND hWnd;
 
@@ -127,6 +130,12 @@ MSWinDisplayManager::openWindow()
         throw EMSWinError(GetLastError(), "CreateWindowEx");
 
     return new MSWinSurface(hWnd);
+}
+
+void
+MSWinSessionManager::run()
+{
+    // TODO
 }
 
 } // ns gsm

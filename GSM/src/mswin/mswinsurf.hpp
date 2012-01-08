@@ -13,7 +13,7 @@ namespace gsm {
         MSWinSurface(HWND hWnd);
     private:
         HWND hWnd;
-        friend class MSWinDisplayManager;
+        friend class MSWinSessionManager;
     };
 
 } // ns gsm

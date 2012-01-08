@@ -7,11 +7,11 @@ int
 main(int argc, char *argv[])
 {
     try {
-        gsm::Session sess;
+        gsm::ISessionManager *sm = static_cast<gsm::ISessionManager*>( gsm::findComponent("SessionManager") );
 
-        gsm::ISurface *win = sess.openWindow();
+        gsm::ISurface *win = sm->openWindow();
 
-        sess.run();
+        sm->run();
 
         return 0;
     }
