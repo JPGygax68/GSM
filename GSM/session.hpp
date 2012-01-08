@@ -7,6 +7,8 @@ namespace gsm {
     public:
         Session();
 
+        void openWindow();
+
         void run();
     };
 

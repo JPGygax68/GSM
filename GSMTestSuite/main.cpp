@@ -1,13 +1,22 @@
+#include <exception>
+#include <iostream>
 #include <GSM/gsm.hpp>
 
 int
 main(int argc, char *argv[])
 {
-    gsm::Session sess;
+    try {
+        gsm::Session sess;
 
-    // TODO: open a window and/or screen
+        sess.openWindow();
 
-    sess.run();
+        sess.run();
+
+        return 0;
+    }
+    catch(std::exception &e) {
+        std::cerr << e.what() << std::endl;
+    }
 
     return 1; // error
 }
