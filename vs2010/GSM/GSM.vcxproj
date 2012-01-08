@@ -12,6 +12,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\GSM\gsm.hpp" />
+    <ClInclude Include="..\..\GSM\session.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\GSM\src\session.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C685E2C1-D20A-4F49-B50C-9CF8D41B6E73}</ProjectGuid>
