@@ -10,10 +10,14 @@ class ISurface;
 class ISessionManager: public IComponent {
 public:
     virtual ISurface *
-    openWindow() = 0;
+    openWindow(int x, int y, int w, int h) = 0;
 
-    virtual void
-    run() = 0;
+    /** Returns true if an event has been processed (meaning that more might be pending).
+     */
+    virtual bool
+    processNextEvent() = 0;
+
+    virtual bool mustQuit() = 0;
 };
 
 } // ns gsm

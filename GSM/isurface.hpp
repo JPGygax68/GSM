@@ -3,7 +3,13 @@
 
 namespace gsm {
     
+    class IEvent;
+
     class ISurface {
+    public:
+
+        virtual void
+        show() = 0;
     };
 
 } // ns gsm

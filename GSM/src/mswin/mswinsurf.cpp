@@ -14,4 +14,10 @@ MSWinSurface::~MSWinSurface()
         throw EMSWinError(GetLastError(), "CloseWindow");
 }
 
+void
+MSWinSurface::show()
+{
+    ShowWindow(hWnd, SW_SHOW);
+}
+
 } // ns mswinsurf

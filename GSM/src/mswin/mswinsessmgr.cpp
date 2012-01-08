@@ -1,9 +1,11 @@
 #include <Windows.h>
+#include <set>
 #include "../../isessionmgr.hpp"
 #include "../../compmgr.hpp"
 #include "../../util/format.hpp"
 #include "mswinerr.hpp"
 #include "mswinsurf.hpp"
+#include "mswinevt.hpp"
 
 namespace gsm {
 
@@ -15,10 +17,25 @@ private:
 
 public:
     virtual ISurface *
-    openWindow();
+    openWindow(int x, int y, int w, int h);
 
-    virtual void
-    run();
+    virtual bool
+    processNextEvent();
+
+    bool
+    mustQuit();
+
+public: // internal
+    void
+    closeMsgReceived(HWND hWnd);
+
+private:
+    typedef std::set<MSWinSurface*> surfacelist_t;
+    typedef surfacelist_t::iterator surface_iterator_t;
+
+    MSG msg;
+    surfacelist_t surfaces;
+    bool quit;
 };
 
 REGISTER_COMPONENT("SessionManager", MSWinSessionManager);
@@ -49,28 +66,24 @@ WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 	case WM_ERASEBKGND: 
-		//OutputDebugString(L"WM_ERASEBKGND\n");
-		return 0;
+		//OutputDebugString("WM_ERASEBKGND\n");
+		//return 0;
 		break;
 	case WM_SIZE:
         // TODO
 		break;
 	case WM_CLOSE:
-        // TODO
+        // The lookup isn't too bad as it only happens once at the end of the window's lifecycle
+        static_cast<MSWinSessionManager*>(findComponent("SessionManager"))->closeMsgReceived(hWnd);
 		break;
 	case WM_PAINT: 
 		// TODO
 		break;
 	case WM_SYSCOMMAND:
-        // TODO
-        /*
-		if (it != windows().end() ) {
-			switch (wParam) {    
-			case SC_KEYMENU:
-				return 0;
-			}
+		switch (wParam) {    
+		case SC_KEYMENU:
+			return 0;
 		}
-        */
 		break;
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
@@ -107,6 +120,7 @@ unregisterWindowClass()
 
 MSWinSessionManager::MSWinSessionManager()
 {
+    quit = false;
     registerWindowClass();
 }
 
@@ -116,26 +130,63 @@ MSWinSessionManager::~MSWinSessionManager()
 }
 
 ISurface *
-MSWinSessionManager::openWindow()
+MSWinSessionManager::openWindow(int x, int y, int w, int h)
 {
     HWND hWnd;
 
     hWnd = CreateWindowEx( 0, WINDOW_CLASS_NAME
         , "GSM Window" // TODO: caption != NULL ? caption : wclsname.c_str()
         , WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_OVERLAPPEDWINDOW
-        , 0, 0, 0, 0 // position and size
+        , x, y, w, h // position and size
         , NULL, NULL, NULL /*_module_instance()*/, NULL
         ); 
     if (hWnd == NULL)
         throw EMSWinError(GetLastError(), "CreateWindowEx");
 
-    return new MSWinSurface(hWnd);
+    MSWinSurface * surf = new MSWinSurface(hWnd);
+    surfaces.insert(surf);
+
+    return surf;
 }
 
-void
-MSWinSessionManager::run()
+bool
+MSWinSessionManager::processNextEvent()
 {
-    // TODO
+    for (surface_iterator_t it = surfaces.begin(); it != surfaces.end(); it ++) 
+    {
+        if (PeekMessage(&msg, (*it)->hWnd, 0, 0, PM_REMOVE) ) 
+        {
+            if (msg.message == WM_QUIT) {
+                quit = true;
+            }
+            else {
+                if (TranslateMessage(&msg))
+                    continue;
+                DispatchMessage(&msg);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool
+MSWinSessionManager::mustQuit()
+{
+    return quit || surfaces.empty();
+}
+
+//--- INTERNAL METHODS --------------------------------------------------------
+
+void
+MSWinSessionManager::closeMsgReceived(HWND hWnd)
+{
+    for (surface_iterator_t it = surfaces.begin(); it != surfaces.end(); it++) {
+        if ((*it)->hWnd == hWnd) {
+            surfaces.erase(it);
+            break;
+        }
+    }
 }
 
 } // ns gsm

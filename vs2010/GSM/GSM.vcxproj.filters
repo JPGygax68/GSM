@@ -39,6 +39,12 @@
     <ClInclude Include="..\..\GSM\isessionmgr.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\GSM\ievent.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\GSM\src\mswin\mswinevt.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\GSM\src\compmgr.cpp">

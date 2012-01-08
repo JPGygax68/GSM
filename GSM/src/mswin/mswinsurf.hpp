@@ -9,6 +9,10 @@ namespace gsm {
     class MSWinSurface: public ISurface {
     public:
         ~MSWinSurface();
+
+        virtual void
+        show();
+
     protected:
         MSWinSurface(HWND hWnd);
     private:
