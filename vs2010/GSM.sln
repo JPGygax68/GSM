@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C++ Express 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GSMTestSuite", "GSMTestSuite\GSMTestSuite.vcxproj", "{6CD58E6F-BBA4-47CE-A0A4-335A4B09B91A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GSM", "GSM\GSM.vcxproj", "{C685E2C1-D20A-4F49-B50C-9CF8D41B6E73}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6CD58E6F-BBA4-47CE-A0A4-335A4B09B91A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6CD58E6F-BBA4-47CE-A0A4-335A4B09B91A}.Debug|Win32.Build.0 = Debug|Win32
+		{6CD58E6F-BBA4-47CE-A0A4-335A4B09B91A}.Release|Win32.ActiveCfg = Release|Win32
+		{6CD58E6F-BBA4-47CE-A0A4-335A4B09B91A}.Release|Win32.Build.0 = Release|Win32
+		{C685E2C1-D20A-4F49-B50C-9CF8D41B6E73}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C685E2C1-D20A-4F49-B50C-9CF8D41B6E73}.Debug|Win32.Build.0 = Debug|Win32
+		{C685E2C1-D20A-4F49-B50C-9CF8D41B6E73}.Release|Win32.ActiveCfg = Release|Win32
+		{C685E2C1-D20A-4F49-B50C-9CF8D41B6E73}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
