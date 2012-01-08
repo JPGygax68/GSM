@@ -12,7 +12,7 @@ Session::Session()
 ISurface *
 Session::openWindow()
 {
-    return NULL;
+    return dispman->openWindow();
 }
 
 void

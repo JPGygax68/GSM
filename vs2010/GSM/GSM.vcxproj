@@ -15,13 +15,18 @@
     <ClInclude Include="..\..\GSM\gsm.hpp" />
     <ClInclude Include="..\..\GSM\icomp.hpp" />
     <ClInclude Include="..\..\GSM\idispmgr.hpp" />
+    <ClInclude Include="..\..\GSM\isurface.hpp" />
     <ClInclude Include="..\..\GSM\session.hpp" />
+    <ClInclude Include="..\..\GSM\src\mswin\mswinerr.hpp" />
+    <ClInclude Include="..\..\GSM\src\mswin\mswinsurf.hpp" />
     <ClInclude Include="..\..\GSM\util\format.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\GSM\src\compmgr.cpp" />
     <ClCompile Include="..\..\GSM\src\format.cpp" />
     <ClCompile Include="..\..\GSM\src\mswin\mswindispmgr.cpp" />
+    <ClCompile Include="..\..\GSM\src\mswin\mswinerr.cpp" />
+    <ClCompile Include="..\..\GSM\src\mswin\mswinsurf.cpp" />
     <ClCompile Include="..\..\GSM\src\session.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -33,7 +38,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>

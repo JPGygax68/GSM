@@ -5,7 +5,12 @@
 
 namespace gsm {
 
+class ISurface;
+
 class IDisplayManager: public IComponent {
+public:
+    virtual ISurface *
+    openWindow() = 0;
 };
 
 } // ns gsm

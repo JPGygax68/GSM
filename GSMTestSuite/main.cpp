@@ -1,6 +1,7 @@
 #include <exception>
 #include <iostream>
 #include <GSM/gsm.hpp>
+#include <GSM/isurface.hpp>
 
 int
 main(int argc, char *argv[])
@@ -8,7 +9,7 @@ main(int argc, char *argv[])
     try {
         gsm::Session sess;
 
-        sess.openWindow();
+        gsm::ISurface *win = sess.openWindow();
 
         sess.run();
 
