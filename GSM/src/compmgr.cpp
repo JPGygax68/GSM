@@ -13,6 +13,8 @@ repository = NULL;
 
 component_map_t * getRepository();
 
+//--- PUBLIC FUNCTIONS --------------------------------------------------------
+
 IComponent *
 findComponent(const char *name)
 {
@@ -25,6 +27,34 @@ findComponent(const char *name)
     return iter->second;
 }
 
+void
+registerComponent(const char *name, IComponent *component)
+{
+    component_map_t *rep = getRepository();
+
+    if (rep->find(name) != rep->end())
+        throw EComponentAlreadyRegistered(name);
+
+    rep->insert( compmap_value_t(name, component) );
+}
+
+void
+unregisterComponent(IComponent *component)
+{
+    component_map_t *rep = getRepository();
+
+    for (compmap_iter_t it = rep->begin(); it != rep->end(); it++) {
+        if (it->second == component) {
+            rep->erase(it);
+            return;
+        }
+    }
+
+    throw EComponentNotRegistered();
+}
+
+//--- PRIVATE FUNCTIONS ------------------------------------------------------
+
 static component_map_t *
 getRepository()
 {
@@ -33,5 +63,23 @@ getRepository()
     }
     return repository;
 }
+
+//--- EXCEPTIONS --------------------------------------------------------------
+
+EComponentManager::EComponentManager(const char *msg)
+    : std::exception( (std::string("GSM Component Manager error: ")+msg).c_str() )
+{}
+
+ENoSuchComponent::ENoSuchComponent(const char *name)
+    : EComponentManager(format("No component was registered under the name \"%s\"", name).c_str())
+{}
+
+EComponentAlreadyRegistered::EComponentAlreadyRegistered(const char *name)
+    : EComponentManager(format("Component \"%s\" has already been registered", name).c_str())
+{}
+
+EComponentNotRegistered::EComponentNotRegistered()
+    : EComponentManager("Tried to remove a component that was not in the repository")
+{}
 
 } // ns gsm

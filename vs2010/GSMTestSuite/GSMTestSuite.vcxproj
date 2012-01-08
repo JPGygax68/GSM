@@ -13,6 +13,11 @@
   <ItemGroup>
     <ProjectReference Include="..\GSM\GSM.vcxproj">
       <Project>{c685e2c1-d20a-4f49-b50c-9cf8d41b6e73}</Project>
+      <Private>true</Private>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

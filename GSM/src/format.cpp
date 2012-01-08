@@ -12,5 +12,7 @@ format(const char *fmt, ...)
     char buffer[2048+1];
     vsnprintf(buffer, 2048, fmt, list);
 
+    va_end(list);
+
     return std::string(buffer);
 }

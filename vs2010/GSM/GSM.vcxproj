@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\GSM\src\compmgr.cpp" />
     <ClCompile Include="..\..\GSM\src\format.cpp" />
+    <ClCompile Include="..\..\GSM\src\mswin\mswindispmgr.cpp" />
     <ClCompile Include="..\..\GSM\src\session.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

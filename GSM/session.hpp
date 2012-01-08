@@ -3,14 +3,22 @@
 
 namespace gsm {
 
-    class Session {
-    public:
-        Session();
+class IDisplayManager;
+class ISurface;
 
-        void openWindow();
+class Session {
+public:
+    Session();
 
-        void run();
-    };
+    ISurface * 
+    openWindow();
+
+    void
+    run();
+
+private:
+    IDisplayManager *dispman;
+};
 
 } // ns gsm
 
