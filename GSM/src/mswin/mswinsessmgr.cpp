@@ -4,6 +4,7 @@
 #include "../../compmgr.hpp"
 #include "../../util/format.hpp"
 #include "../../iwindow.hpp"
+#include "mswincanvas.hpp"
 #include "mswinerr.hpp"
 #include "mswinsurf.hpp"
 #include "mswinevt.hpp"
@@ -18,12 +19,16 @@ private:
 
 public:
     virtual ISurface *
-    openWindow(int x, int y, int w, int h, IWindow *window);
+    openWindow(int x, int y, int w, int h, const char *caption, IWindow *window);
+
+    virtual ISurface *
+    openScreen(int num, ISurface::Attributes attr, IScreen *scr);
 
     virtual bool
     processNextEvent();
 
-    bool mustQuit();    // someone has asked to close session
+    bool
+    mustQuit();    // someone has asked to close session
 
 public: // internal
     void
@@ -89,7 +94,10 @@ WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         static_cast<MSWinSessionManager*>(findComponent("SessionManager"))->closeMsgReceived(hWnd);
 		break;
 	case WM_PAINT: 
-		// TODO
+		if (win != NULL) {
+            MSWinCanvas cnv;
+            win->onPaint(&cnv);
+        }
 		break;
 	case WM_SYSCOMMAND:
 		switch (wParam) {    
@@ -128,6 +136,24 @@ unregisterWindowClass()
         throw EMSWinError(GetLastError(), "UnregisterClass");
 }
 
+static void
+getScreenRect(int num, int & x, int & y, unsigned & w, unsigned & h)
+{
+    DISPLAY_DEVICE dd;
+    dd.cb = sizeof(dd);
+    CHECK(EnumDisplayDevices, (NULL, num, &dd, 0));
+
+    DEVMODE dm;
+    dm.dmSize = sizeof(dm);
+    CHECK(EnumDisplaySettings, (dd.DeviceName, ENUM_CURRENT_SETTINGS, &dm));
+
+    x = dm.dmPosition.x;
+    y = dm.dmPosition.y;
+    w = dm.dmPelsWidth;
+    h = dm.dmPelsHeight;
+}
+
+
 //--- DISPLAY MANAGER IMPLEMENTATION ------------------------------------------
 
 MSWinSessionManager::MSWinSessionManager()
@@ -142,18 +168,40 @@ MSWinSessionManager::~MSWinSessionManager()
 }
 
 ISurface *
-MSWinSessionManager::openWindow(int x, int y, int w, int h, IWindow *window)
+MSWinSessionManager::openWindow(int x, int y, int w, int h, const char *caption, IWindow *window)
 {
     HWND hWnd;
 
     hWnd = CreateWindowEx( 0, WINDOW_CLASS_NAME
-        , "GSM Window" // TODO: caption != NULL ? caption : wclsname.c_str()
+        , caption != NULL ? caption : "GSM Window"
         , WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_OVERLAPPEDWINDOW
-        , x, y, w, h // position and size
+        , x, y, w, h
         , NULL, NULL, NULL /*_module_instance()*/, window
         ); 
-    if (hWnd == NULL)
-        throw EMSWinError(GetLastError(), "CreateWindowEx");
+    if (hWnd == NULL) throw EMSWinError(GetLastError(), "CreateWindowEx");
+
+    MSWinSurface * surf = new MSWinSurface(hWnd);
+    surfaces.insert(surf);
+
+    return surf;
+}
+
+ISurface *
+MSWinSessionManager::openScreen(int num, ISurface::Attributes attr, IScreen *screen)
+{
+    HWND hWnd;
+
+    int x, y;
+    unsigned w, h;
+    getScreenRect(num, x, y, w, h);
+
+    hWnd = CreateWindowEx( 0, WINDOW_CLASS_NAME
+        , "GSM full-screen window" // TODO: caption != NULL ? caption : wclsname.c_str()
+        , WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_OVERLAPPEDWINDOW
+        , x, y, w, h // position and size
+        , NULL, NULL, NULL /*_module_instance()*/, screen
+        ); 
+    if (hWnd == NULL) throw EMSWinError(GetLastError(), "CreateWindowEx");
 
     MSWinSurface * surf = new MSWinSurface(hWnd);
     surfaces.insert(surf);

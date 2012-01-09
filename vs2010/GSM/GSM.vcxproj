@@ -13,14 +13,19 @@
   <ItemGroup>
     <ClInclude Include="..\..\GSM\compmgr.hpp" />
     <ClInclude Include="..\..\GSM\gsm.hpp" />
+    <ClInclude Include="..\..\GSM\icanvas.hpp" />
     <ClInclude Include="..\..\GSM\icomp.hpp" />
     <ClInclude Include="..\..\GSM\ievent.hpp" />
+    <ClInclude Include="..\..\GSM\iscreen.hpp" />
     <ClInclude Include="..\..\GSM\isessionmgr.hpp" />
     <ClInclude Include="..\..\GSM\isurface.hpp" />
     <ClInclude Include="..\..\GSM\iwindow.hpp" />
+    <ClInclude Include="..\..\GSM\src\mswin\mswincanvas.hpp" />
     <ClInclude Include="..\..\GSM\src\mswin\mswinerr.hpp" />
     <ClInclude Include="..\..\GSM\src\mswin\mswinevt.hpp" />
     <ClInclude Include="..\..\GSM\src\mswin\mswinsurf.hpp" />
+    <ClInclude Include="..\..\GSM\src\mswin\mswinwindow.hpp" />
+    <ClInclude Include="..\..\GSM\util\bitset.hpp" />
     <ClInclude Include="..\..\GSM\util\errlog.hpp" />
     <ClInclude Include="..\..\GSM\util\format.hpp" />
     <ClInclude Include="..\..\GSM\util\oglhelper.hpp" />
