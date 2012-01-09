@@ -10,8 +10,10 @@ namespace gsm {
     public:
         ~MSWinSurface();
 
-        virtual void
-        show();
+        virtual void show();
+
+        virtual int clientWidth();
+        virtual int clientHeight();
 
     protected:
         MSWinSurface(HWND hWnd);

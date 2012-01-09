@@ -10,6 +10,12 @@ namespace gsm {
 
         virtual void
         show() = 0;
+
+        virtual int
+        clientWidth() = 0;
+
+        virtual int
+        clientHeight() = 0;
     };
 
 } // ns gsm

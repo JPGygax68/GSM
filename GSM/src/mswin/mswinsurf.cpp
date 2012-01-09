@@ -20,4 +20,20 @@ MSWinSurface::show()
     ShowWindow(hWnd, SW_SHOW);
 }
 
+int
+MSWinSurface::clientWidth()
+{
+    RECT r;
+    CHECK(GetClientRect, (hWnd, &r));
+    return r.right - r.left;
+}
+
+int
+MSWinSurface::clientHeight()
+{
+    RECT r;
+    CHECK(GetClientRect, (hWnd, &r));
+    return r.bottom - r.top;
+}
+
 } // ns mswinsurf

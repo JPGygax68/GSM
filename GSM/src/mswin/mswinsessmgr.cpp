@@ -3,6 +3,7 @@
 #include "../../isessionmgr.hpp"
 #include "../../compmgr.hpp"
 #include "../../util/format.hpp"
+#include "../../iwindow.hpp"
 #include "mswinerr.hpp"
 #include "mswinsurf.hpp"
 #include "mswinevt.hpp"
@@ -17,13 +18,12 @@ private:
 
 public:
     virtual ISurface *
-    openWindow(int x, int y, int w, int h);
+    openWindow(int x, int y, int w, int h, IWindow *window);
 
     virtual bool
     processNextEvent();
 
-    bool
-    mustQuit();
+    bool mustQuit();    // someone has asked to close session
 
 public: // internal
     void
@@ -49,8 +49,18 @@ static const char *WINDOW_CLASS_NAME = "GSM Window Class";
 LRESULT CALLBACK
 WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+    IWindow *win = reinterpret_cast<IWindow*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+
 	switch(msg)
 	{
+    case WM_NCCREATE:
+        {
+            // Re-package user data pointer
+            LPCREATESTRUCT pcs = reinterpret_cast<LPCREATESTRUCT>(lParam);
+            win = reinterpret_cast<IWindow*>(pcs->lpCreateParams);
+            SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(win) );
+        }
+        break;
 	case WM_CREATE: // TODO (perhaps): OpenGL wiki recommends creating GL context here
 		{
 			char buffer[256];
@@ -70,7 +80,9 @@ WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		//return 0;
 		break;
 	case WM_SIZE:
-        // TODO
+        if (win != NULL) {
+            win->onResize(LOWORD(lParam), HIWORD(lParam));
+        }
 		break;
 	case WM_CLOSE:
         // The lookup isn't too bad as it only happens once at the end of the window's lifecycle
@@ -130,7 +142,7 @@ MSWinSessionManager::~MSWinSessionManager()
 }
 
 ISurface *
-MSWinSessionManager::openWindow(int x, int y, int w, int h)
+MSWinSessionManager::openWindow(int x, int y, int w, int h, IWindow *window)
 {
     HWND hWnd;
 
@@ -138,7 +150,7 @@ MSWinSessionManager::openWindow(int x, int y, int w, int h)
         , "GSM Window" // TODO: caption != NULL ? caption : wclsname.c_str()
         , WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_OVERLAPPEDWINDOW
         , x, y, w, h // position and size
-        , NULL, NULL, NULL /*_module_instance()*/, NULL
+        , NULL, NULL, NULL /*_module_instance()*/, window
         ); 
     if (hWnd == NULL)
         throw EMSWinError(GetLastError(), "CreateWindowEx");

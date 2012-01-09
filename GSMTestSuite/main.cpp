@@ -2,7 +2,23 @@
 #include <iostream>
 #include <GSM/gsm.hpp>
 #include <GSM/isurface.hpp>
-#include <GSM/ievent.hpp>
+//#include <GSM/ievent.hpp>
+#include <GSM/iwindow.hpp>
+
+class MyWindow: public gsm::IWindow {
+public:
+    MyWindow(gsm::ISessionManager *sm, int x, int y, int w, int h) {
+        surf = sm->openWindow(x, y, w, h, this);
+        surf->show();
+    }
+
+    virtual void
+    onResize(int w, int h) {
+    }
+
+private:
+    gsm::ISurface *surf;
+};
 
 int
 main(int argc, char *argv[])
@@ -12,11 +28,8 @@ main(int argc, char *argv[])
     try {
         ISessionManager *sm = static_cast<ISessionManager*>( findComponent("SessionManager") );
 
-        ISurface *win = sm->openWindow(10, 10, 800, 600);
-        ISurface *win2 = sm->openWindow(20, 200, 800, 600);
-
-        win->show();
-        win2->show();
+        MyWindow win1(sm, 10, 10, 800, 600);
+        MyWindow win2(sm, 30, 200, 800, 600);
 
         while (true) {
             sm->processNextEvent();

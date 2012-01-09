@@ -17,10 +17,13 @@
     <ClInclude Include="..\..\GSM\ievent.hpp" />
     <ClInclude Include="..\..\GSM\isessionmgr.hpp" />
     <ClInclude Include="..\..\GSM\isurface.hpp" />
+    <ClInclude Include="..\..\GSM\iwindow.hpp" />
     <ClInclude Include="..\..\GSM\src\mswin\mswinerr.hpp" />
     <ClInclude Include="..\..\GSM\src\mswin\mswinevt.hpp" />
     <ClInclude Include="..\..\GSM\src\mswin\mswinsurf.hpp" />
+    <ClInclude Include="..\..\GSM\util\errlog.hpp" />
     <ClInclude Include="..\..\GSM\util\format.hpp" />
+    <ClInclude Include="..\..\GSM\util\oglhelper.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\GSM\src\compmgr.cpp" />
@@ -56,7 +59,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>$(ProjectName)d</TargetName>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>
@@ -69,6 +74,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
