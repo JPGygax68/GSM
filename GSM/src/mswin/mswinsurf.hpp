@@ -15,12 +15,15 @@ namespace gsm {
         virtual int clientWidth();
         virtual int clientHeight();
 
+        virtual void select();
+
         HWND windowHandle() const { return hWnd; }
 
     protected:
         MSWinSurface(HWND hWnd);
     private:
         HWND hWnd;
+        HGLRC hGLRC;
         friend class MSWinSessionManager;
     };
 

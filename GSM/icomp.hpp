@@ -4,6 +4,8 @@
 namespace gsm {
 
     class IComponent {
+    public:
+        virtual ~IComponent() {}
     };
 
 } // ns gsm

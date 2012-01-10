@@ -1,5 +1,6 @@
 #include <string>
 #include <map>
+#include "../icomp.hpp"
 #include "../compmgr.hpp"
 
 namespace gsm {
@@ -15,7 +16,7 @@ component_map_t * getRepository();
 
 //--- PUBLIC FUNCTIONS --------------------------------------------------------
 
-IComponent *
+IComponent * 
 findComponent(const char *name)
 {
     component_map_t *rep = getRepository();
@@ -51,6 +52,18 @@ unregisterComponent(IComponent *component)
     }
 
     throw EComponentNotRegistered();
+}
+
+void
+unregisterAll()
+{
+    component_map_t *rep = getRepository();
+
+    for (compmap_iter_t it = rep->begin(); it != rep->end(); it++) {
+        delete it->second;
+    }
+
+    rep->clear();
 }
 
 //--- PRIVATE FUNCTIONS ------------------------------------------------------

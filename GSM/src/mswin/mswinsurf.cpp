@@ -6,6 +6,7 @@ namespace gsm {
 MSWinSurface::MSWinSurface(HWND hWnd_)
 {
     hWnd = hWnd_;
+    hGLRC = 0;
 }
 
 MSWinSurface::~MSWinSurface()
@@ -34,6 +35,14 @@ MSWinSurface::clientHeight()
     RECT r;
     CHECK(GetClientRect, (hWnd, &r));
     return r.bottom - r.top;
+}
+
+void
+MSWinSurface::select()
+{
+    if (hGLRC != 0) {
+        CHECK(wglMakeCurrent, (GetDC(hWnd), hGLRC));
+    }
 }
 
 } // ns mswinsurf

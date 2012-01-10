@@ -29,6 +29,7 @@ main(int argc, char *argv[])
     using namespace gsm;
 
     try {
+        gsm::init();
         ISessionManager *sm = static_cast<ISessionManager*>( findComponent("SessionManager") );
 
         MyWindow win1(sm, 10, 10, 800, 600);

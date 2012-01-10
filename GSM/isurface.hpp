@@ -23,6 +23,11 @@ public:
 
     virtual int
     clientHeight() = 0;
+
+    /** Prepares the surface for use by the graphics API (typically OpenGL).
+     */
+    virtual void
+    select() = 0;
 };
 
 } // ns gsm

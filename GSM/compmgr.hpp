@@ -17,6 +17,9 @@ namespace gsm {
     void
     unregisterComponent(IComponent *comp);
 
+    void
+    unregisterAll();
+
     class EComponentManager: public std::exception {
     protected:
         EComponentManager(const char *msg);
@@ -40,16 +43,16 @@ namespace gsm {
 } // ns gsm
 
 #define REGISTER_COMPONENT(compname, compclass) \
-static class Registrator { \
-public: \
-    Registrator() { \
-        instance = new compclass(); \
-        registerComponent(compname, instance); } \
-    ~Registrator() { \
-        unregisterComponent(instance); \
-        delete instance; } \
-private: \
-    compclass * instance; \
-} registrator;
+    static class Registrator { \
+    public: \
+        Registrator() { \
+            instance = new compclass(); \
+            registerComponent(compname, instance); } \
+        ~Registrator() { \
+            unregisterComponent(instance); \
+            delete instance; } \
+    private: \
+        compclass * instance; \
+    } registrator; \
 
 #endif // __GSM_COMPMGR_HPP

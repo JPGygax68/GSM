@@ -33,6 +33,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\GSM\src\compmgr.cpp" />
     <ClCompile Include="..\..\GSM\src\format.cpp" />
+    <ClCompile Include="..\..\GSM\src\gsm.cpp" />
     <ClCompile Include="..\..\GSM\src\mswin\mswinsessmgr.cpp" />
     <ClCompile Include="..\..\GSM\src\mswin\mswinerr.cpp" />
     <ClCompile Include="..\..\GSM\src\mswin\mswinsurf.cpp" />
@@ -80,6 +81,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib />
+    <Lib>
+      <AdditionalDependencies>OpenGL32.lib;GLu32.lib</AdditionalDependencies>
+      <ForceSymbolReferences>class gsm::IComponent * __cdecl gsm::findComponent(char const *)</ForceSymbolReferences>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -97,6 +102,10 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <Lib>
+      <AdditionalDependencies>OpenGL32.lib;GLu32.lib</AdditionalDependencies>
+      <ForceSymbolReferences>class gsm::IComponent * __cdecl gsm::findComponent(char const *)</ForceSymbolReferences>
+    </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
