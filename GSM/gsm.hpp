@@ -8,6 +8,8 @@ namespace gsm {
 
 void init();
 
+void shutdown();
+
 } // ns gsm
 
 #endif // __GSM_HPP

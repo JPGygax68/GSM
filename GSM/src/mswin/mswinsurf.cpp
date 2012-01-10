@@ -45,4 +45,12 @@ MSWinSurface::select()
     }
 }
 
+void
+MSWinSurface::setCaption(const char *cap)
+{
+    if (hGLRC != 0) {
+        SetWindowText(hWnd, cap);
+    }
+}
+
 } // ns mswinsurf

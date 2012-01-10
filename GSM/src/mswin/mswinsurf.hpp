@@ -10,6 +10,7 @@ namespace gsm {
     public:
         ~MSWinSurface();
 
+    public: // ISurface
         virtual void show();
 
         virtual int clientWidth();
@@ -17,6 +18,9 @@ namespace gsm {
 
         virtual void select();
 
+        virtual void setCaption(const char *cap);
+
+    public:
         HWND windowHandle() const { return hWnd; }
 
     protected:
