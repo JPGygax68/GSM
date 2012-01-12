@@ -5,10 +5,10 @@ namespace gsm {
 
     //--- IEvent --------------------------------------------------------------
 
-    IWindow *
+    IDisplay *
     MSWinEvent::target()
     {
-        return reinterpret_cast<IWindow*>(GetWindowLongPtr(msg.hwnd, GWLP_USERDATA)); 
+        return reinterpret_cast<IDisplay*>(GetWindowLongPtr(msg.hwnd, GWLP_USERDATA)); 
     }
 
     bool
@@ -25,13 +25,13 @@ namespace gsm {
     }
 
     bool
-    MSWinEvent::isMouseMotion()
+    MSWinEvent::isPointerMotion()
     { 
         return LOWORD(msg.message) == WM_MOUSEMOVE;
     }
 
     bool
-    MSWinEvent::isMouseButton()
+    MSWinEvent::isPointerButton()
     {
         WORD code = LOWORD(msg.message);
         return (code >= WM_LBUTTONDOWN && code <= WM_MBUTTONDBLCLK)
@@ -80,13 +80,13 @@ namespace gsm {
    }
 
    IKeyboardEvent::unicode_t
-   MSWinEvent::asUnicode()
+   MSWinEvent::unicode()
    {
         return (unicode_t) msg.wParam; 
    }
 
    IKeyboardEvent::keycode_t
-   MSWinEvent::asKeyCode()
+   MSWinEvent::keyCode()
    {
         return msg.wParam;
    }

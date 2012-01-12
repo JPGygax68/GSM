@@ -19,17 +19,17 @@ public:
     virtual ISurface *
     openScreen(int num, ISurface::Attributes attr, IScreen *screen) = 0;
 
-    /** Returns true if an event has been processed (meaning that more might be pending).
+    /** Returns true if an event has become available (meaning that more might be pending).
      */
-    virtual bool
-    processPendingEvents() = 0;
+    virtual bool fetchNextEvent() = 0;
 
     /** Can only be called if a preceding call to processPendingEvents() returned true.
         After this call, the event be handled completely before processPendingEvents()
         is called again.
      */
-    virtual IEvent *
-    getEvent() = 0;
+    virtual IEvent * getEvent() = 0;
+
+    // TODO: define a dispatchEvent() and / or a processPendingEvents() ?
 
     virtual bool mustQuit() = 0;
 };

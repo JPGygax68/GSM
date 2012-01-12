@@ -13,8 +13,8 @@ public:
     virtual bool down() = 0;
     virtual bool up() = 0;
     virtual bool isCharacter() = 0;
-    virtual unicode_t asUnicode() = 0;
-    virtual keycode_t asKeyCode() = 0;
+    virtual unicode_t unicode() = 0;
+    virtual keycode_t keyCode() = 0;
 };
 
 } // ns gsm

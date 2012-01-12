@@ -19,6 +19,22 @@ public:
     onPaint(gsm::ICanvas *cnv) {
     }
 
+    virtual bool
+    onKeyboardEvent(gsm::IKeyboardEvent *evt) {
+        return false; }
+
+    virtual bool
+    onPointerMotionEvent(gsm::IPointerMotionEvent *evt) {
+        return false; }
+
+    virtual bool
+    onPointerButtonEvent(gsm::IPointerButtonEvent *evt) {
+        return false; }
+
+    virtual bool
+    onManagementEvent(gsm::IEvent *evt) {
+        return false; }
+
 private:
     gsm::ISurface *surf;
 };
@@ -36,7 +52,7 @@ main(int argc, char *argv[])
         MyWindow win2(sm, 30, 200, 800, 600, "Window 2");
 
         while (true) {
-            sm->processPendingEvents();
+            sm->fetchNextEvent();
             (void) sm->getEvent();
             if (sm->mustQuit() )
                 break;

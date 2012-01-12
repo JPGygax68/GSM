@@ -15,8 +15,11 @@
     <ClInclude Include="..\..\GSM\gsm.hpp" />
     <ClInclude Include="..\..\GSM\icanvas.hpp" />
     <ClInclude Include="..\..\GSM\icomp.hpp" />
+    <ClInclude Include="..\..\GSM\idisplay.hpp" />
     <ClInclude Include="..\..\GSM\ievent.hpp" />
     <ClInclude Include="..\..\GSM\ikeybevt.hpp" />
+    <ClInclude Include="..\..\GSM\iptrbtnevt.hpp" />
+    <ClInclude Include="..\..\GSM\iptrmovevt.hpp" />
     <ClInclude Include="..\..\GSM\iscreen.hpp" />
     <ClInclude Include="..\..\GSM\isessionmgr.hpp" />
     <ClInclude Include="..\..\GSM\isurface.hpp" />

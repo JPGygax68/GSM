@@ -25,7 +25,7 @@ public:
     openScreen(int num, ISurface::Attributes attr, IScreen *scr);
 
     virtual bool
-    processPendingEvents();
+    fetchNextEvent();
 
     virtual IEvent *
     getEvent();

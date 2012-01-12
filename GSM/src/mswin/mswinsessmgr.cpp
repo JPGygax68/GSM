@@ -179,7 +179,7 @@ MSWinSessionManager::openScreen(int num, ISurface::Attributes attr, IScreen *scr
 }
 
 bool
-MSWinSessionManager::processPendingEvents()
+MSWinSessionManager::fetchNextEvent()
 {
     assert(!have_evt);
 
@@ -189,6 +189,7 @@ MSWinSessionManager::processPendingEvents()
         {
             if (evt.msg.message == WM_QUIT) {
                 quit = true;
+                return false;
             }
             else {
                 have_evt = true;

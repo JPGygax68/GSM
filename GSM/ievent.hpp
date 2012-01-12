@@ -3,27 +3,28 @@
 
 namespace gsm {
 
-    class IWindow;
+class IDisplay;
+class IKeyboardEvent;
+class IPointerMotionEvent;
+class IPointerButtonEvent;
 
-    class IEvent {
-    public:
-        virtual IWindow * target() = 0;
+class IEvent {
+public:
+    virtual IDisplay * target() = 0;
 
-        virtual bool isQuit() = 0;
+    virtual bool isQuit() = 0;
+    virtual bool isKeyboard() = 0;
+    virtual bool isPointerMotion() = 0;
+    virtual bool isPointerButton() = 0;
+    virtual bool isCloseWindow() = 0;
+    virtual bool isWindowSize() = 0;
+    virtual bool isWindowManagement() = 0;
 
-        virtual bool isKeyboard() = 0;
+    virtual IKeyboardEvent *asKeyboard() = 0;
+    virtual IPointerMotionEvent *asPointerMotion() = 0;
+    virtual IPointerButtonEvent *asPointerButton() = 0;
 
-        virtual bool isMouseMotion() = 0;
-
-        virtual bool isMouseButton() = 0;
-
-        virtual bool isCloseWindow() = 0;
-
-        virtual bool isWindowSize() = 0;
-        
-        virtual bool isWindowManagement() = 0;
-
-    };
+};
 
 } // ns gsm
 
