@@ -2,31 +2,34 @@
 #define __GSM_MSWINEVT_HPP
 
 #include "../../ievent.hpp"
+#include "../../ikeybevt.hpp"
 
 namespace gsm {
 
     class ISurface;
     class IWindow;
 
-    class MSWinEvent: virtual public IEvent {
-    public:
+    class MSWinEvent: virtual public IEvent, virtual public IKeyboardEvent {
+    
+    public: // IEvent
         virtual IWindow * target();
+        virtual bool isQuit();
+        virtual bool isKeyboard();
+        virtual bool isMouseMotion();
+        virtual bool isMouseButton();
+        virtual bool isCloseWindow();
+        virtual bool isWindowSize();
+        virtual bool isWindowManagement();
+        virtual IKeyboardEvent * asKeyboard() { return this; }
 
-        virtual const bool isQuit();
+    public: // IKeyboardEvent
+        virtual bool down();
+        virtual bool up();
+        virtual bool isCharacter();
+        virtual unicode_t asUnicode();
+        virtual keycode_t asKeyCode();
 
-        virtual const bool isKeyboard();
-
-        virtual const bool isMouseMotion();
-
-        virtual const bool isMouseButton();
-
-        virtual const bool isCloseWindow();
-
-        virtual const bool isWindowSize();
-        
-        virtual const bool isWindowManagement();
-        
-    private:
+    protected:
         MSG msg;
         friend class MSWinSessionManager;
     };

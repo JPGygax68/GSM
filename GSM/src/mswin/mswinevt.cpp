@@ -3,32 +3,34 @@
 
 namespace gsm {
 
+    //--- IEvent --------------------------------------------------------------
+
     IWindow *
     MSWinEvent::target()
     {
         return reinterpret_cast<IWindow*>(GetWindowLongPtr(msg.hwnd, GWLP_USERDATA)); 
     }
 
-    const bool
+    bool
     MSWinEvent::isQuit()
     {
         return msg.message == WM_QUIT;
     }
 
-    const bool
+    bool
     MSWinEvent::isKeyboard()
     {
         WORD code = LOWORD(msg.message);
         return code >= WM_KEYFIRST && code <= WM_KEYLAST;
     }
 
-    const bool
+    bool
     MSWinEvent::isMouseMotion()
     { 
         return LOWORD(msg.message) == WM_MOUSEMOVE;
     }
 
-    const bool
+    bool
     MSWinEvent::isMouseButton()
     {
         WORD code = LOWORD(msg.message);
@@ -36,24 +38,58 @@ namespace gsm {
             || (code >= WM_XBUTTONDOWN && code <= WM_XBUTTONDBLCLK);
     }
 
-    const bool
+    bool
     MSWinEvent::isCloseWindow()
     {
         return (msg.message == WM_CLOSE)
             || (msg.message == WM_SYSCOMMAND && msg.wParam == SC_CLOSE);
     }
 
-    const bool
+    bool
     MSWinEvent::isWindowSize()
     {
         return (msg.message == WM_SIZE);
     }
 
-    const bool 
+    bool 
     MSWinEvent::isWindowManagement()
     {
         WORD code = LOWORD(msg.message);
         return code == WM_QUIT || isCloseWindow();
     }
+
+    //--- IKeyboardEvent ------------------------------------------------------
+
+   bool
+   MSWinEvent::down()
+   {
+        return msg.message == WM_CHAR    || msg.message == WM_UNICHAR
+            || msg.message == WM_KEYDOWN || msg.message == WM_SYSKEYDOWN;
+   }
+
+   bool
+   MSWinEvent::up()
+   {
+        return msg.message == WM_KEYUP || msg.message == WM_SYSKEYUP;
+   }
+
+   bool
+   MSWinEvent::isCharacter()
+   {
+        return msg.message == WM_CHAR || msg.message == WM_UNICHAR;
+   }
+
+   IKeyboardEvent::unicode_t
+   MSWinEvent::asUnicode()
+   {
+        return (unicode_t) msg.wParam; 
+   }
+
+   IKeyboardEvent::keycode_t
+   MSWinEvent::asKeyCode()
+   {
+        return msg.wParam;
+   }
+
 
 } // ns gsm

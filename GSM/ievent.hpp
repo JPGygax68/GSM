@@ -9,19 +9,19 @@ namespace gsm {
     public:
         virtual IWindow * target() = 0;
 
-        virtual const bool isQuit() = 0;
+        virtual bool isQuit() = 0;
 
-        virtual const bool isKeyboard() = 0;
+        virtual bool isKeyboard() = 0;
 
-        virtual const bool isMouseMotion() = 0;
+        virtual bool isMouseMotion() = 0;
 
-        virtual const bool isMouseButton() = 0;
+        virtual bool isMouseButton() = 0;
 
-        virtual const bool isCloseWindow() = 0;
+        virtual bool isCloseWindow() = 0;
 
-        virtual const bool isWindowSize() = 0;
+        virtual bool isWindowSize() = 0;
         
-        virtual const bool isWindowManagement() = 0;
+        virtual bool isWindowManagement() = 0;
 
     };
 
