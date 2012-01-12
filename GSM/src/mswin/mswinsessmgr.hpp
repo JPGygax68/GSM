@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <set>
 
+#include "mswinevt.hpp"
 #include "../../isessionmgr.hpp"
 
 namespace gsm {
@@ -24,7 +25,10 @@ public:
     openScreen(int num, ISurface::Attributes attr, IScreen *scr);
 
     virtual bool
-    processNextEvent();
+    processPendingEvents();
+
+    virtual IEvent *
+    getEvent();
 
     virtual bool
     mustQuit();    // someone has asked to close session
@@ -41,8 +45,9 @@ private:
     typedef std::set<MSWinSurface*> surfacelist_t;
     typedef surfacelist_t::iterator surface_iterator_t;
 
-    MSG msg;
     surfacelist_t surfaces;
+    bool have_evt;
+    MSWinEvent evt;
     bool quit;
 };
 

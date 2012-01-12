@@ -10,6 +10,8 @@ void init();
 
 void shutdown();
 
+ISessionManager *sessionManager();
+
 } // ns gsm
 
 #endif // __GSM_HPP

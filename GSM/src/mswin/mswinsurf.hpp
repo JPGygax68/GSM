@@ -20,6 +20,8 @@ namespace gsm {
 
         virtual void setCaption(const char *cap);
 
+        virtual void present();
+
     public:
         HWND windowHandle() const { return hWnd; }
 

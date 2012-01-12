@@ -38,6 +38,8 @@ public:
     virtual void
     setCaption(const char *cap) = 0;
 
+    /** Signals that painting on the surface is done and that it can be presented on the monitor(s).
+     */
     virtual void
     present() = 0;
 };

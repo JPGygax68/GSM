@@ -1,5 +1,6 @@
 #include <Windows.h>
 #include <set>
+#include <cassert>
 #include "../../isessionmgr.hpp"
 #include "../../compmgr.hpp"
 #include "../../util/format.hpp"
@@ -126,6 +127,7 @@ getScreenRect(int num, int & x, int & y, unsigned & w, unsigned & h)
 MSWinSessionManager::MSWinSessionManager()
 {
     quit = false;
+    have_evt = false;
     registerWindowClass();
 }
 
@@ -177,24 +179,38 @@ MSWinSessionManager::openScreen(int num, ISurface::Attributes attr, IScreen *scr
 }
 
 bool
-MSWinSessionManager::processNextEvent()
+MSWinSessionManager::processPendingEvents()
 {
+    assert(!have_evt);
+
     for (surface_iterator_t it = surfaces.begin(); it != surfaces.end(); it ++) 
     {
-        if (PeekMessage(&msg, (*it)->hWnd, 0, 0, PM_REMOVE) ) 
+        if (PeekMessage(&evt.msg, (*it)->hWnd, 0, 0, PM_REMOVE) ) 
         {
-            if (msg.message == WM_QUIT) {
+            if (evt.msg.message == WM_QUIT) {
                 quit = true;
             }
             else {
-                if (TranslateMessage(&msg))
-                    continue;
-                DispatchMessage(&msg);
+                have_evt = true;
+                if (TranslateMessage(&evt.msg))
+                    return true;
+                DispatchMessage(&evt.msg);
                 return true;
             }
         }
     }
     return false;
+}
+
+IEvent *
+MSWinSessionManager::getEvent()
+{
+    if (have_evt) {
+        have_evt = false;
+        return &evt;
+    }
+    else
+        return NULL;
 }
 
 bool

@@ -9,6 +9,7 @@ namespace gsm {
 class ISurface;
 class IWindow;
 class IScreen;
+class IEvent;
 
 class ISessionManager: public IComponent {
 public:
@@ -21,7 +22,14 @@ public:
     /** Returns true if an event has been processed (meaning that more might be pending).
      */
     virtual bool
-    processNextEvent() = 0;
+    processPendingEvents() = 0;
+
+    /** Can only be called if a preceding call to processPendingEvents() returned true.
+        After this call, the event be handled completely before processPendingEvents()
+        is called again.
+     */
+    virtual IEvent *
+    getEvent() = 0;
 
     virtual bool mustQuit() = 0;
 };

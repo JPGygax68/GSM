@@ -5,17 +5,31 @@
 
 namespace gsm {
 
-    /*
+    class ISurface;
+    class IWindow;
+
     class MSWinEvent: virtual public IEvent {
     public:
-        virtual bool
-        mustQuit() {
-            return msg.message == WM_QUIT; }
+        virtual IWindow * target();
+
+        virtual const bool isQuit();
+
+        virtual const bool isKeyboard();
+
+        virtual const bool isMouseMotion();
+
+        virtual const bool isMouseButton();
+
+        virtual const bool isCloseWindow();
+
+        virtual const bool isWindowSize();
+        
+        virtual const bool isWindowManagement();
+        
     private:
         MSG msg;
-        friend class MSWinSurface;
+        friend class MSWinSessionManager;
     };
-    */
 
 } // ns gsm
 

@@ -23,4 +23,14 @@ shutdown()
     unregisterAll();
 }
 
+ISessionManager *
+sessionManager()
+{
+    static ISessionManager *sm = NULL;
+    if (sm == NULL) {
+        sm = static_cast<ISessionManager*>(findComponent("SessionManager"));
+    }
+    return sm;
+}
+
 } // ns gsm

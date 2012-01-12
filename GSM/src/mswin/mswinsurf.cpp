@@ -53,4 +53,12 @@ MSWinSurface::setCaption(const char *cap)
     }
 }
 
+void
+MSWinSurface::present()
+{
+    if (hGLRC != 0) {
+        SwapBuffers(GetDC(hWnd));
+    }
+}
+
 } // ns mswinsurf

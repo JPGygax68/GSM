@@ -36,7 +36,8 @@ main(int argc, char *argv[])
         MyWindow win2(sm, 30, 200, 800, 600, "Window 2");
 
         while (true) {
-            sm->processNextEvent();
+            sm->processPendingEvents();
+            (void) sm->getEvent();
             if (sm->mustQuit() )
                 break;
         }

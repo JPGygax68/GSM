@@ -23,6 +23,7 @@
     <ClInclude Include="..\..\GSM\src\mswin\mswincanvas.hpp" />
     <ClInclude Include="..\..\GSM\src\mswin\mswinerr.hpp" />
     <ClInclude Include="..\..\GSM\src\mswin\mswinevt.hpp" />
+    <ClInclude Include="..\..\GSM\src\mswin\mswinsessmgr.hpp" />
     <ClInclude Include="..\..\GSM\src\mswin\mswinsurf.hpp" />
     <ClInclude Include="..\..\GSM\src\mswin\mswinwindow.hpp" />
     <ClInclude Include="..\..\GSM\util\bitset.hpp" />
@@ -34,6 +35,7 @@
     <ClCompile Include="..\..\GSM\src\compmgr.cpp" />
     <ClCompile Include="..\..\GSM\src\format.cpp" />
     <ClCompile Include="..\..\GSM\src\gsm.cpp" />
+    <ClCompile Include="..\..\GSM\src\mswin\mswinevt.cpp" />
     <ClCompile Include="..\..\GSM\src\mswin\mswinsessmgr.cpp" />
     <ClCompile Include="..\..\GSM\src\mswin\mswinerr.cpp" />
     <ClCompile Include="..\..\GSM\src\mswin\mswinsurf.cpp" />
