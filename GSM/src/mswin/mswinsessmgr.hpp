@@ -33,6 +33,9 @@ public:
     virtual bool
     mustQuit();    // someone has asked to close session
 
+    MetaKeys
+    getMetaKeyStates();
+
 public: // internal
     void
     closeMsgReceived(HWND hWnd);

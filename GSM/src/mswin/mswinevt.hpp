@@ -35,6 +35,15 @@ namespace gsm {
         virtual unicode_t unicode();
         virtual keycode_t keyCode();
 
+    public: // IPointerMotionEvent
+        virtual const Position position();
+
+    public: // IPointerButtonEvent
+        virtual Button button();
+        virtual bool pressed();
+        virtual bool released();
+        virtual bool doubleClick();
+
     protected:
         MSG msg;
         friend class MSWinSessionManager;

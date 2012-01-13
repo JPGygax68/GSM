@@ -5,7 +5,9 @@ namespace gsm {
 
     class IPointerMotionEvent {
     public:
-        // TODO
+        typedef struct { int x, y; } Position;
+
+        virtual const Position position() = 0;
     };
 
 } // ns gsm

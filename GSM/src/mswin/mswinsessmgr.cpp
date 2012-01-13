@@ -220,6 +220,25 @@ MSWinSessionManager::mustQuit()
     return quit || surfaces.empty();
 }
 
+MSWinSessionManager::MetaKeys
+MSWinSessionManager::getMetaKeyStates()
+{
+    unsigned long result = 0;
+
+    if ((GetKeyState(VK_SHIFT) & 0x8000) != 0)
+        result |= 1 << SHIFT;
+    if ((GetKeyState(VK_CONTROL) & 0x8000) != 0)
+        result |= 1 << CONTROL;
+    if ((GetKeyState(VK_MENU) & 0x8000) != 0)
+        result |= 1 << ALT;
+    if ((GetKeyState(VK_CAPITAL) & 0x8001) != 0)
+        result |= 1 << CAPSLOCK;
+    if ((GetKeyState(VK_NUMLOCK) & 0x8001) != 0)
+        result |= 1 << NUMLOCK;
+
+    return result;
+}
+
 //--- INTERNAL METHODS --------------------------------------------------------
 
 void

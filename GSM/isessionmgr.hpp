@@ -3,6 +3,7 @@
 
 #include "icomp.hpp"
 #include "isurface.hpp"
+#include "util/bitset.hpp"
 
 namespace gsm {
 
@@ -13,6 +14,12 @@ class IEvent;
 
 class ISessionManager: public IComponent {
 public:
+
+    enum MetaKey {
+        SHIFT, CONTROL, ALT, CAPSLOCK, NUMLOCK
+    };
+    typedef bitset<MetaKey> MetaKeys;
+
     virtual ISurface *
     openWindow(int x, int y, int w, int h, const char *caption, IWindow *window) = 0;
 
@@ -32,6 +39,8 @@ public:
     // TODO: define a dispatchEvent() and / or a processPendingEvents() ?
 
     virtual bool mustQuit() = 0;
+
+    virtual bitset<MetaKey> getMetaKeyStates() = 0;
 };
 
 } // ns gsm

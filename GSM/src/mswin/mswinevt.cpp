@@ -60,36 +60,112 @@ namespace gsm {
 
     //--- IKeyboardEvent ------------------------------------------------------
 
-   bool
-   MSWinEvent::down()
-   {
+    bool
+    MSWinEvent::down()
+    {
         return msg.message == WM_CHAR    || msg.message == WM_UNICHAR
             || msg.message == WM_KEYDOWN || msg.message == WM_SYSKEYDOWN;
-   }
+    }
 
-   bool
-   MSWinEvent::up()
-   {
+    bool
+    MSWinEvent::up()
+    {
         return msg.message == WM_KEYUP || msg.message == WM_SYSKEYUP;
-   }
+    }
 
-   bool
-   MSWinEvent::isCharacter()
-   {
+    bool
+    MSWinEvent::isCharacter()
+    {
         return msg.message == WM_CHAR || msg.message == WM_UNICHAR;
-   }
+    }
 
-   IKeyboardEvent::unicode_t
-   MSWinEvent::unicode()
-   {
+    IKeyboardEvent::unicode_t
+    MSWinEvent::unicode()
+    {
         return (unicode_t) msg.wParam; 
-   }
+    }
 
-   IKeyboardEvent::keycode_t
-   MSWinEvent::keyCode()
-   {
+    IKeyboardEvent::keycode_t
+    MSWinEvent::keyCode()
+    {
         return msg.wParam;
-   }
+    }
 
+    const IPointerMotionEvent::Position
+    MSWinEvent::position()
+    {
+        Position p;
+        p.x = LOWORD(msg.lParam);
+        p.y = HIWORD(msg.lParam);
+        return p;
+    }
+
+    IPointerButtonEvent::Button
+    MSWinEvent::button()
+    {
+        switch ( msg.message ) {
+	        case WM_LBUTTONDOWN: 
+	        case WM_LBUTTONUP: 
+	        case WM_LBUTTONDBLCLK:
+		        return LEFT; 
+	        case WM_MBUTTONDOWN:
+	        case WM_MBUTTONUP: 
+	        case WM_MBUTTONDBLCLK:
+		        return MIDDLE;
+	        case WM_RBUTTONDOWN:
+	        case WM_RBUTTONUP: 
+	        case WM_RBUTTONDBLCLK:
+		        return RIGHT; 
+	        case WM_XBUTTONDOWN:
+	        case WM_XBUTTONUP:
+		        switch ( HIWORD(msg.wParam) ) {
+			        case XBUTTON1: return EXTENDED_1;
+			        case XBUTTON2: return EXTENDED_2;
+			        default: return NONE;
+		        }
+	        default:
+		        return NONE;
+        };
+    }
+
+    bool
+    MSWinEvent::pressed()
+    {
+        switch ( msg.message ) {
+	        case WM_LBUTTONDOWN: 
+	        case WM_MBUTTONDOWN:
+	        case WM_RBUTTONDOWN:
+	        case WM_XBUTTONDOWN:
+		        return true;
+	        default:
+		        return false;
+        }
+    }
+
+    bool
+    MSWinEvent::released()
+    {
+        switch ( msg.message ) {
+	        case WM_LBUTTONUP: 
+	        case WM_MBUTTONUP:
+	        case WM_RBUTTONUP:
+		        return true;
+	        default:
+		        return false;
+        }
+    }
+
+    bool
+    MSWinEvent::doubleClick()
+    {
+        switch ( msg.message ) {
+	        case WM_LBUTTONDBLCLK:
+	        case WM_MBUTTONDBLCLK:
+	        case WM_RBUTTONDBLCLK:
+		        return true;
+	        default:
+		        return false;
+        }
+    }
 
 } // ns gsm
