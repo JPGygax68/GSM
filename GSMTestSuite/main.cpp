@@ -6,6 +6,7 @@
 
 class MyWindow: public gsm::IWindow {
 public:
+
     MyWindow(gsm::ISessionManager *sm, int x, int y, int w, int h, const char *caption = NULL) {
         surf = sm->openWindow(x, y, w, h, caption, this);
         surf->show();

@@ -79,7 +79,7 @@ namespace gsm {
         return msg.message == WM_CHAR || msg.message == WM_UNICHAR;
     }
 
-    IKeyboardEvent::unicode_t
+    unicode_t
     MSWinEvent::unicode()
     {
         return (unicode_t) msg.wParam; 

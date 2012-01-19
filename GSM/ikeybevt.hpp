@@ -1,13 +1,13 @@
 #ifndef __GSM_IKEYBEVT_HPP
 #define __GSM_IKEYBEVT_HPP
 
+#include "types.hpp"
 #include "ievent.hpp"
 
 namespace gsm {
 
 class IKeyboardEvent {
 public:
-    typedef unsigned long unicode_t; // TODO: does this really belong here?
     typedef int keycode_t;
 
     virtual bool down() = 0;
