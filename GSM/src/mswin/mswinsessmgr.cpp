@@ -9,6 +9,7 @@
 #include "mswinerr.hpp"
 #include "mswinsurf.hpp"
 #include "mswinevt.hpp"
+#include "mswinogl.hpp"
 #include "mswinsessmgr.hpp"
 
 namespace gsm {
@@ -100,7 +101,9 @@ registerWindowClass()
 static void
 unregisterWindowClass()
 {
-    if (UnregisterClass(WINDOW_CLASS_NAME, NULL) == 0)
+    // TODO: this can fail because no one takes care of closing windows that were left open
+
+    if (! UnregisterClass(WINDOW_CLASS_NAME, NULL))
         throw EMSWinError(GetLastError(), "UnregisterClass");
 }
 
@@ -137,7 +140,7 @@ MSWinSessionManager::~MSWinSessionManager()
 }
 
 ISurface *
-MSWinSessionManager::openWindow(int x, int y, int w, int h, const char *caption, IWindow *window)
+MSWinSessionManager::openWindow(int x, int y, int w, int h, const char *caption, IWindow *window, ISurface::Attributes attribs)
 {
     HWND hWnd;
 
@@ -152,13 +155,18 @@ MSWinSessionManager::openWindow(int x, int y, int w, int h, const char *caption,
     MSWinSurface * surf = new MSWinSurface(hWnd);
     surfaces.insert(surf);
 
+    if (attribs.test(ISurface::SUPPORTS_OPENGL))
+        setupWindowForOpenGL(surf, attribs);
+
     return surf;
 }
 
 ISurface *
-MSWinSessionManager::openScreen(int num, ISurface::Attributes attr, IScreen *screen)
+MSWinSessionManager::openScreen(int num, ISurface::Attributes attr, IScreen *screen, ISurface::Attributes attribs)
 {
     HWND hWnd;
+
+    if (attribs.test(ISurface::SUPPORTS_OPENGL)) initGlew();
 
     int x, y;
     unsigned w, h;
@@ -174,6 +182,9 @@ MSWinSessionManager::openScreen(int num, ISurface::Attributes attr, IScreen *scr
 
     MSWinSurface * surf = new MSWinSurface(hWnd);
     surfaces.insert(surf);
+
+    if (attribs.test(ISurface::SUPPORTS_OPENGL))
+        setupWindowForOpenGL(surf, attribs);
 
     return surf;
 }

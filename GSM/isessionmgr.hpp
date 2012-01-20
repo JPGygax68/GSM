@@ -21,10 +21,10 @@ public:
     typedef bitset<MetaKey> MetaKeys;
 
     virtual ISurface *
-    openWindow(int x, int y, int w, int h, const char *caption, IWindow *window) = 0;
+    openWindow(int x, int y, int w, int h, const char *caption, IWindow *window, ISurface::Attributes attribs = 0) = 0;
 
     virtual ISurface *
-    openScreen(int num, ISurface::Attributes attr, IScreen *screen) = 0;
+    openScreen(int num, ISurface::Attributes attr, IScreen *screen, ISurface::Attributes attribs = 0) = 0;
 
     /** Returns true if an event has become available (meaning that more might be pending).
      */

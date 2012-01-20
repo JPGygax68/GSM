@@ -16,6 +16,8 @@ public:
     virtual const Rasterization rasterize(CharacterSet & charset, CharacterSet::Iterator & it, 
         unsigned max_edge, const RasterizeOptions options);
 
+    virtual const Extents getTextExtents(const unicode_t *text, unsigned len);
+
 private:
     MSWinFont(MSWinFontProvider *prov, HGDIOBJ hfont);
 

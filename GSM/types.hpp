@@ -3,7 +3,7 @@
 
 namespace gsm {
 
-typedef unsigned long unicode_t;
+typedef wchar_t unicode_t;
 typedef unsigned char byte_t;
 
 } // ns gsm

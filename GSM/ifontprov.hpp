@@ -22,7 +22,7 @@ namespace gsm {
             when no longer needed.
 	        */
         virtual IFont * getFont(IFont::Type type = IFont::ANY,
-	        const std::string &family = "", 
+	        const std::string &name = "", 
             size_t height = 0, 
             IFont::Attributes attribs = 0) = 0;
 

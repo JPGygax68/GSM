@@ -220,4 +220,18 @@ MSWinFont::rasterize(CharacterSet & set, CharacterSet::Iterator & it, unsigned m
     return rast;
 }
 
+const Extents
+MSWinFont::getTextExtents(const unicode_t *text, unsigned len) 
+{
+    RECT rect = { 0, 0, LONG_MAX, LONG_MAX };
+
+    DrawTextW(hdc, text, (int) len, &rect, DT_CALCRECT | DT_NOPREFIX | DT_WORDBREAK);
+
+    Extents ext;
+    ext.w = (unsigned) (rect.right - rect.left);
+    ext.h = (unsigned) (rect.bottom - rect.top);
+
+    return ext;
+}
+
 } // ns gsm

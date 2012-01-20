@@ -22,8 +22,10 @@ namespace gsm {
 
         enum Type { ANY = 0, SYSTEM, DECORATIVE, MODERN, ROMAN, SCRIPT, SWISS };
 
-        enum Attribute { BOLD, ITALIC }; // TODO
+        enum Attribute { BOLD, ITALIC, UNDERLINE, STRIKEOUT };
         typedef bitset<Attribute> Attributes;
+
+        enum Alignment { LEFT, RIGHT, CENTERED };
 
         /** The BoundingBox indicates the rectangle where a given Character is
             located within a Bitmap (relative to its reference point).
@@ -60,6 +62,9 @@ namespace gsm {
          */
         virtual const Rasterization rasterize(CharacterSet & charset, CharacterSet::Iterator & it, 
             unsigned max_edge = 0, const RasterizeOptions options = 0) = 0;
+
+        virtual const Extents getTextExtents(const unicode_t *text, unsigned len) = 0;
+
     };
 
 } // ns gsm

@@ -22,8 +22,13 @@ namespace gsm {
 
         virtual void present();
 
+        virtual int resourcePoolID() { return 0; } // TODO!
+
     public:
         HWND windowHandle() const { return hWnd; }
+
+        HGLRC openGLContext() const { return hGLRC; }
+        void setOpenGLContext(HGLRC hRC) { hGLRC = hRC; }
 
     protected:
         MSWinSurface(HWND hWnd);

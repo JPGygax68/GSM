@@ -5,11 +5,11 @@
 namespace gsm {
 
 IFont *
-MSWinFontProvider::getFont(IFont::Type type, const std::string &family, size_t height, IFont::Attributes attribs)
+MSWinFontProvider::getFont(IFont::Type type, const std::string &name, size_t height, IFont::Attributes attribs)
 {
     HGDIOBJ hfont = 0;
 
-    if (family.empty() && type == IFont::SYSTEM) {
+    if (name.empty() && type == IFont::SYSTEM) {
         hfont = GetStockObject(ANSI_VAR_FONT);
     }
     else {
@@ -21,8 +21,8 @@ MSWinFontProvider::getFont(IFont::Type type, const std::string &family, size_t h
         lf.lfOrientation = 0;
         lf.lfWeight = attribs.test(IFont::BOLD) ? FW_BOLD : FW_NORMAL;
         lf.lfItalic = attribs.test(IFont::ITALIC) ? 1 : 0;
-        lf.lfUnderline = 0;
-        lf.lfStrikeOut = 0;
+        lf.lfUnderline = attribs.test(IFont::UNDERLINE) ? TRUE : FALSE;
+        lf.lfStrikeOut = attribs.test(IFont::STRIKEOUT) ? TRUE : FALSE;
         lf.lfCharSet = ANSI_CHARSET;
         lf.lfOutPrecision = OUT_DEFAULT_PRECIS;
         lf.lfClipPrecision = CLIP_DEFAULT_PRECIS;
@@ -37,7 +37,7 @@ MSWinFontProvider::getFont(IFont::Type type, const std::string &family, size_t h
             case IFont::SWISS:		lf.lfPitchAndFamily = FF_SWISS; break;
             default:				lf.lfPitchAndFamily = FF_DONTCARE; break;
         }
-        strncpy_s(lf.lfFaceName, LF_FACESIZE, family.c_str(), LF_FACESIZE);
+        strncpy_s(lf.lfFaceName, LF_FACESIZE, name.c_str(), LF_FACESIZE);
         hfont = CreateFontIndirectA(&lf);
     }
 

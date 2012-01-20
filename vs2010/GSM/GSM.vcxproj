@@ -30,11 +30,13 @@
     <ClInclude Include="..\..\GSM\isurface.hpp" />
     <ClInclude Include="..\..\GSM\iwindow.hpp" />
     <ClInclude Include="..\..\GSM\mwinbitmap.hpp" />
+    <ClInclude Include="..\..\GSM\opengl\opengl.hpp" />
     <ClInclude Include="..\..\GSM\src\mswin\mswincanvas.hpp" />
     <ClInclude Include="..\..\GSM\src\mswin\mswinerr.hpp" />
     <ClInclude Include="..\..\GSM\src\mswin\mswinevt.hpp" />
     <ClInclude Include="..\..\GSM\src\mswin\mswinfont.hpp" />
     <ClInclude Include="..\..\GSM\src\mswin\mswinfontprov.hpp" />
+    <ClInclude Include="..\..\GSM\src\mswin\mswinogl.hpp" />
     <ClInclude Include="..\..\GSM\src\mswin\mswinsessmgr.hpp" />
     <ClInclude Include="..\..\GSM\src\mswin\mswinsurf.hpp" />
     <ClInclude Include="..\..\GSM\src\mswin\mswinwindow.hpp" />
@@ -52,9 +54,11 @@
     <ClCompile Include="..\..\GSM\src\mswin\mswinevt.cpp" />
     <ClCompile Include="..\..\GSM\src\mswin\mswinfont.cpp" />
     <ClCompile Include="..\..\GSM\src\mswin\mswinfontprov.cpp" />
+    <ClCompile Include="..\..\GSM\src\mswin\mswinogl.cpp" />
     <ClCompile Include="..\..\GSM\src\mswin\mswinsessmgr.cpp" />
     <ClCompile Include="..\..\GSM\src\mswin\mswinerr.cpp" />
     <ClCompile Include="..\..\GSM\src\mswin\mswinsurf.cpp" />
+    <ClCompile Include="..\..\GSM\src\opengl\opengl.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C685E2C1-D20A-4F49-B50C-9CF8D41B6E73}</ProjectGuid>

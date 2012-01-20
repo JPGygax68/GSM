@@ -13,7 +13,8 @@ public:
     virtual ~ISurface() {}
 
     enum Attribute {
-        SINGLE_BUFFERED
+        SINGLE_BUFFERED,
+        SUPPORTS_OPENGL
     };
     typedef bitset<Attribute> Attributes;
 
@@ -29,6 +30,15 @@ public:
      */
     virtual int
     clientHeight() = 0;
+
+    /** Graphic APIs like OpenGL work within contexts. By definition, there is one such context per
+        Surface, which the call select() is responsible for activating. However, graphical resources
+        can sometimes be shared between contexts. In order for user code to know when it needs to
+        re-generate a given graphical resource, it must be able to identify the currently active
+        "resource pool". This call returns an opaque ID fulfilling that purpose.
+     */
+    virtual int 
+    resourcePoolID() = 0;
 
     /** Prepares the surface for use by the graphics API (typically OpenGL).
      */

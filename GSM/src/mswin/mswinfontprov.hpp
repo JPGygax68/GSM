@@ -7,7 +7,7 @@ namespace gsm {
 
 class MSWinFontProvider: public IFontProvider {
 public:
-    virtual IFont * getFont(IFont::Type type, const std::string &family, size_t height, IFont::Attributes attribs);
+    virtual IFont * getFont(IFont::Type type, const std::string &name, size_t height, IFont::Attributes attribs);
 };
 
 } // ns gsm
