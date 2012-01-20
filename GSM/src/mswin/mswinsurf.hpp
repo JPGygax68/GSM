@@ -30,11 +30,15 @@ namespace gsm {
         HGLRC openGLContext() const { return hGLRC; }
         void setOpenGLContext(HGLRC hRC) { hGLRC = hRC; }
 
+        void setResourceGroup(int group) { resource_group = group; }
+        int resourceGroup() const { return resource_group; }
+
     protected:
         MSWinSurface(HWND hWnd);
     private:
-        HWND hWnd;
-        HGLRC hGLRC;
+        HWND    hWnd;
+        HGLRC   hGLRC;
+        int     resource_group;
         friend class MSWinSessionManager;
     };
 

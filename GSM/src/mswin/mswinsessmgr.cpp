@@ -256,7 +256,9 @@ void
 MSWinSessionManager::closeMsgReceived(HWND hWnd)
 {
     for (surface_iterator_t it = surfaces.begin(); it != surfaces.end(); it++) {
-        if ((*it)->hWnd == hWnd) {
+        MSWinSurface *surf = *it;
+        if (surf->hWnd == hWnd) {
+            delete surf;
             surfaces.erase(it);
             break;
         }

@@ -1,3 +1,5 @@
+#include <vector>
+#include <cassert>
 #include <GL/glew.h>
 #include <GL/wglew.h>
 
@@ -6,6 +8,15 @@
 #include "mswinogl.hpp"
 
 namespace gsm {
+
+//--- PRIVATE TYPES ----------------------------------------------------------
+
+typedef std::vector<HGLRC>           context_group_t;
+typedef std::vector<context_group_t> context_groups_t;
+
+//--- PRIVATE DATA -----------------------------------------------------------
+
+static context_groups_t     context_groups;
 
 //--- PRIVATE ROUTINES -------------------------------------------------------
 
@@ -73,12 +84,53 @@ selectPixelFormat(HDC hDC, bool double_buffered)
     pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
     pfd.nVersion = 1;
     pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_GENERIC_ACCELERATED
-    | (double_buffered ? PFD_DOUBLEBUFFER : 0);
+        | (double_buffered ? PFD_DOUBLEBUFFER : 0);
     pfd.iPixelType = PFD_TYPE_RGBA;
     pfd.cColorBits = 32;
     pfd.cDepthBits = 32;
     pfd.iLayerType = PFD_MAIN_PLANE;
     return ChoosePixelFormat(hDC, &pfd);
+}
+
+static int
+assignToContextGroup(HGLRC hRC)
+{
+    // Traverse existing Context Groups to see if we can share gfx resources with any of them
+    context_groups_t::iterator it = context_groups.begin();
+    int i = 0;
+    for ( ; it != context_groups.end(); it ++, i++) 
+    {
+        // Try to share resource lists with first Context in the group
+        if (wglShareLists(it->front(), hRC) == TRUE) {
+            // Succeeded, so add the new Context to this group
+            it->push_back(hRC);
+            // We're done, this is the Context Group we were looking for
+            return i;
+        }
+    }
+    // Could not share with any group, so create and add new group
+    context_group_t group;
+    group.push_back(hRC);
+    context_groups.push_back(group);
+    return i;
+}
+
+static void
+removeContextFromGroups(HGLRC hRC)
+{
+    // Traverse existing Context Groups to see if we can share gfx resources with any of them
+    context_groups_t::iterator it = context_groups.begin();
+    //int i = 0;
+    for ( ; it != context_groups.end(); it ++) 
+    {
+        context_group_t & group = *it;
+        for (context_group_t::iterator ictx = group.begin(); ictx != group.end(); ictx ++)
+            if (*ictx == hRC) {
+                group.erase(ictx);
+                return;
+            }
+    }
+    assert(false);
 }
 
 //--- PUBLIC ROUTINES ---------------------------------------------------------
@@ -90,7 +142,8 @@ initGlew()
 
     static bool init_done = false;
 
-    if (! init_done) {
+    if (! init_done)
+    {
         // Register dummy window class
         WNDCLASS wc;
         wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
@@ -134,6 +187,7 @@ setupWindowForOpenGL(MSWinSurface *surf, ISurface::Attributes attribs)
 {
     initGlew();
 
+    // Get a DC
     HDC hDC = GetDC(surf->windowHandle());  // TODO: is it ok to call GetDC() every time a DC is needed?
 
     // Select and set a pixel format
@@ -145,6 +199,16 @@ setupWindowForOpenGL(MSWinSurface *surf, ISurface::Attributes attribs)
     HGLRC hRC = wglCreateContext(hDC);
     if (hRC == 0) throw EMSWinError(GetLastError(), "wglCreateContext");
     surf->setOpenGLContext(hRC);
+
+    // Try to make the Context part of a gfx resource sharing group
+    assignToContextGroup(hRC);
+}
+
+void
+retireContext(HGLRC hRC)
+{
+    removeContextFromGroups(hRC);
+    if (! wglDeleteContext(hRC)) throw EMSWinError(GetLastError(), "wglDeleteContext");
 }
 
 } // ns gsm

@@ -51,9 +51,6 @@
     <ClInclude Include="..\..\GSM\util\errlog.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\GSM\src\mswin\mswinwindow.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\GSM\src\mswin\mswincanvas.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -115,6 +112,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\GSM\src\mswin\mswinogl.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\GSM\src\mswin\mswinwindow.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

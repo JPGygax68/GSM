@@ -1,5 +1,6 @@
-#include "mswinsurf.hpp"
 #include "mswinerr.hpp"
+#include "mswinogl.hpp"
+#include "mswinsurf.hpp"
 
 namespace gsm {
 
@@ -13,6 +14,10 @@ MSWinSurface::~MSWinSurface()
 {
     if (! CloseWindow(hWnd) )
         throw EMSWinError(GetLastError(), "CloseWindow");
+
+    if (hGLRC != 0) {
+        retireContext(hGLRC);
+    }
 }
 
 void
