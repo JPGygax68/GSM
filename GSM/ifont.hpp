@@ -60,7 +60,7 @@ namespace gsm {
             The Bitmap returned by this call (via the Rasterization structure) is 
             owned by the caller.
          */
-        virtual const Rasterization rasterize(CharacterSet & charset, CharacterSet::Iterator & it, 
+        virtual const Rasterization rasterize(const CharacterSet & charset, CharacterSet::iterator & it, 
             unsigned max_edge = 0, const RasterizeOptions options = 0) = 0;
 
         virtual const Extents getTextExtents(const unicode_t *text, unsigned len) = 0;

@@ -134,7 +134,7 @@ MSWinFont::~MSWinFont()
 }
 
 const MSWinFont::Rasterization
-MSWinFont::rasterize(CharacterSet & set, CharacterSet::Iterator & it, unsigned max_edge, const RasterizeOptions opts)
+MSWinFont::rasterize(const CharacterSet & set, CharacterSet::iterator & it, unsigned max_edge, const RasterizeOptions opts)
 {
     max_edge = max_edge > 0 ? max_edge : DEFAULT_MAX_BITMAP_SIZE;
 
@@ -143,7 +143,7 @@ MSWinFont::rasterize(CharacterSet & set, CharacterSet::Iterator & it, unsigned m
     unsigned w = 0, wmax = 0;
     unsigned h = 0, hrmax = 0;
     GlyphMetrics gm;
-    CharacterSet::Iterator itm = it;
+    CharacterSet::iterator itm = it;
     for (; itm != set.end(); itm ++) 
     {
         // Is there a glyph for the character ?
@@ -185,7 +185,7 @@ MSWinFont::rasterize(CharacterSet & set, CharacterSet::Iterator & it, unsigned m
     // Now render the glyphs into the bitmap
     unsigned x = 0, y = 0;
     hrmax = 0;
-    for (CharacterSet::Iterator itr = it; itr != itm; itr ++)
+    for (CharacterSet::iterator itr = it; itr != itm; itr ++)
     {
         // Is there a glyph for the character ?
         if (charset.find(*itr) != charset.end()) {

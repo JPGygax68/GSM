@@ -2,10 +2,21 @@
 
 namespace gsm {
 
+const CharacterSet &
+CharacterSet::LATIN1()
+{
+    static CharacterSet charset;
+
+    charset.addRange(0x21, 0x7E);
+    charset.addRange(0xA1, 0xFF);
+
+    return charset;
+}
+
 void
 CharacterSet::add(unicode_t first, unsigned num_chars)
 {
-    for (ranges_t::iterator it = ranges.begin(); it != ranges.end(); it ++)
+    for (ranges_t::iterator it = _ranges.begin(); it != _ranges.end(); it ++)
     {
         Range & range(*it);
         // New range intersects this one at start, or prepends to it?
@@ -36,35 +47,47 @@ CharacterSet::add(unicode_t first, unsigned num_chars)
         }
         // .. new range must be inserted before this one?
         else if (first < range.first) {
-            ranges.insert(it, Range(first, num_chars));
+            _ranges.insert(it, Range(first, num_chars));
             break; // done
         }
     }
 }
 
-const CharacterSet::Iterator
+void
+CharacterSet::add(const Range &range)
+{
+    _ranges.push_back(range);
+}
+
+void
+CharacterSet::addRange(unicode_t first, unicode_t last)
+{
+    add(first, last - first + 1);
+}
+
+const CharacterSet::iterator
 CharacterSet::find(unicode_t ch) const
 {
-    for (unsigned ir = 0; ir < ranges.size(); ir ++) {
-        int ich = ranges[ir].index(ch);
+    for (unsigned ir = 0; ir < _ranges.size(); ir ++) {
+        int ich = _ranges[ir].index(ch);
         if (ich >= 0) {
-            return Iterator(*this, ir, ich);
+            return iterator(*this, ir, ich);
         }
     }
-    return Iterator(*this);
+    return iterator(*this);
 }
 
 void
 CharacterSet::collapse_from(ranges_t::iterator & from)
 {
     ranges_t::iterator it1 = from, it2 = from + 1;
-    while (it2 != ranges.end() && (it1->first + it1->num_chars) >= it2->first)
+    while (it2 != _ranges.end() && (it1->first + it1->num_chars) >= it2->first)
     {
         // Merge successor range with current one
         it2->num_chars += it2->first - it1->first;
         it2->first = it1->first;
         // Discard current range
-        ranges.erase(it1);
+        _ranges.erase(it1);
         // On to next
         it1 = it2 ++;
     }

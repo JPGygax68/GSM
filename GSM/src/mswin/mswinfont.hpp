@@ -13,7 +13,7 @@ class MSWinFont: public IFont {
 public:
     ~MSWinFont();
 
-    virtual const Rasterization rasterize(CharacterSet & charset, CharacterSet::Iterator & it, 
+    virtual const Rasterization rasterize(const CharacterSet & charset, CharacterSet::iterator & it, 
         unsigned max_edge, const RasterizeOptions options);
 
     virtual const Extents getTextExtents(const unicode_t *text, unsigned len);
