@@ -7,7 +7,7 @@ namespace ogl {
 //--- PUBLIC ROUTINE IMPLEMENTATIONS ------------------------------------------
 
 int
-prepareFont(IFont *font, int resourcePoolID)
+prepareFont(ISurface *surf, IFont *font)
 {
     // Lock the current graphics memory context
     // TODO

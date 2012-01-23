@@ -11,8 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\GSM\bndgfxres.hpp" />
     <ClInclude Include="..\..\GSM\charset.hpp" />
     <ClInclude Include="..\..\GSM\compmgr.hpp" />
+    <ClInclude Include="..\..\GSM\gfxresbase.hpp" />
     <ClInclude Include="..\..\GSM\gfxtypes.hpp" />
     <ClInclude Include="..\..\GSM\gsm.hpp" />
     <ClInclude Include="..\..\GSM\ibitmap.hpp" />
@@ -22,6 +24,7 @@
     <ClInclude Include="..\..\GSM\ievent.hpp" />
     <ClInclude Include="..\..\GSM\ifontprov.hpp" />
     <ClInclude Include="..\..\GSM\ifont.hpp" />
+    <ClInclude Include="..\..\GSM\igfxres.hpp" />
     <ClInclude Include="..\..\GSM\ikeybevt.hpp" />
     <ClInclude Include="..\..\GSM\iptrbtnevt.hpp" />
     <ClInclude Include="..\..\GSM\iptrmovevt.hpp" />
@@ -50,6 +53,7 @@
     <ClCompile Include="..\..\GSM\src\charset.cpp" />
     <ClCompile Include="..\..\GSM\src\compmgr.cpp" />
     <ClCompile Include="..\..\GSM\src\format.cpp" />
+    <ClCompile Include="..\..\GSM\src\gfxresbase.cpp" />
     <ClCompile Include="..\..\GSM\src\gsm.cpp" />
     <ClCompile Include="..\..\GSM\src\mswin\mswinevt.cpp" />
     <ClCompile Include="..\..\GSM\src\mswin\mswinfont.cpp" />

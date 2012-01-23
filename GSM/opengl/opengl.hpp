@@ -6,12 +6,14 @@
 
 namespace gsm {
 
+class ISurface;
+
 namespace ogl {
 
 /** Prepares a Font for use in the current OpenGL context.
     The function returns a handle to be specified in text rendering calls.
  */
-int prepareFont(IFont *font, int resourcePoolID);
+int prepareFont(IFont *font, ISurface *surf);
 
 /** Saves the current projection matrix and sets up a new projection so that 2D coordinates 
     match directly with the pixel grid, with the top-left corner being at (0, 0) and the 
