@@ -8,6 +8,7 @@ MSWinSurface::MSWinSurface(HWND hWnd_)
 {
     hWnd = hWnd_;
     hGLRC = 0;
+    vidctx_id = 0;
 }
 
 MSWinSurface::~MSWinSurface()
@@ -42,28 +43,36 @@ MSWinSurface::clientHeight()
     return r.bottom - r.top;
 }
 
-void
-MSWinSurface::select()
+int
+MSWinSurface::select(int monitor, Rect *rect)
 {
+    // TODO: support multiple monitors on XP
     if (hGLRC != 0) {
         CHECK(wglMakeCurrent, (GetDC(hWnd), hGLRC));
     }
+    return 1;
 }
 
 void
 MSWinSurface::setCaption(const char *cap)
 {
-    if (hGLRC != 0) {
-        SetWindowText(hWnd, cap);
-    }
+    SetWindowText(hWnd, cap);
 }
 
 void
-MSWinSurface::present()
+MSWinSurface::present(int monitor)
 {
     if (hGLRC != 0) {
         SwapBuffers(GetDC(hWnd));
     }
 }
+
+/*
+void
+MSWinSurface::bindGraphicsResources()
+{
+    for (unsigned i = 0; i < gfx
+}
+*/
 
 } // ns mswinsurf

@@ -1,6 +1,10 @@
 #ifndef __GSM_ISESSIONMGR_HPP
 #define __GSM_ISESSIONMGR_HPP
 
+/*  TODO: we probably need a mechanism to clean up graphics resources (all Video Contexts must be activated,
+        and resource unbind must be called for all resources attached to each).
+ */
+
 #include "icomp.hpp"
 #include "isurface.hpp"
 #include "util/bitset.hpp"
@@ -11,6 +15,7 @@ class ISurface;
 class IWindow;
 class IScreen;
 class IEvent;
+class IGraphicsResource;
 
 class ISessionManager: public IComponent {
 public:

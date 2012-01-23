@@ -120,9 +120,6 @@
     <ClInclude Include="..\..\GSM\igfxres.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\GSM\bndgfxres.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\GSM\gfxresbase.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

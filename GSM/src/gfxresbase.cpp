@@ -1,26 +1,33 @@
+#include <cassert>
 #include "../gfxresbase.hpp"
 
 namespace gsm {
 
-bool GraphicsResourceBase::isBoundToContext(int vidMemCtxID)
+void *
+GraphicsResourceBase::bind(int vidMemCtxID)
 {
-    std::set<int>::iterator it = bindings.find(vidMemCtxID);
+    // Already bound ?
+    bindings_t::iterator it = bindings.find(vidMemCtxID);
+    if (it != bindings.end()) return it->second;
+
+    // No, so we bind it, then register the binding
+    void *res = doBind(vidMemCtxID);
+    bindings.insert( bindings_t::value_type(vidMemCtxID, res) );
+
+    return res;
+}
+
+bool GraphicsResourceBase::isBound(int vidMemCtxID)
+{
+    bindings_t::iterator it = bindings.find(vidMemCtxID);
     return it != bindings.end();
 }
 
-void GraphicsResourceBase::clearBindings()
+void GraphicsResourceBase::releaseBinding(int vidMemCtxID)
 {
-    bindings.clear();
-}
-
-bool GraphicsResourceBase::registerBinding(int vidMemCtxID)
-{
-    // Resource was already bound to this video memory context?
-    std::set<int>::iterator it = bindings.find(vidMemCtxID);
-    if (it != bindings.end()) return true;
-    // No, add the context to the set
-    bindings.insert(vidMemCtxID);
-    return false;
+    bindings_t::iterator it = bindings.find(vidMemCtxID);
+    assert(it != bindings.end());
+    doRelease(vidMemCtxID, it->second);
 }
 
 } // ns gsm

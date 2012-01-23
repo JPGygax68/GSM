@@ -5,6 +5,7 @@
 #include "../../compmgr.hpp"
 #include "../../util/format.hpp"
 #include "../../iwindow.hpp"
+#include "../../igfxres.hpp"
 #include "mswincanvas.hpp"
 #include "mswinerr.hpp"
 #include "mswinsurf.hpp"
@@ -64,6 +65,7 @@ WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_PAINT: 
 		if (win != NULL) {
+            // TODO: find out video memory context ID and bind resources not yet bound for that context
             MSWinCanvas cnv;
             win->onPaint(&cnv);
         }

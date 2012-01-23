@@ -23,6 +23,11 @@ struct Extents {
     unsigned w, h;
 };
 
+struct Rect {
+    int x, y;
+    unsigned w, h;
+};
+
 } // ns gsm
 
 #endif // __GSM_GFXTYPES_HPP

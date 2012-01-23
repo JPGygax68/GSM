@@ -1,19 +1,22 @@
 #ifndef __GSM_GFXRESBASE_HPP
 #define __GSM_GFXRESBASE_HPP
 
-#include <set>
+#include <map>
 #include "igfxres.hpp"
 
 namespace gsm {
 
     class GraphicsResourceBase : public IGraphicsResource {
     public:
-        virtual bool isBoundToContext(int vidMemCtxID);
-        virtual void clearBindings();
+        virtual void *bind(int vidMemCtxID);
+        virtual bool isBound(int vidMemCtxID);
+        virtual void releaseBinding(int vidMemCtxID);
     protected:
-        bool registerBinding(int vidMemCtxID);
+        virtual void *doBind(int vidMemCtxID) = 0;
+        virtual void doRelease(int vidMemCtxID, void *bgres) = 0;
     private:
-        std::set<int> bindings;
+        typedef std::map<int, void*> bindings_t;
+        bindings_t bindings;
     };
 
 } // ns gsm

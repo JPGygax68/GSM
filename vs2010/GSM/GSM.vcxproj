@@ -11,7 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\GSM\bndgfxres.hpp" />
     <ClInclude Include="..\..\GSM\charset.hpp" />
     <ClInclude Include="..\..\GSM\compmgr.hpp" />
     <ClInclude Include="..\..\GSM\gfxresbase.hpp" />

@@ -11,12 +11,12 @@ namespace gsm {
 
 //--- PRIVATE TYPES ----------------------------------------------------------
 
-typedef std::vector<HGLRC>           context_group_t;
-typedef std::vector<context_group_t> context_groups_t;
+typedef std::vector<HGLRC>           video_context_t;
+typedef std::vector<video_context_t> video_contexts_t;
 
 //--- PRIVATE DATA -----------------------------------------------------------
 
-static context_groups_t     context_groups;
+static video_contexts_t     video_contexts;
 
 //--- PRIVATE ROUTINES -------------------------------------------------------
 
@@ -93,40 +93,38 @@ selectPixelFormat(HDC hDC, bool double_buffered)
 }
 
 static int
-assignToContextGroup(HGLRC hRC)
+assignToVideoContext(HGLRC hRC)
 {
-    // Traverse existing Context Groups to see if we can share gfx resources with any of them
-    context_groups_t::iterator it = context_groups.begin();
+    // Traverse existing Video Contexts to see if we can share gfx resources with any of them
+    video_contexts_t::iterator it = video_contexts.begin();
     int i = 0;
-    for ( ; it != context_groups.end(); it ++, i++) 
+    for ( ; it != video_contexts.end(); it ++, i++) 
     {
         // Try to share resource lists with first Context in the group
         if (wglShareLists(it->front(), hRC) == TRUE) {
-            // Succeeded, so add the new Context to this group
+            // Succeeded, so add the new Rendering Context to this Video Context
             it->push_back(hRC);
             // We're done, this is the Context Group we were looking for
             return i;
         }
     }
-    // Could not share with any group, so create and add new group
-    context_group_t group;
-    group.push_back(hRC);
-    context_groups.push_back(group);
-    return i;
+    // Could not share with any Video Context, so create and add new Video Context
+    video_context_t vctx;
+    vctx.push_back(hRC);
+    video_contexts.push_back(vctx);
+    return 1 + i; // add 1 to reserve 0 = unassigned
 }
 
 static void
-removeContextFromGroups(HGLRC hRC)
+removeRCFromVideoContext(HGLRC hRC)
 {
-    // Traverse existing Context Groups to see if we can share gfx resources with any of them
-    context_groups_t::iterator it = context_groups.begin();
-    //int i = 0;
-    for ( ; it != context_groups.end(); it ++) 
+    video_contexts_t::iterator it = video_contexts.begin();
+    for ( ; it != video_contexts.end(); it ++) 
     {
-        context_group_t & group = *it;
-        for (context_group_t::iterator ictx = group.begin(); ictx != group.end(); ictx ++)
-            if (*ictx == hRC) {
-                group.erase(ictx);
+        video_context_t & vctx = *it;
+        for (video_context_t::iterator irc = vctx.begin(); irc != vctx.end(); irc ++)
+            if (*irc == hRC) {
+                vctx.erase(irc);
                 return;
             }
     }
@@ -200,14 +198,14 @@ setupWindowForOpenGL(MSWinSurface *surf, ISurface::Attributes attribs)
     if (hRC == 0) throw EMSWinError(GetLastError(), "wglCreateContext");
     surf->setOpenGLContext(hRC);
 
-    // Try to make the Context part of a gfx resource sharing group
-    assignToContextGroup(hRC);
+    // Try to make the Rendering Context part of a Video Context
+    surf->setVideoContextID( assignToVideoContext(hRC) );
 }
 
 void
 retireContext(HGLRC hRC)
 {
-    removeContextFromGroups(hRC);
+    removeRCFromVideoContext(hRC);
     if (! wglDeleteContext(hRC)) throw EMSWinError(GetLastError(), "wglDeleteContext");
 }
 

@@ -47,8 +47,11 @@ public:
 private:
     typedef std::set<MSWinSurface*> surfacelist_t;
     typedef surfacelist_t::iterator surface_iterator_t;
+    typedef std::set<IGraphicsResource*> gfxresources_t;
+    typedef gfxresources_t::iterator gfxres_iterator_t;
 
     surfacelist_t surfaces;
+    gfxresources_t  gfx_resources;
     bool have_evt;
     MSWinEvent evt;
     bool quit;

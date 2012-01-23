@@ -7,9 +7,9 @@ namespace gsm {
 
     class IGraphicsResource {
     public:
-        virtual IBoundGraphicsResource * bind(int vidMemCtxID) = 0;
-        virtual bool isBoundToContext(int vidMemCtxID) = 0;
-        virtual void clearBindings() = 0;
+        virtual void * bind(int vidMemCtxID) = 0;
+        virtual bool isBound(int vidMemCtxID) = 0;
+        virtual void releaseBinding(void *bgres) = 0;
     };
 
 } // ns gsm

@@ -16,13 +16,19 @@ namespace gsm {
         virtual int clientWidth();
         virtual int clientHeight();
 
-        virtual void select();
+        virtual int
+        select(int monitor = 0, Rect *rect = NULL);
 
         virtual void setCaption(const char *cap);
 
-        virtual void present();
+        virtual void present(int monitor = 0);
 
-        virtual int resourcePoolID() { return 0; } // TODO!
+        /** Returns the main Video Context ID.
+            Note that a Surface can spread across several monitors, which may not be
+            connected to the same graphics adapter, in which case several Video
+            Contexts are required to fully render the Surface.
+         */
+        virtual int videoContextID() { return vidctx_id; }
 
     public:
         HWND windowHandle() const { return hWnd; }
@@ -30,15 +36,17 @@ namespace gsm {
         HGLRC openGLContext() const { return hGLRC; }
         void setOpenGLContext(HGLRC hRC) { hGLRC = hRC; }
 
-        void setResourceGroup(int group) { resource_group = group; }
-        int resourceGroup() const { return resource_group; }
+        void setVideoContextID(int id) { vidctx_id = id; }
 
     protected:
         MSWinSurface(HWND hWnd);
+    
     private:
+        void bindGraphicsResources();
+
         HWND    hWnd;
         HGLRC   hGLRC;
-        int     resource_group;
+        int     vidctx_id;
         friend class MSWinSessionManager;
     };
 
