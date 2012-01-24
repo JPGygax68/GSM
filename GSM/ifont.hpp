@@ -38,7 +38,7 @@ namespace gsm {
         };
 
         struct GlyphBox: public GlyphMetrics {
-            unsigned ytop;     /// Add yMin (which is negative) to get baseline
+            int xLeft, yTop;   /// Top-right corner of glyph rectangle
         };
 
         /** A Rasterization is a bitmap containing rasterized glyphs for a subset

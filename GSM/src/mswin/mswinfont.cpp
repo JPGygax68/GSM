@@ -51,6 +51,8 @@ public:
         GetObject(hbmp, sizeof(bm), &bm);
         return (unsigned) bm.bmHeight; }
 
+    virtual const void * data() const { return pixels; }
+
     HBITMAP handle() const { return hbmp; }
 
 private:
@@ -207,7 +209,8 @@ MSWinFont::rasterize(const CharacterSet & set, CharacterSet::iterator & it, unsi
             // Store Glyph Box info
             GlyphBox gb;
             static_cast<GlyphMetrics&>(gb) = gm;
-            gb.ytop = y;
+            gb.xLeft = x;
+            gb.yTop = y;
             rast.glyph_boxes.push_back(gb);
             // Advance to next spot
             x += gm.width();

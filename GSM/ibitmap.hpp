@@ -8,6 +8,7 @@ namespace gsm {
         virtual ~IBitmap() {}
         virtual unsigned width() const = 0;
         virtual unsigned height() const = 0;
+        virtual const void * data() const = 0;
     };
 
 } // ns gsm

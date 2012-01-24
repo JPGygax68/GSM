@@ -14,6 +14,7 @@ typedef void * fonthandle_t;
 
 /** Prepares a Font for use in the specified Video Context.
     The function returns a handle to be specified in text rendering calls.
+    TODO: distinguish between monitors to take advantage of ClearType
  */
 fonthandle_t prepareFont(IFont *font, int vidCtxID);
 
