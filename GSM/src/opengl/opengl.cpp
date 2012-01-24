@@ -128,6 +128,8 @@ bindFont(IFont *font, const CharacterSet *charset_)
         delete rast.bitmap;
         rast.bitmap = NULL;
     }
+
+    return binding;
 }
 
 //--- PUBLIC ROUTINE IMPLEMENTATIONS ------------------------------------------

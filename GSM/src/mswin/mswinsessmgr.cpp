@@ -4,7 +4,7 @@
 #include "../../isessionmgr.hpp"
 #include "../../compmgr.hpp"
 #include "../../util/format.hpp"
-#include "../../iwindow.hpp"
+#include "../../idisplay.hpp"
 #include "../../igfxres.hpp"
 #include "mswincanvas.hpp"
 #include "mswinerr.hpp"
@@ -19,21 +19,37 @@ namespace gsm {
 
 static const char *WINDOW_CLASS_NAME = "GSM Window Class";
 
+//--- PRIVATE TYPES -----------------------------------------------------------
+
+struct CreateParams {
+    MSWinSurface *surface;
+    ISurface::Attributes surf_attribs;
+    IDisplay *display;
+};
+
 //--- PRIVATE FUNCTIONS -------------------------------------------------------
 
 LRESULT CALLBACK
 WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    IWindow *win = reinterpret_cast<IWindow*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+    IDisplay *disp = (IDisplay*) GetWindowLongPtr(hWnd, GWLP_USERDATA);
 
-	switch(msg)
-	{
+    switch(msg)
+    {
     case WM_NCCREATE:
         {
             // Re-package user data pointer
             LPCREATESTRUCT pcs = reinterpret_cast<LPCREATESTRUCT>(lParam);
-            win = reinterpret_cast<IWindow*>(pcs->lpCreateParams);
-            SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(win) );
+            CreateParams *cp = reinterpret_cast<CreateParams*>(pcs->lpCreateParams);
+            disp = cp->display;
+            SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)disp);
+            // Assign window handle to Surface
+            MSWinSurface *surf = static_cast<MSWinSurface*>(cp->surface);
+            surf->setWindowHandle(hWnd);
+            // Setup OpenGL if asked for
+            if (cp->surf_attribs.test(ISurface::SUPPORTS_OPENGL)) {
+                setupWindowForOpenGL(surf, cp->surf_attribs);
+            }
         }
         break;
 	case WM_CREATE: // TODO (perhaps): OpenGL wiki recommends creating GL context here
@@ -55,19 +71,20 @@ WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		//return 0;
 		break;
 	case WM_SIZE:
-        if (win != NULL) {
-            win->onResize(LOWORD(lParam), HIWORD(lParam));
+        if (disp != NULL) {
+            disp->onResize(LOWORD(lParam), HIWORD(lParam));
         }
 		break;
 	case WM_CLOSE:
         // The lookup isn't too bad as it only happens once at the end of the window's lifecycle
+        disp->onClose();
         static_cast<MSWinSessionManager*>(findComponent("SessionManager"))->closeMsgReceived(hWnd);
 		break;
 	case WM_PAINT: 
-		if (win != NULL) {
+		if (disp != NULL) {
             // TODO: find out video memory context ID and bind resources not yet bound for that context
             MSWinCanvas cnv;
-            win->onPaint(&cnv);
+            disp->onPaint(&cnv);
         }
 		break;
 	case WM_SYSCOMMAND:
@@ -142,19 +159,25 @@ MSWinSessionManager::~MSWinSessionManager()
 }
 
 ISurface *
-MSWinSessionManager::openWindow(int x, int y, int w, int h, const char *caption, IWindow *window, ISurface::Attributes attribs)
+MSWinSessionManager::openWindow(int x, int y, int w, int h, const char *caption, IDisplay *window, ISurface::Attributes attribs)
 {
     HWND hWnd;
+
+    MSWinSurface * surf = new MSWinSurface();
+
+    CreateParams cp;
+    cp.surface = surf;
+    cp.surf_attribs = attribs;
+    cp.display = window;
 
     hWnd = CreateWindowEx( 0, WINDOW_CLASS_NAME
         , caption != NULL ? caption : "GSM Window"
         , WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_OVERLAPPEDWINDOW
         , x, y, w, h
-        , NULL, NULL, NULL /*_module_instance()*/, window
+        , NULL, NULL, NULL /*_module_instance()*/, &cp
         ); 
     if (hWnd == NULL) throw EMSWinError(GetLastError(), "CreateWindowEx");
 
-    MSWinSurface * surf = new MSWinSurface(hWnd);
     surfaces.insert(surf);
 
     if (attribs.test(ISurface::SUPPORTS_OPENGL))
@@ -164,7 +187,7 @@ MSWinSessionManager::openWindow(int x, int y, int w, int h, const char *caption,
 }
 
 ISurface *
-MSWinSessionManager::openScreen(int num, ISurface::Attributes attr, IScreen *screen, ISurface::Attributes attribs)
+MSWinSessionManager::openScreen(int num, ISurface::Attributes attr, IDisplay *screen, ISurface::Attributes attribs)
 {
     HWND hWnd;
 
@@ -174,6 +197,13 @@ MSWinSessionManager::openScreen(int num, ISurface::Attributes attr, IScreen *scr
     unsigned w, h;
     getScreenRect(num, x, y, w, h);
 
+    MSWinSurface * surf = new MSWinSurface();
+
+    CreateParams cp;
+    cp.surface = surf;
+    cp.surf_attribs = attribs;
+    cp.display = dynamic_cast<IDisplay*>(screen);
+
     hWnd = CreateWindowEx( 0, WINDOW_CLASS_NAME
         , "GSM full-screen window" // TODO: caption != NULL ? caption : wclsname.c_str()
         , WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_OVERLAPPEDWINDOW
@@ -182,11 +212,7 @@ MSWinSessionManager::openScreen(int num, ISurface::Attributes attr, IScreen *scr
         ); 
     if (hWnd == NULL) throw EMSWinError(GetLastError(), "CreateWindowEx");
 
-    MSWinSurface * surf = new MSWinSurface(hWnd);
     surfaces.insert(surf);
-
-    if (attribs.test(ISurface::SUPPORTS_OPENGL))
-        setupWindowForOpenGL(surf, attribs);
 
     return surf;
 }
@@ -258,9 +284,8 @@ void
 MSWinSessionManager::closeMsgReceived(HWND hWnd)
 {
     for (surface_iterator_t it = surfaces.begin(); it != surfaces.end(); it++) {
-        MSWinSurface *surf = *it;
-        if (surf->hWnd == hWnd) {
-            delete surf;
+        if ((*it)->hWnd == hWnd) {
+            delete (*it);
             surfaces.erase(it);
             break;
         }

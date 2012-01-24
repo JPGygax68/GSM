@@ -32,6 +32,7 @@ namespace gsm {
 
     public:
         HWND windowHandle() const { return hWnd; }
+        void setWindowHandle(HWND hWnd_) { hWnd = hWnd_; }
 
         HGLRC openGLContext() const { return hGLRC; }
         void setOpenGLContext(HGLRC hRC) { hGLRC = hRC; }
@@ -39,7 +40,7 @@ namespace gsm {
         void setVideoContextID(int id) { vidctx_id = id; }
 
     protected:
-        MSWinSurface(HWND hWnd);
+        MSWinSurface();
     
     private:
         void bindGraphicsResources();

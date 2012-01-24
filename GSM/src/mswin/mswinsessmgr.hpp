@@ -19,10 +19,10 @@ private:
 
 public:
     virtual ISurface *
-    openWindow(int x, int y, int w, int h, const char *caption, IWindow *window, ISurface::Attributes caps = 0);
+    openWindow(int x, int y, int w, int h, const char *caption, IDisplay *window, ISurface::Attributes caps = 0);
 
     virtual ISurface *
-    openScreen(int num, ISurface::Attributes attr, IScreen *scr, ISurface::Attributes caps = 0);
+    openScreen(int num, ISurface::Attributes attr, IDisplay *screen, ISurface::Attributes caps = 0);
 
     virtual bool
     fetchNextEvent();

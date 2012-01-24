@@ -4,9 +4,9 @@
 
 namespace gsm {
 
-MSWinSurface::MSWinSurface(HWND hWnd_)
+MSWinSurface::MSWinSurface()
 {
-    hWnd = hWnd_;
+    hWnd = 0;
     hGLRC = 0;
     vidctx_id = 0;
 }

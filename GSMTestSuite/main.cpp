@@ -1,13 +1,15 @@
 #include <exception>
 #include <iostream>
+#include <cassert>
 #include <GSM/gsm.hpp>
 #include <GSM/isurface.hpp>
-#include <GSM/iwindow.hpp>
+#include <GSM/idisplay.hpp>
 
-class MyWindow: public gsm::IWindow {
+class MyWindow: public gsm::IDisplay {
 public:
 
     MyWindow(gsm::ISessionManager *sm, int x, int y, int w, int h, const char *caption = NULL) {
+        closed = false;
         surf = sm->openWindow(x, y, w, h, caption, this, gsm::ISurface::SUPPORTS_OPENGL);
         surf->show();
     }
@@ -17,7 +19,14 @@ public:
     }
 
     virtual void
+    onInit()
+    {
+    }
+
+    virtual void
     onPaint(gsm::ICanvas *cnv) {
+        assert(!closed);
+        doPaint();
     }
 
     virtual bool
@@ -33,11 +42,26 @@ public:
         return false; }
 
     virtual bool
-    onManagementEvent(gsm::IEvent *evt) {
-        return false; }
+    onClose() {
+        closed = true;
+        return true; }
+
+    void
+    paint() {
+        if (!closed) {
+            surf->select();
+            doPaint();
+        }
+    }
 
 private:
+
+    void
+    doPaint() {
+    }
+
     gsm::ISurface *surf;
+    bool closed;
 };
 
 int
@@ -53,6 +77,8 @@ main(int argc, char *argv[])
         MyWindow win2(sm, 30, 200, 800, 600, "Window 2");
 
         while (true) {
+            win1.paint();
+            win2.paint();
             sm->fetchNextEvent();
             (void) sm->getEvent();
             if (sm->mustQuit() )
