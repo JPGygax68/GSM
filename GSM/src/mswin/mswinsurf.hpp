@@ -6,6 +6,8 @@
 
 namespace gsm {
 
+    class IDisplay;
+
     class MSWinSurface: public ISurface {
     public:
         ~MSWinSurface();
@@ -34,17 +36,20 @@ namespace gsm {
         HWND windowHandle() const { return hWnd; }
         void setWindowHandle(HWND hWnd_) { hWnd = hWnd_; }
 
+        IDisplay *display() const { return disp; }
+
         HGLRC openGLContext() const { return hGLRC; }
         void setOpenGLContext(HGLRC hRC) { hGLRC = hRC; }
 
         void setVideoContextID(int id) { vidctx_id = id; }
 
     protected:
-        MSWinSurface();
+        MSWinSurface(IDisplay *disp);
     
     private:
         void bindGraphicsResources();
 
+        IDisplay *disp;
         HWND    hWnd;
         HGLRC   hGLRC;
         int     vidctx_id;

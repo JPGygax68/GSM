@@ -32,7 +32,7 @@ struct CreateParams {
 LRESULT CALLBACK
 WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    IDisplay *disp = (IDisplay*) GetWindowLongPtr(hWnd, GWLP_USERDATA);
+    MSWinSurface *surf = (MSWinSurface*) GetWindowLongPtr(hWnd, GWLP_USERDATA);
 
     switch(msg)
     {
@@ -41,50 +41,65 @@ WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
             // Re-package user data pointer
             LPCREATESTRUCT pcs = reinterpret_cast<LPCREATESTRUCT>(lParam);
             CreateParams *cp = reinterpret_cast<CreateParams*>(pcs->lpCreateParams);
-            disp = cp->display;
-            SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)disp);
+            IDisplay *disp = cp->display;
+            SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)cp->surface);
             // Assign window handle to Surface
-            MSWinSurface *surf = static_cast<MSWinSurface*>(cp->surface);
-            surf->setWindowHandle(hWnd);
+            cp->surface->setWindowHandle(hWnd);
             // Setup OpenGL if asked for
             if (cp->surf_attribs.test(ISurface::SUPPORTS_OPENGL)) {
-                setupWindowForOpenGL(surf, cp->surf_attribs);
+                setupWindowForOpenGL(cp->surface, cp->surf_attribs);
             }
         }
         break;
 	case WM_CREATE: // TODO (perhaps): OpenGL wiki recommends creating GL context here
 		{
-			char buffer[256];
+			/*char buffer[256];
 			GetWindowTextA(hWnd, buffer, sizeof(buffer) );
-			OutputDebugString(format("WM_CREATE on window \"%s\"\n", buffer).c_str() );
+			OutputDebugString(format("WM_CREATE on window \"%s\"\n", buffer).c_str() );*/
+            if (surf->openGLContext() != 0) {
+                HDC hDC = GetDC(hWnd);
+                OutputDebugString(format("WM_CREATE with hGLRC = %x\n", surf->openGLContext()).c_str() );
+            CHECK(wglMakeCurrent, (hDC, surf->openGLContext()));
+            }
+            surf->display()->onInit();
 		}
 		break;
 	case WM_ACTIVATE:
 		{
-			char buffer[256];
+			/*char buffer[256];
 			GetWindowTextA(hWnd, buffer, sizeof(buffer) );
-			OutputDebugStringA(format("WM_ACTIVATE on window \"%s\"\n", buffer).c_str() );
+			OutputDebugStringA(format("WM_ACTIVATE on window \"%s\"\n", buffer).c_str() );*/
 		}
 		break;
 	case WM_ERASEBKGND: 
 		//OutputDebugString("WM_ERASEBKGND\n");
-		//return 0;
+		return 1;
 		break;
 	case WM_SIZE:
-        if (disp != NULL) {
-            disp->onResize(LOWORD(lParam), HIWORD(lParam));
+        if (surf->openGLContext() != 0) {
+            HDC hDC = GetDC(hWnd);
+            OutputDebugString(format("WM_SIZE with hGLRC = %x\n", surf->openGLContext()).c_str() );
+            CHECK(wglMakeCurrent, (hDC, surf->openGLContext()));
         }
+        surf->display()->onResize(LOWORD(lParam), HIWORD(lParam));
 		break;
 	case WM_CLOSE:
         // The lookup isn't too bad as it only happens once at the end of the window's lifecycle
-        disp->onClose();
+        surf->display()->onClose();
         static_cast<MSWinSessionManager*>(findComponent("SessionManager"))->closeMsgReceived(hWnd);
 		break;
 	case WM_PAINT: 
-		if (disp != NULL) {
-            // TODO: find out video memory context ID and bind resources not yet bound for that context
+        {
             MSWinCanvas cnv;
-            disp->onPaint(&cnv);
+            PAINTSTRUCT ps;
+            HDC hDC = BeginPaint(hWnd, &ps);
+                if (surf->openGLContext() != 0) {
+                    // TODO? find out video memory context ID and bind resources not yet bound for that context
+                    CHECK(wglMakeCurrent, (hDC, surf->openGLContext()));
+                }
+                bool done = surf->display()->onPaint(&cnv);
+            EndPaint(hWnd, &ps);
+            if (done) return 0;
         }
 		break;
 	case WM_SYSCOMMAND:
@@ -163,7 +178,7 @@ MSWinSessionManager::openWindow(int x, int y, int w, int h, const char *caption,
 {
     HWND hWnd;
 
-    MSWinSurface * surf = new MSWinSurface();
+    MSWinSurface * surf = new MSWinSurface(window);
 
     CreateParams cp;
     cp.surface = surf;
@@ -180,9 +195,6 @@ MSWinSessionManager::openWindow(int x, int y, int w, int h, const char *caption,
 
     surfaces.insert(surf);
 
-    if (attribs.test(ISurface::SUPPORTS_OPENGL))
-        setupWindowForOpenGL(surf, attribs);
-
     return surf;
 }
 
@@ -197,7 +209,7 @@ MSWinSessionManager::openScreen(int num, ISurface::Attributes attr, IDisplay *sc
     unsigned w, h;
     getScreenRect(num, x, y, w, h);
 
-    MSWinSurface * surf = new MSWinSurface();
+    MSWinSurface * surf = new MSWinSurface(screen);
 
     CreateParams cp;
     cp.surface = surf;

@@ -4,8 +4,9 @@
 
 namespace gsm {
 
-MSWinSurface::MSWinSurface()
+MSWinSurface::MSWinSurface(IDisplay *disp_)
 {
+    disp = disp_;
     hWnd = 0;
     hGLRC = 0;
     vidctx_id = 0;
@@ -48,7 +49,9 @@ MSWinSurface::select(int monitor, Rect *rect)
 {
     // TODO: support multiple monitors on XP
     if (hGLRC != 0) {
-        CHECK(wglMakeCurrent, (GetDC(hWnd), hGLRC));
+        HDC hDC = GetDC(hWnd);
+        //OutputDebugString(format("MSWinSurface::select() with hGLRC = %x\n", hGLRC).c_str() );
+        CHECK(wglMakeCurrent, (hDC, hGLRC));
     }
     return 1;
 }
@@ -63,7 +66,9 @@ void
 MSWinSurface::present(int monitor)
 {
     if (hGLRC != 0) {
-        SwapBuffers(GetDC(hWnd));
+        HDC hDC = GetDC(hWnd);
+        CHECK(SwapBuffers, (hDC));
+        //wglSwapLayerBuffers(hDC, WGL_SWAP_MAIN_PLANE);
     }
 }
 

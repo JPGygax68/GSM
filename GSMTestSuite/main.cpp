@@ -1,6 +1,9 @@
 #include <exception>
 #include <iostream>
 #include <cassert>
+#include <GL/glew.h>
+#include <GL/GLU.h>
+#include <GSM/util/oglhelper.hpp>
 #include <GSM/gsm.hpp>
 #include <GSM/isurface.hpp>
 #include <GSM/idisplay.hpp>
@@ -9,24 +12,33 @@ class MyWindow: public gsm::IDisplay {
 public:
 
     MyWindow(gsm::ISessionManager *sm, int x, int y, int w, int h, const char *caption = NULL) {
+        using namespace gsm;
         closed = false;
-        surf = sm->openWindow(x, y, w, h, caption, this, gsm::ISurface::SUPPORTS_OPENGL);
+        surf = sm->openWindow(x, y, w, h, caption, this, ISurface::SUPPORTS_OPENGL);
         surf->show();
     }
 
     virtual void
+    onInit() {
+        glClearColor(0.2f, 0.5f, 1, 1);
+    }
+
+    virtual void
     onResize(int w, int h) {
+        OGL(glViewport, (0, 0, w, h));
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        OGL(glOrtho, (0, w, h, 0, -1, 1));
+        // Calculate The Aspect Ratio Of The Window
+        //gluPerspective(60.0f, (GLfloat)w/(GLfloat)h, 0.1f, 100.0f);
+        glMatrixMode(GL_MODELVIEW);
     }
 
-    virtual void
-    onInit()
-    {
-    }
-
-    virtual void
+    virtual bool
     onPaint(gsm::ICanvas *cnv) {
         assert(!closed);
-        doPaint();
+        //doPaint();
+        return true;
     }
 
     virtual bool
@@ -51,6 +63,7 @@ public:
         if (!closed) {
             surf->select();
             doPaint();
+            surf->present();
         }
     }
 
@@ -58,6 +71,20 @@ private:
 
     void
     doPaint() {
+        OGL(glClear, (GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT));
+
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+
+        glTranslatef(100, 100, 0);
+
+        glColor3f(1.0f,1.0f,1.0f);
+        glBegin(GL_QUADS);
+            glVertex3f(   0,   0,   0);
+            glVertex3f( 200,   0,   0);
+            glVertex3f( 200, 100,   0);
+            glVertex3f(   0, 100,   0);
+        OGL(glEnd, ());
     }
 
     gsm::ISurface *surf;
