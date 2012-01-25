@@ -7,9 +7,9 @@ namespace gsm {
 
 //--- PRIVATE TYPES ----------------------------------------------------------
 
-class GrayscaleBitmap: public IBitmap {
+class GDIBitmap: public IBitmap {
 public:
-    GrayscaleBitmap(unsigned w, unsigned h) {
+    GDIBitmap(unsigned w, unsigned h) {
         typedef struct
         {
             BITMAPINFOHEADER bmiHeader;
@@ -39,7 +39,7 @@ public:
         if (hbmp == 0) throw EMSWinError(GetLastError(), "CreateDIBSection (8-bit grayscale)");
     }
 
-    virtual ~GrayscaleBitmap() {
+    virtual ~GDIBitmap() {
         DeleteObject((HGDIOBJ)hbmp); }
 
     virtual unsigned width() const {
@@ -106,12 +106,12 @@ MSWinFont::MSWinFont(MSWinFontProvider *prov, HGDIOBJ hfont_)
     // Create a dummy bitmap (1x1 pixels) and a DC for it
     hbmp = CreateBitmap(1, 1, 1, 8, NULL);
     hdc = CreateCompatibleDC(NULL);
-    HGDIOBJ holdbmp = SelectObject(hdc, hbmp);
+    SelectObject(hdc, hbmp); // discarding previous bitmap (if any)
     SelectObject(hdc, hfont);
     SetMapMode(hdc, MM_TEXT);
     SetTextColor(hdc, RGB(255, 255, 255) );
     SetBkMode(hdc, TRANSPARENT);
-    SetBkColor(hdc, RGB(100,100,100) );
+    //SetBkColor(hdc, RGB(100,100,100) );
     //SetBkColor(hdc, RGB(0,0,0) );
     SetTextAlign(hdc, TA_BASELINE);
 
@@ -181,7 +181,7 @@ MSWinFont::rasterize(const CharacterSet & set, CharacterSet::iterator & it, unsi
     w = next_pow2(wmax);
     h = next_pow2(h);
     assert(w <= max_edge && h <= max_edge);
-    GrayscaleBitmap *bitmap = new GrayscaleBitmap(w, h);
+    GDIBitmap *bitmap = new GDIBitmap(w, h);
     HGDIOBJ holdbmp = SelectObject(hdc, bitmap->handle() );
 
     // Initialize the Rasterization object

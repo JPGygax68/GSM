@@ -65,7 +65,7 @@ bindFont(IFont *font, const CharacterSet *charset_)
         // Some preparation
         IBitmap *bmp = rast.bitmap;
         binding->list_bases.resize(rast.character_set.ranges().size());
-        // Create texture from rasterized bitmap
+        // Create alpha texture from rasterized bitmap
         GLuint texture;
         OGL(glGenTextures, (1, &texture) );
         OGL(glBindTexture, (GL_TEXTURE_2D, texture) );

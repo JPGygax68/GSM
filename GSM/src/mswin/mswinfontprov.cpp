@@ -14,7 +14,7 @@ MSWinFontProvider::getFont(IFont::Type type, const std::string &name, size_t hei
     }
     else {
         //if (height == 0) height = 16; // TODO: use constant
-        LOGFONTA lf;
+        LOGFONT lf;
         lf.lfHeight = height;
         lf.lfWidth = 0;
         lf.lfEscapement = 0;
@@ -26,8 +26,7 @@ MSWinFontProvider::getFont(IFont::Type type, const std::string &name, size_t hei
         lf.lfCharSet = ANSI_CHARSET;
         lf.lfOutPrecision = OUT_DEFAULT_PRECIS;
         lf.lfClipPrecision = CLIP_DEFAULT_PRECIS;
-        lf.lfQuality = height <= 18 ? // TODO: use constant
-            ANTIALIASED_QUALITY : PROOF_QUALITY;
+        lf.lfQuality = ANTIALIASED_QUALITY;  // height <= 18 ? ANTIALIASED_QUALITY : PROOF_QUALITY;
         lf.lfQuality = PROOF_QUALITY; //height <= 18 ? // TODO: use constant
         switch (type) {
             case IFont::DECORATIVE:	lf.lfPitchAndFamily = FF_DECORATIVE; break;
@@ -38,7 +37,7 @@ MSWinFontProvider::getFont(IFont::Type type, const std::string &name, size_t hei
             default:				lf.lfPitchAndFamily = FF_DONTCARE; break;
         }
         strncpy_s(lf.lfFaceName, LF_FACESIZE, name.c_str(), LF_FACESIZE);
-        hfont = CreateFontIndirectA(&lf);
+        hfont = CreateFontIndirect(&lf);
     }
 
     return new MSWinFont(this, hfont);

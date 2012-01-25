@@ -29,7 +29,7 @@ public:
         OGL(glEnable, (GL_BLEND));
         OGL(glBlendFunc, (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) );
         OGL(glEnable, (GL_CULL_FACE));
-        myFont = fontProvider()->getFont(IFont::ANY, "Arial", 24);
+        myFont = fontProvider()->getFont(IFont::ANY, "Arial", 48);
     }
 
     virtual void
@@ -102,11 +102,13 @@ private:
 
         glLoadIdentity();
         glTranslatef(100, 250, 0);
+        //glColor3f(1.0f,0.4f,0.3f);
         ogl::fonthandle_t fh = ogl::prepareFont(myFont, 1);
         int dx, dy;
         ogl::renderText(fh, L"Hello World!", dx, dy);
 
         glLoadIdentity();
+        OGL(glDisable, (GL_MULTISAMPLE));
         glTranslatef(100, 300, 0);
         GLuint tex;
         unsigned w, h;
