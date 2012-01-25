@@ -6,11 +6,16 @@
 
 namespace gsm {
 
+class ISessionManager;
+class IFontProvider;
+
 void init();
 
 void shutdown();
 
 ISessionManager *sessionManager();
+
+IFontProvider *fontProvider();
 
 } // ns gsm
 

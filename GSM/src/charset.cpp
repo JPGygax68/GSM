@@ -32,10 +32,10 @@ CharacterSet::add(unicode_t first, unsigned num_chars)
                 range.num_chars += (range.first - first);
                 range.first = first;
             }
-            break; // done
+            return; // done
         }
         // .. new range intersects at or appends to it ?
-        else if (first >= range.first && first < (range.first + range.num_chars)) {
+        else if (first >= range.first && first <= (range.first + range.num_chars)) {
             // New range ends after existing one?
             if ((first + num_chars) > (range.first + range.num_chars)) {
                 range.num_chars = (first - range.first) + num_chars;
@@ -43,14 +43,16 @@ CharacterSet::add(unicode_t first, unsigned num_chars)
                 collapse_from(it);
             }
             else ; // nothing to do, existing range swallows new one
-            break; // done
+            return; // done
         }
         // .. new range must be inserted before this one?
         else if (first < range.first) {
             _ranges.insert(it, Range(first, num_chars));
-            break; // done
+            return; // done
         }
     }
+    // New Range comes after any existing one
+    _ranges.push_back(Range(first, num_chars));
 }
 
 void
@@ -77,20 +79,32 @@ CharacterSet::find(unicode_t ch) const
     return iterator(*this);
 }
 
+/*  This is a "cleanup" routine that must be called after a range has been extended.
+    It will merge the Range pointed by "from" with all following Ranges that it
+    touches.
+ */
 void
 CharacterSet::collapse_from(ranges_t::iterator & from)
 {
     ranges_t::iterator it1 = from, it2 = from + 1;
     while (it2 != _ranges.end() && (it1->first + it1->num_chars) >= it2->first)
     {
-        // Merge successor range with current one
-        it2->num_chars += it2->first - it1->first;
-        it2->first = it1->first;
-        // Discard current range
-        _ranges.erase(it1);
+        // Current Range encompasses whole or more of successor ?
+        if ((it1->first + it1->num_chars) >= (it2->first + it2->num_chars)) {
+            // Copy current to successor 
+            it2->first = it1->first;
+            it2->num_chars = it1->num_chars;
+        }
+        else  // No, current Range just touches or partially overlaps successor
+        {
+            it2->num_chars += it2->first - it1->first;
+            it2->first = it1->first;
+        }
         // On to next
         it1 = it2 ++;
     }
+    // Discard deleted ranges
+    _ranges.erase(from, it1);
 }
 
 } // ns gsm

@@ -2,13 +2,14 @@
 #define __GSM_IFONTPROV_HPP
 
 #include <string>
+#include "icomp.hpp"
 #include "util/bitset.hpp"
 
 #include "ifont.hpp"
 
 namespace gsm {
 
-    class IFontProvider {
+    class IFontProvider: public IComponent {
     public:
 
         /** This call selects a font by its general type. It returns an

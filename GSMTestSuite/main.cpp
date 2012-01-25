@@ -5,22 +5,26 @@
 #include <GL/GLU.h>
 #include <GSM/util/oglhelper.hpp>
 #include <GSM/gsm.hpp>
+#include <GSM/ifontprov.hpp>
 #include <GSM/isurface.hpp>
 #include <GSM/idisplay.hpp>
+#include <GSM/opengl/opengl.hpp>
 
 class MyWindow: public gsm::IDisplay {
 public:
 
-    MyWindow(gsm::ISessionManager *sm, int x, int y, int w, int h, const char *caption = NULL) {
+    MyWindow(int x, int y, int w, int h, const char *caption = NULL) {
         using namespace gsm;
         closed = false;
-        surf = sm->openWindow(x, y, w, h, caption, this, ISurface::SUPPORTS_OPENGL);
+        surf = sessionManager()->openWindow(x, y, w, h, caption, this, ISurface::SUPPORTS_OPENGL);
         surf->show();
     }
 
     virtual void
     onInit() {
+        using namespace gsm;
         glClearColor(0.2f, 0.5f, 1, 1);
+        myFont = fontProvider()->getFont(IFont::ANY, "Arial", 16);
     }
 
     virtual void
@@ -35,7 +39,7 @@ public:
     }
 
     virtual bool
-    onPaint(gsm::ICanvas *cnv) {
+    onPaint(gsm::ICanvas *cnv, int vidCtxID) {
         assert(!closed);
         //doPaint();
         return true;
@@ -61,8 +65,8 @@ public:
     void
     paint() {
         if (!closed) {
-            surf->select();
-            doPaint();
+            int vidCtxID = surf->select();
+            doPaint(vidCtxID);
             surf->present();
         }
     }
@@ -70,8 +74,10 @@ public:
 private:
 
     void
-    doPaint() {
-        OGL(glClear, (GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT));
+    doPaint(int vidCtxID) {
+        using namespace gsm;
+
+        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
@@ -85,10 +91,16 @@ private:
             glVertex3f( 200, 100,   0);
             glVertex3f(   0, 100,   0);
         OGL(glEnd, ());
+
+        glLoadIdentity();
+        ogl::fonthandle_t fh = ogl::prepareFont(myFont, 1);
+        int x = 100, y = 50;
+        ogl::renderText(fh, x, y, L"Hello World!");
     }
 
     gsm::ISurface *surf;
     bool closed;
+    gsm::IFont *myFont;
 };
 
 int
@@ -100,8 +112,8 @@ main(int argc, char *argv[])
         gsm::init();
         ISessionManager *sm = static_cast<ISessionManager*>( findComponent("SessionManager") );
 
-        MyWindow win1(sm, 10, 10, 800, 600);
-        MyWindow win2(sm, 30, 200, 800, 600, "Window 2");
+        MyWindow win1(10, 10, 800, 600);
+        MyWindow win2(30, 200, 800, 600, "Window 2");
 
         while (true) {
             win1.paint();

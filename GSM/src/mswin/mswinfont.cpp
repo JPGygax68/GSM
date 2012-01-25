@@ -35,9 +35,10 @@ public:
         }
 
         // Create the bitmap
-        hbmp = CreateDIBSection(NULL, (const BITMAPINFO*) &bmpinfo, DIB_RGB_COLORS, (void**)pixels, NULL, 0);
+        hbmp = CreateDIBSection(NULL, (const BITMAPINFO*) &bmpinfo, DIB_RGB_COLORS, (void**)&pixels, NULL, 0);
         if (hbmp == 0) throw EMSWinError(GetLastError(), "CreateDIBSection (8-bit grayscale)");
     }
+
     virtual ~GrayscaleBitmap() {
         DeleteObject((HGDIOBJ)hbmp); }
 
@@ -148,11 +149,12 @@ MSWinFont::rasterize(const CharacterSet & set, CharacterSet::iterator & it, unsi
     CharacterSet::iterator itm = it;
     for (; itm != set.end(); itm ++) 
     {
+        unicode_t ch = *itm;
         // Is there a glyph for the character ?
-        if (charset.find(*itm) != charset.end())
+        if (charset.find(ch) != charset.end())
         {
             // Get the glyph's metrics
-            if (tt) getGlyphMetricsTT(hdc, metrics, *itm, gm); else getGlyphMetricsNonTT(hdc, metrics, *itm, gm);
+            if (tt) getGlyphMetricsTT(hdc, metrics, ch, gm); else getGlyphMetricsNonTT(hdc, metrics, ch, gm);
             // Doesn't fit on the current row?
             if ((w + gm.width()) > max_edge) {
                 // Begin a new row
@@ -173,11 +175,12 @@ MSWinFont::rasterize(const CharacterSet & set, CharacterSet::iterator & it, unsi
             w += gm.width();
         }
     }
+    if (w > wmax) wmax = w;
 
     // Allocate and select the bitmap
     w = next_pow2(wmax);
     h = next_pow2(h);
-    assert(w < max_edge && h < max_edge);
+    assert(w <= max_edge && h <= max_edge);
     GrayscaleBitmap *bitmap = new GrayscaleBitmap(w, h);
     HGDIOBJ holdbmp = SelectObject(hdc, bitmap->handle() );
 
@@ -189,10 +192,11 @@ MSWinFont::rasterize(const CharacterSet & set, CharacterSet::iterator & it, unsi
     hrmax = 0;
     for (CharacterSet::iterator itr = it; itr != itm; itr ++)
     {
+        unicode_t ch = *itr;
         // Is there a glyph for the character ?
-        if (charset.find(*itr) != charset.end()) {
+        if (charset.find(ch) != charset.end()) {
             // Get the glyph's metrics
-            if (tt) getGlyphMetricsTT(hdc, metrics, *itm, gm); else getGlyphMetricsNonTT(hdc, metrics, *itm, gm);
+            if (tt) getGlyphMetricsTT(hdc, metrics, ch, gm); else getGlyphMetricsNonTT(hdc, metrics, ch, gm);
             // Doesn't fit on the current row?
             if ((x + gm.width()) > w) {
                 // Begin a new row
@@ -201,7 +205,6 @@ MSWinFont::rasterize(const CharacterSet & set, CharacterSet::iterator & it, unsi
                 hrmax = 0;
             }
             // Render the glyph at the appropriate spot
-            wchar_t ch = (wchar_t) *itr;
             if (! TextOutW(hdc, x - gm.xMin, y - gm.yMin, &ch, 1) )
                 throw EMSWinError(GetLastError(), "TextOutW");
             // Make sure row will be high enough for highest glyph in it
@@ -212,6 +215,8 @@ MSWinFont::rasterize(const CharacterSet & set, CharacterSet::iterator & it, unsi
             gb.xLeft = x;
             gb.yTop = y;
             rast.glyph_boxes.push_back(gb);
+            // Add Character to set
+            rast.character_set.add(ch);
             // Advance to next spot
             x += gm.width();
         }
@@ -220,6 +225,7 @@ MSWinFont::rasterize(const CharacterSet & set, CharacterSet::iterator & it, unsi
     // Cleanup
     SelectObject(hdc, holdbmp);
 
+    it = itm;
     return rast;
 }
 

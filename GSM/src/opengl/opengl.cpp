@@ -78,7 +78,7 @@ bindFont(IFont *font, const CharacterSet *charset_)
 
     FontBinding *binding = new FontBinding();
 
-    for (CharacterSet::iterator it = charset.begin(); it != charset.end(); it ++) {
+    for (CharacterSet::iterator it = charset.begin(); it != charset.end(); ) {
         // Rasterize
         IFont::Rasterization rast = font->rasterize(charset, it);
         // Some preparation
@@ -153,8 +153,34 @@ prepareFont(IFont *font, int vidCtxID)
     return binding;
 }
 
-void releaseFont(IFont *font, int vidCtxID)
+void
+releaseFont(IFont *font, int vidCtxID)
 {
+    // TODO
+}
+
+void
+renderText(fonthandle_t fonthandle, int &x, int &y, const unicode_t *text)
+{
+    FontBinding &binding = *static_cast<FontBinding*>(fonthandle);
+
+    // Render character after character
+    for (unsigned i = 0; text[i] != 0; i ++) {
+        unicode_t ch = text[i];
+        // Find the character within the bound font
+        CharacterSet &cs = binding.char_set;
+        // Traverse all ranges
+        for (unsigned ir = 0; ir < cs.ranges().size(); ir ++) {
+            CharacterSet::Range &rn = cs.ranges()[ir];
+            // Character is within this Range ?
+            if (ch >= rn.first && ch < (rn.first + rn.num_chars)) {
+                // Compute Display List ID
+                GLuint dl = binding.list_bases[ir] + (ch - rn.first);
+                // Play the Display List
+                OGL(glCallList, (dl));
+            }
+        }
+    }
 }
 
 } // ns ogl

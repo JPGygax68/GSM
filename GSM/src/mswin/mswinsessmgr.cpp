@@ -94,10 +94,9 @@ WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hDC = BeginPaint(hWnd, &ps);
                 if (surf->openGLContext() != 0) {
-                    // TODO? find out video memory context ID and bind resources not yet bound for that context
                     CHECK(wglMakeCurrent, (hDC, surf->openGLContext()));
                 }
-                bool done = surf->display()->onPaint(&cnv);
+                bool done = surf->display()->onPaint(&cnv, surf->videoContextID());
             EndPaint(hWnd, &ps);
             if (done) return 0;
         }

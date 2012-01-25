@@ -23,18 +23,24 @@ public:
     class iterator {
     public:
 
+        iterator & operator = (const iterator & src) { 
+            set = src.set; 
+            irange = src.irange;
+            ichar = src.ichar;
+            return *this;
+        }
         iterator & operator ++ (int) {
-            assert(irange < set._ranges.size());
-            if (++ichar >= set._ranges[irange].num_chars) {
+            assert(irange < set->_ranges.size());
+            if (++ichar >= set->_ranges[irange].num_chars) {
                 irange ++;
                 ichar = 0; 
             }
             return *this;
         }
         unicode_t operator * () {
-            assert(irange < set._ranges.size());
-            assert(ichar < set._ranges[irange].num_chars);
-            return set._ranges[irange].first + ichar;
+            assert(irange < set->_ranges.size());
+            assert(ichar < set->_ranges[irange].num_chars);
+            return set->_ranges[irange].first + ichar;
         }
 
         bool operator == (const iterator &other) const {
@@ -45,11 +51,11 @@ public:
 
     private:
         iterator(const CharacterSet &set_, unsigned irange_, unsigned ichar_)
-            : set(set_), irange(irange_), ichar(ichar_) {}
+            : set(&set_), irange(irange_), ichar(ichar_) {}
         iterator(const CharacterSet &set_)
-            : set(set_), irange(set_._ranges.size()), ichar(0) {}
+            : set(&set_), irange(set_._ranges.size()), ichar(0) {}
 
-        const CharacterSet & set;
+        const CharacterSet * set;
         unsigned irange, ichar;
 
         friend class CharacterSet;

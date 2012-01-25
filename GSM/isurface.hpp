@@ -6,7 +6,7 @@
 namespace gsm {
     
 class IEvent;
-class Rect;
+struct Rect;
 
 class ISurface {
 public:

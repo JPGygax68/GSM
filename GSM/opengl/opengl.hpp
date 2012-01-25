@@ -35,18 +35,18 @@ void popProjection();
     the baseline.
     Upon return, x and y contain the point where the next character would be rendered.
  */
-void renderText(int fonthandle, int &x, int &y, const unicode_t *text);
+void renderText(fonthandle_t fonthandle, int &x, int &y, const unicode_t *text);
 
 /** Determine the width and height needed by unicode text string, which can
     contain newlines.
     The dimensions returned include line spacing.
  */
-void measureText(int fonthandle, const unicode_t *text, unsigned &w, unsigned &h);
+void measureText(fonthandle_t fonthandle, const unicode_t *text, unsigned &w, unsigned &h);
 
 /** Render text, aligning it.
     This routine does not attempt to break lines that do not fit the specified width.
  */
-void renderTextAligned(int fonthandle, int &x, int &y, unsigned w, const unicode_t *text, IFont::Alignment align);
+void renderTextAligned(fonthandle_t fonthandle, int &x, int &y, unsigned w, const unicode_t *text, IFont::Alignment align);
 
 } // ns opengl
 } // ns gsm
