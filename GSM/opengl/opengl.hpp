@@ -12,6 +12,19 @@ namespace ogl {
 
 typedef void * fonthandle_t;
 
+//--- UTILITIES --------------------------------------------------------------
+
+/** Texture must already be bound when calling this method.
+    wb, hb:		bitmap width and height
+    xr, yr:		origin from top-left of rectangle within texture bitmap (in pixels)
+    wr, hr:		width and height of rectangle within texture bitmap (in pixels)
+    x, y  :     position of top-left corner on screen
+    */
+void
+texturedRectangle(unsigned wb, unsigned hb, int xr, int yr, unsigned wr, unsigned hr, int x, int y);
+
+//--- TEXT & FONTS ------------------------------------------------------------
+
 /** Prepares a Font for use in the specified Video Context.
     The function returns a handle to be specified in text rendering calls.
     TODO: distinguish between monitors to take advantage of ClearType
@@ -31,11 +44,8 @@ void popProjection();
 
 /** Renders Unicode text, which may contain line breaks (CR), but no other control
     characters.
-    The x and y parameter, upon call, specify the starting point, with y specifying
-    the baseline.
-    Upon return, x and y contain the point where the next character would be rendered.
  */
-void renderText(fonthandle_t fonthandle, int &x, int &y, const unicode_t *text);
+void renderText(fonthandle_t fonthandle, const unicode_t *text, int &dx, int &dy);
 
 /** Determine the width and height needed by unicode text string, which can
     contain newlines.
@@ -47,6 +57,10 @@ void measureText(fonthandle_t fonthandle, const unicode_t *text, unsigned &w, un
     This routine does not attempt to break lines that do not fit the specified width.
  */
 void renderTextAligned(fonthandle_t fonthandle, int &x, int &y, unsigned w, const unicode_t *text, IFont::Alignment align);
+
+//--- DEBUG -------------------------------------------------------------------
+
+bool dbg_getFontTexture(fonthandle_t fonthandle, unsigned range_index, GLuint &tex, unsigned &w, unsigned &h);
 
 } // ns opengl
 } // ns gsm

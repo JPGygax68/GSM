@@ -167,7 +167,6 @@ MSWinFont::rasterize(const CharacterSet & set, CharacterSet::iterator & it, unsi
             if ((h + gm.height()) > max_edge) {
                 // Stop here (finishing off the current row)
                 if (w > wmax) wmax = w;
-                h += hrmax;
                 break;
             }
             // Adapt row height if too low
@@ -176,6 +175,7 @@ MSWinFont::rasterize(const CharacterSet & set, CharacterSet::iterator & it, unsi
         }
     }
     if (w > wmax) wmax = w;
+    h += hrmax;
 
     // Allocate and select the bitmap
     w = next_pow2(wmax);

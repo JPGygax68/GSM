@@ -6,6 +6,7 @@
 #include "../../util/oglhelper.hpp"
 #include "../../ibitmap.hpp"
 #include "../../opengl/opengl.hpp"
+#include "../../gfxtypes.hpp"
 
 namespace gsm {
 
@@ -16,6 +17,8 @@ namespace ogl {
 struct FontBinding {
     CharacterSet char_set;
     std::vector<int> list_bases;    // one Display List base per Character Range
+    std::vector<GLuint> textures;
+    std::vector<Extents> tex_sizes;
 };
 
 typedef std::map<IFont*, FontBinding*> fonts_t;
@@ -32,29 +35,6 @@ static GLdouble
 pixelToTexturePos(unsigned size, int pos) 
 { 
     return ((GLdouble)pos / (GLdouble)size);
-}
-
-/** Texture must already be bound when calling this method.
-    wb, hb:		bitmap width and height
-    xr, yr:		top-left origin of rectangle within texture bitmap (in pixels)
-    wr, hr:		width and height of rectangle within texture bitmap (in pixels)
-    x, y  :     position of top-left corner on screen
-    */
-static void
-texturedRectangle(unsigned wb, unsigned hb, int xr, int yr, unsigned wr, unsigned hr, int x, int y)
-{
-	//GLdouble wtex = pixel_to_texture_pos(wb, 1);
-	//GLdouble htex = pixel_to_texture_pos(hb, 1);
-	GLdouble x1t = pixelToTexturePos(wb, xr);
-	GLdouble y1t = pixelToTexturePos(hb, yr);
-	GLdouble x2t = pixelToTexturePos(wb, xr + wr);
-	GLdouble y2t = pixelToTexturePos(hb, yr + hr);
-	OGL(glBegin, (GL_QUADS) );
-		glTexCoord2d(x1t, y1t); glVertex2i(   x, y   );
-		glTexCoord2d(x1t, y2t); glVertex2i(   x, y+hr);
-		glTexCoord2d(x2t, y2t); glVertex2i(x+wr, y+hr);
-		glTexCoord2d(x2t, y1t); glVertex2i(x+wr, y   );
-	OGLI(glEnd, ());
 }
 
 static fonts_t *
@@ -78,7 +58,8 @@ bindFont(IFont *font, const CharacterSet *charset_)
 
     FontBinding *binding = new FontBinding();
 
-    for (CharacterSet::iterator it = charset.begin(); it != charset.end(); ) {
+    for (CharacterSet::iterator it = charset.begin(); it != charset.end(); )
+    {
         // Rasterize
         IFont::Rasterization rast = font->rasterize(charset, it);
         // Some preparation
@@ -104,10 +85,10 @@ bindFont(IFont *font, const CharacterSet *charset_)
             // Create a Display List for each character in the range
             for (unsigned ic = 0; ic < range.num_chars; ic ++) {
                 OGL(glBindTexture, (GL_TEXTURE_2D, texture) );
-                IFont::GlyphBox &gb = rast.glyph_boxes[ir];
+                IFont::GlyphBox &gb = rast.glyph_boxes[ic];
                 GLuint list = binding->list_bases[ir] + ic;
                 OGL(glNewList, (list, GL_COMPILE));
-                // Leave gap to the left, adjust for ascender
+                OGL(glBindTexture, (GL_TEXTURE_2D, texture));
                 OGL(glPushMatrix, ());
                 // Render the bmpglyph (into the Display List)
                 if (gb.width() > 0 && gb.height() > 0) {
@@ -116,13 +97,16 @@ bindFont(IFont *font, const CharacterSet *charset_)
                     texturedRectangle(bmp->width(), bmp->height(), xtex, ytex, wtex, htex, gb.xMin, gb.yMin);
                 }
                 OGL(glPopMatrix, ());
+                OGL(glBindTexture, (GL_TEXTURE_2D, 0));
                 // Advance to start position of next character
                 OGL(glTranslatef, ((GLfloat)gb.adv_w, (GLfloat)gb.adv_h, 0) );
                 //glRasterPos2i(0, 0); // update raster pos
                 OGL(glEndList, ());
             }
-            // Add range to binding's character set
+            // Add range to binding's character set (+debug info)
             binding->char_set.add(range);
+            binding->textures.push_back(texture);
+            binding->tex_sizes.push_back(Extents(bmp->width(), bmp->height()));
         }
         // Done with this bitmap
         delete rast.bitmap;
@@ -133,6 +117,23 @@ bindFont(IFont *font, const CharacterSet *charset_)
 }
 
 //--- PUBLIC ROUTINE IMPLEMENTATIONS ------------------------------------------
+
+void
+texturedRectangle(unsigned wb, unsigned hb, int xr, int yr, unsigned wr, unsigned hr, int x, int y)
+{
+	//GLdouble wtex = pixel_to_texture_pos(wb, 1);
+	//GLdouble htex = pixel_to_texture_pos(hb, 1);
+	GLdouble x1t = pixelToTexturePos(wb, xr);
+	GLdouble y1t = 1 - pixelToTexturePos(hb, yr);
+	GLdouble x2t = pixelToTexturePos(wb, xr + wr);
+	GLdouble y2t = 1 - pixelToTexturePos(hb, yr + hr);
+	OGL(glBegin, (GL_QUADS) );
+		glTexCoord2d(x1t, y1t); glVertex2i(   x, y   );
+		glTexCoord2d(x1t, y2t); glVertex2i(   x, y+hr);
+		glTexCoord2d(x2t, y2t); glVertex2i(x+wr, y+hr);
+		glTexCoord2d(x2t, y1t); glVertex2i(x+wr, y   );
+	OGLI(glEnd, ());
+}
 
 // TODO: Character Set
 
@@ -160,7 +161,7 @@ releaseFont(IFont *font, int vidCtxID)
 }
 
 void
-renderText(fonthandle_t fonthandle, int &x, int &y, const unicode_t *text)
+renderText(fonthandle_t fonthandle, const unicode_t *text, int &dx, int &dy)
 {
     FontBinding &binding = *static_cast<FontBinding*>(fonthandle);
 
@@ -181,6 +182,23 @@ renderText(fonthandle_t fonthandle, int &x, int &y, const unicode_t *text)
             }
         }
     }
+}
+
+//--- DEBUG -------------------------------------------------------------------
+
+bool
+dbg_getFontTexture(fonthandle_t fonthandle, unsigned range_index, GLuint &tex, unsigned &w, unsigned &h)
+{
+    FontBinding &binding = *static_cast<FontBinding*>(fonthandle);
+
+    if (range_index < binding.char_set.ranges().size()) {
+        tex = binding.textures[range_index];
+        w = binding.tex_sizes[range_index].w;
+        h = binding.tex_sizes[range_index].h;
+        return true;
+    }
+
+    return false;
 }
 
 } // ns ogl

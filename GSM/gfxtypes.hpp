@@ -21,6 +21,8 @@ struct BoundingBox {
 
 struct Extents {
     unsigned w, h;
+    Extents(unsigned w_, unsigned h_): w(w_), h(h_) {}
+    Extents(): w(0), h(0) {}
 };
 
 struct Rect {

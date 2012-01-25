@@ -23,12 +23,18 @@ public:
     virtual void
     onInit() {
         using namespace gsm;
-        glClearColor(0.2f, 0.5f, 1, 1);
-        myFont = fontProvider()->getFont(IFont::ANY, "Arial", 16);
+        OGL(glClearColor, (0.2f, 0.5f, 1, 1));
+        OGL(glEnable, (GL_TEXTURE_2D));
+        OGL(glTexEnvi, (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE));
+        OGL(glEnable, (GL_BLEND));
+        OGL(glBlendFunc, (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) );
+        OGL(glEnable, (GL_CULL_FACE));
+        myFont = fontProvider()->getFont(IFont::ANY, "Arial", 24);
     }
 
     virtual void
     onResize(int w, int h) {
+        if (closed) return;
         OGL(glViewport, (0, 0, w, h));
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
@@ -79,23 +85,34 @@ private:
 
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
+        OGL(glMatrixMode, (GL_MODELVIEW));
+        OGL(glLoadIdentity, ());
 
         glTranslatef(100, 100, 0);
 
+        glDisable(GL_TEXTURE_2D);
         glColor3f(1.0f,1.0f,1.0f);
         glBegin(GL_QUADS);
             glVertex3f(   0,   0,   0);
-            glVertex3f( 200,   0,   0);
-            glVertex3f( 200, 100,   0);
             glVertex3f(   0, 100,   0);
+            glVertex3f( 200, 100,   0);
+            glVertex3f( 200,   0,   0);
         OGL(glEnd, ());
+        glEnable(GL_TEXTURE_2D);
 
         glLoadIdentity();
+        glTranslatef(100, 250, 0);
         ogl::fonthandle_t fh = ogl::prepareFont(myFont, 1);
-        int x = 100, y = 50;
-        ogl::renderText(fh, x, y, L"Hello World!");
+        int dx, dy;
+        ogl::renderText(fh, L"Hello World!", dx, dy);
+
+        glLoadIdentity();
+        glTranslatef(100, 300, 0);
+        GLuint tex;
+        unsigned w, h;
+        ogl::dbg_getFontTexture(fh, 0, tex, w, h);
+        OGL(glBindTexture, (GL_TEXTURE_2D, tex) );
+        ogl::texturedRectangle(w, h, 0, 0, w, h, 0, 0);
     }
 
     gsm::ISurface *surf;
