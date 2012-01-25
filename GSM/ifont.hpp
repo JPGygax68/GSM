@@ -48,7 +48,6 @@ namespace gsm {
             IBitmap                 *bitmap;            // 256 levels of gray
             CharacterSet            character_set;      // characters on bitmap
             std::vector<GlyphBox>   glyph_boxes;        // One per character in set
-            Rasterization(IBitmap *bmp): bitmap(bmp) {}
         };
 
         enum RasterizeOption { POWER_OF_TWO };

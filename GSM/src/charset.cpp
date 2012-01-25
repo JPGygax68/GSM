@@ -7,6 +7,7 @@ CharacterSet::LATIN1()
 {
     static CharacterSet charset;
 
+    charset.add(' ');
     charset.addRange(0x21, 0x7E);
     charset.addRange(0xA1, 0xFF);
 

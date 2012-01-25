@@ -13,7 +13,7 @@ MSWinFontProvider::getFont(IFont::Type type, const std::string &name, size_t hei
         hfont = GetStockObject(ANSI_VAR_FONT);
     }
     else {
-        //if (height == 0) height = 16; // TODO: use constant
+        if (height == 0) height = 16; // TODO: use constant
         LOGFONT lf;
         lf.lfHeight = height;
         lf.lfWidth = 0;
@@ -26,8 +26,7 @@ MSWinFontProvider::getFont(IFont::Type type, const std::string &name, size_t hei
         lf.lfCharSet = ANSI_CHARSET;
         lf.lfOutPrecision = OUT_DEFAULT_PRECIS;
         lf.lfClipPrecision = CLIP_DEFAULT_PRECIS;
-        lf.lfQuality = ANTIALIASED_QUALITY;  // height <= 18 ? ANTIALIASED_QUALITY : PROOF_QUALITY;
-        lf.lfQuality = PROOF_QUALITY; //height <= 18 ? // TODO: use constant
+        lf.lfQuality = height <= 18 ? NONANTIALIASED_QUALITY : PROOF_QUALITY;
         switch (type) {
             case IFont::DECORATIVE:	lf.lfPitchAndFamily = FF_DECORATIVE; break;
             case IFont::MODERN:		lf.lfPitchAndFamily = FF_MODERN; break;

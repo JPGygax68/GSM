@@ -29,7 +29,7 @@ public:
         OGL(glEnable, (GL_BLEND));
         OGL(glBlendFunc, (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) );
         OGL(glEnable, (GL_CULL_FACE));
-        myFont = fontProvider()->getFont(IFont::ANY, "Arial", 48);
+        myFont = fontProvider()->getFont(IFont::ANY, "Arial", 16);
     }
 
     virtual void
