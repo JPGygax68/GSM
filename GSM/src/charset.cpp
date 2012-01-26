@@ -33,7 +33,7 @@ CharacterSet::add(unicode_t first, unsigned num_chars)
                 // Merge with collating next ranges
                 collapse_from(it);
             }
-            else {
+            else if (first < range.first) {
                 range.num_chars += (range.first - first);
                 range.first = first;
             }
