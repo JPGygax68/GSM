@@ -18,7 +18,7 @@ namespace gsm {
     class IFont {
     public:
 
-        static const unsigned DEFAULT_MAX_BITMAP_SIZE = 512;
+        static const unsigned DEFAULT_MAX_BITMAP_SIZE = 1024;
 
         enum Type { ANY = 0, SYSTEM, DECORATIVE, MODERN, ROMAN, SCRIPT, SWISS };
 

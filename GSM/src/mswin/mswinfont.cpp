@@ -54,8 +54,8 @@ protected:
         bih.biBitCount = bits;
         bih.biCompression = BI_RGB;
         bih.biSizeImage = 0; // auto
-        bih.biXPelsPerMeter = 96 * 254;
-        bih.biYPelsPerMeter = 96 * 254;
+        bih.biXPelsPerMeter = 0; //96 * 254;
+        bih.biYPelsPerMeter = 0; //96 * 254;
         bih.biClrUsed = 0;
         bih.biClrImportant = 0;
     }
@@ -147,9 +147,9 @@ MSWinFont::MSWinFont(MSWinFontProvider *prov, HGDIOBJ hfont_)
     : provider(prov), hfont(hfont_)
 {
     // Create a dummy bitmap (1x1 pixels) and a DC for it
-    hbmp = CreateBitmap(1, 1, 1, 24, NULL);
+    GDIBitmap bmp(1, 1, 24);
     hdc = CreateCompatibleDC(NULL);
-    HGDIOBJ hPrevBmp = SelectObject(hdc, hbmp); // discarding previous bitmap (if any)
+    HGDIOBJ hPrevBmp = SelectObject(hdc, bmp.handle()); // discarding previous bitmap (if any)
     SelectObject(hdc, hfont);
     SetMapMode(hdc, MM_TEXT);
     SetTextColor(hdc, RGB(255, 255, 255) );
@@ -210,8 +210,7 @@ MSWinFont::rasterize(const CharacterSet & set, CharacterSet::iterator & it, unsi
             }
             // Glyph does not fit vertically ? 
             if ((h + gm.height()) > max_edge) {
-                // Stop here (finishing off the current row)
-                if (w > wmax) wmax = w;
+                // Stop here
                 break;
             }
             // Adapt row height if too low
@@ -243,7 +242,7 @@ MSWinFont::rasterize(const CharacterSet & set, CharacterSet::iterator & it, unsi
             // Get the glyph's metrics
             if (tt) getGlyphMetricsTT(hdc, metrics, ch, gm); else getGlyphMetricsNonTT(hdc, metrics, ch, gm);
             // Doesn't fit on the current row?
-            if ((x + gm.width()) > w) {
+            if ((x + gm.width()) > max_edge) {
                 // Begin a new row
                 x = 0;
                 y += hrmax;
