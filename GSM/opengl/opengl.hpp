@@ -53,7 +53,7 @@ void renderText(fonthandle_t fonthandle, const unicode_t *text);
 
 /** Determine the width of a line of text.
  */
-void measureText(fonthandle_t fonthandle, const unicode_t *text, int interline, size_t len, BoundingBox &bbox);
+void measureText(fonthandle_t fonthandle, const unicode_t *text, size_t len, int interline, BoundingBox &bbox);
 
 /** Render text, aligning it.
     This routine does not attempt to break lines that do not fit the specified width.

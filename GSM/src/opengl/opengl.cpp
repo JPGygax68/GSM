@@ -153,7 +153,7 @@ traverseText(fonthandle_t fonthandle, const unicode_t *text, size_t len, int int
             if ((ch == 13 && prevch != 10) || (ch == 10 && prevch != 13)) {
                 int ddx = -dx;
                 int ddy = max((signed)bind.ascent + interline, (signed)bind.descent + interline);
-                glTranslatef((GLfloat)ddx, (GLfloat)ddy, 0);
+                if (draw) glTranslatef((GLfloat)ddx, (GLfloat)ddy, 0);
                 dy += ddy;
                 dx = x;
             }
@@ -167,11 +167,11 @@ traverseText(fonthandle_t fonthandle, const unicode_t *text, size_t len, int int
                 int xmin = dx + gm.xMin;
                 int xmax = dx + gm.xMax;
                 if (xmin < bbox.xMin) bbox.xMin = xmin;
-                if (xmax < bbox.xMax) bbox.xMin = xmin;
+                if (xmax > bbox.xMax) bbox.xMax = xmax;
                 int ymin = dy + gm.yMin;
                 int ymax = dy + gm.yMax;
                 if (ymin < bbox.yMin) bbox.yMin = ymin;
-                if (ymax < bbox.yMax) bbox.yMin = ymin;
+                if (ymax > bbox.yMax) bbox.yMax = ymax;
             }
             // Draw (if asked for)
             if (draw) {
