@@ -58,6 +58,8 @@ void measureText(fonthandle_t fonthandle, const unicode_t *text, unsigned &w, un
  */
 void renderTextAligned(fonthandle_t fonthandle, int &x, int &y, unsigned w, const unicode_t *text, IFont::Alignment align);
 
+int calcLeading(fonthandle_t font1, fonthandle_t font2 = NULL, unsigned lineSpacing = 0);
+
 //--- DEBUG -------------------------------------------------------------------
 
 bool dbg_getFontTexture(fonthandle_t fonthandle, unsigned range_index, GLuint &tex, unsigned &w, unsigned &h);

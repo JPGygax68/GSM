@@ -59,19 +59,19 @@ bindFont(IFont *font, const CharacterSet *charset_)
 {
     const CharacterSet & charset = charset_ ? *charset_ : CharacterSet::LATIN1();
 
-    FontBinding *binding = new FontBinding();
-    binding->font = font;
+    FontBinding *bind = new FontBinding();
+    bind->font = font;
 
     // Measure ascent and descent
     // TODO: make dependent on character set ?
     // TODO: move to Font/Font Provider ?
-    binding->ascent = binding->descent = 0;
+    bind->ascent = bind->descent = 0;
     for (const unicode_t *p = L"gM"; *p != 0; p++) {
         IFont::GlyphMetrics gm;
         font->getGlyphMetrics(*p, gm);
         // Update ascent & descent
-        if ((-gm.yMin) > (signed)binding->ascent) binding->ascent = (unsigned) (-gm.yMin);
-        if (gm.yMax > (signed)binding->descent) binding->descent = (unsigned) (gm.yMax);
+        if ((-gm.yMin) > (signed)bind->ascent) bind->ascent = (unsigned) (-gm.yMin);
+        if (gm.yMax > (signed)bind->descent) bind->descent = (unsigned) (gm.yMax);
     }
 
     // Convert each character in the character set into a Display List
@@ -81,9 +81,9 @@ bindFont(IFont *font, const CharacterSet *charset_)
         IFont::Rasterization rast = font->rasterize(charset, it);
         // Some preparation
         IBitmap *bmp = rast.bitmap;
-        binding->list_bases.reserve(rast.character_set.ranges().size());
-        binding->textures.reserve(rast.character_set.ranges().size());
-        binding->tex_sizes.reserve(rast.character_set.ranges().size());
+        bind->list_bases.reserve(rast.character_set.ranges().size());
+        bind->textures.reserve(rast.character_set.ranges().size());
+        bind->tex_sizes.reserve(rast.character_set.ranges().size());
         // Create alpha texture from rasterized bitmap
         GLuint texture;
         OGL(glGenTextures, (1, &texture) );
@@ -120,18 +120,18 @@ bindFont(IFont *font, const CharacterSet *charset_)
                 //glRasterPos2i(0, 0); // update raster pos
                 OGL(glEndList, ());
             }
-            // Add range to binding's character set (+debug info)
-            binding->char_set.add(range);
-            binding->list_bases.push_back(lists_base);
-            binding->textures.push_back(texture);
-            binding->tex_sizes.push_back(Extents(bmp->width(), bmp->height()));
+            // Add range to bind's character set (+debug info)
+            bind->char_set.add(range);
+            bind->list_bases.push_back(lists_base);
+            bind->textures.push_back(texture);
+            bind->tex_sizes.push_back(Extents(bmp->width(), bmp->height()));
         }
         // Done with this bitmap
         delete rast.bitmap;
         rast.bitmap = NULL;
     }
 
-    return binding;
+    return bind;
 }
 
 //--- PUBLIC ROUTINE IMPLEMENTATIONS ------------------------------------------
@@ -166,10 +166,10 @@ prepareFont(IFont *font, int vidCtxID)
     if (it != fonts->end()) return it->second;
 
     // No, so we need to "bind" the Font now, and enter it into the list
-    FontBinding *binding = bindFont(font, NULL);
-    fonts->insert( fonts_t::value_type(font, binding) );
+    FontBinding *bind = bindFont(font, NULL);
+    fonts->insert( fonts_t::value_type(font, bind) );
 
-    return binding;
+    return bind;
 }
 
 void
@@ -181,7 +181,7 @@ releaseFont(IFont *font, int vidCtxID)
 void
 renderText(fonthandle_t fonthandle, const unicode_t *text, int &dx, int &dy)
 {
-    FontBinding &binding = *static_cast<FontBinding*>(fonthandle);
+    FontBinding &bind = *static_cast<FontBinding*>(fonthandle);
 
     // Render character after character
     dx = 0, dy = 0;
@@ -191,28 +191,28 @@ renderText(fonthandle_t fonthandle, const unicode_t *text, int &dx, int &dy)
         // Control character ?
         if ((ch == 13 && prevch != 10)  || (ch == 10 && prevch != 13)) {
             int ddx = -dx;
-            int ddy = max(binding.ascent, binding.descent);
+            int ddy = max(bind.ascent, bind.descent);
             glTranslatef((GLfloat)ddx, (GLfloat)ddy, 0);
             dy += ddy;
             dx = 0;
         }
         else {
             // Find the character within the bound font
-            CharacterSet &cs = binding.char_set;
+            CharacterSet &cs = bind.char_set;
             // Traverse all ranges
             for (unsigned ir = 0; ir < cs.ranges().size(); ir ++) {
                 CharacterSet::Range &rn = cs.ranges()[ir];
                 // Character is within this Range ?
                 if (ch >= rn.first && ch < (rn.first + rn.num_chars)) {
                     // Compute Display List ID
-                    GLuint dl = binding.list_bases[ir] + (ch - rn.first);
+                    GLuint dl = bind.list_bases[ir] + (ch - rn.first);
                     // Play the Display List
                     OGL(glCallList, (dl));
                 }
             }
             // Advance
             IFont::GlyphMetrics gm;
-            binding.font->getGlyphMetrics(ch, gm);
+            bind.font->getGlyphMetrics(ch, gm);
             dx += gm.adv_w;
             // Misc
 
@@ -220,17 +220,27 @@ renderText(fonthandle_t fonthandle, const unicode_t *text, int &dx, int &dy)
     }
 }
 
+// TODO: move implementation to non-OpenGL utility module
+int
+calcLeading(fonthandle_t fh1, fonthandle_t fh2, unsigned lineSpacing)
+{
+    FontBinding &bind1 = *static_cast<FontBinding*>(fh1);
+    FontBinding &bind2 = *static_cast<FontBinding*>(fh2 != NULL ? fh2 : fh1);
+    
+    return bind1.descent + lineSpacing + bind2.ascent;
+}
+
 //--- DEBUG -------------------------------------------------------------------
 
 bool
 dbg_getFontTexture(fonthandle_t fonthandle, unsigned range_index, GLuint &tex, unsigned &w, unsigned &h)
 {
-    FontBinding &binding = *static_cast<FontBinding*>(fonthandle);
+    FontBinding &bind = *static_cast<FontBinding*>(fonthandle);
 
-    if (range_index < binding.char_set.ranges().size()) {
-        tex = binding.textures[range_index];
-        w = binding.tex_sizes[range_index].w;
-        h = binding.tex_sizes[range_index].h;
+    if (range_index < bind.char_set.ranges().size()) {
+        tex = bind.textures[range_index];
+        w = bind.tex_sizes[range_index].w;
+        h = bind.tex_sizes[range_index].h;
         return true;
     }
 
