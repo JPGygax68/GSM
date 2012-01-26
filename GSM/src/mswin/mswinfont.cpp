@@ -268,6 +268,7 @@ MSWinFont::rasterize(const CharacterSet & set, CharacterSet::iterator & it, unsi
     max_edge = max_edge > 0 ? max_edge : DEFAULT_MAX_BITMAP_SIZE;
 
     // Find out how many character glyphs will fit onto a single bitmap
+    // TODO: limit height too!
     bool tt = (metrics.tmPitchAndFamily & TMPF_TRUETYPE) != 0;
     unsigned w = 0, wmax = 0;
     unsigned h = 0, hrmax = 0;
@@ -331,7 +332,7 @@ MSWinFont::rasterize(const CharacterSet & set, CharacterSet::iterator & it, unsi
                 hrmax = 0;
             }
             // Render the glyph at the appropriate spot
-            if (! TextOutW(hdc, x - gm.xMin, y - gm.yMin, &ch, 1) )
+            if (! TextOutW(hdc, (int)x - gm.xMin, (int)y - gm.yMin, &ch, 1) )
                 throw EMSWinError(GetLastError(), "TextOutW");
             // Make sure row will be high enough for highest glyph in it
             if (gm.height() > hrmax) hrmax = gm.height();

@@ -6,10 +6,14 @@ const CharacterSet &
 CharacterSet::LATIN1()
 {
     static CharacterSet charset;
+    static bool init_done = false;
 
-    charset.add(' ');
-    charset.addRange(0x21, 0x7E);
-    charset.addRange(0xA1, 0xFF);
+    if (!init_done) {
+        charset.add(' ');
+        charset.addRange(0x21, 0x7E);
+        charset.addRange(0xA1, 0xFF);
+        init_done = true;
+    }
 
     return charset;
 }

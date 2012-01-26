@@ -2,6 +2,8 @@
 #include "mswinfont.hpp"
 #include "mswinfontprov.hpp"
 
+// TODO: caching!
+
 namespace gsm {
 
 IFont *

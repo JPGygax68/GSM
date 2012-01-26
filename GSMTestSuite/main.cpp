@@ -113,6 +113,11 @@ private:
         GLuint tex;
         unsigned w, h;
         ogl::dbg_getFontTexture(fh, 0, tex, w, h);
+        glDisable(GL_TEXTURE_2D);
+        glColor3f(1.0f,0.4f,0.3f);
+        ogl::texturedRectangle(w, h, 0, 0, w, h, 0, 0);
+        OGL(glEnable, (GL_TEXTURE_2D));
+        OGL(glColor3f, (1.0f,1.0f,1.0f));
         OGL(glBindTexture, (GL_TEXTURE_2D, tex) );
         ogl::texturedRectangle(w, h, 0, 0, w, h, 0, 0);
     }
