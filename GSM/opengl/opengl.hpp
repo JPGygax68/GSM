@@ -47,16 +47,14 @@ void popProjection();
  */
 void renderText(fonthandle_t fonthandle, const unicode_t *text, int &dx, int &dy);
 
-/** Determine the width and height needed by unicode text string, which can
-    contain newlines.
-    The dimensions returned include line spacing.
+/** Determine the width of a line of text.
  */
-void measureText(fonthandle_t fonthandle, const unicode_t *text, unsigned &w, unsigned &h);
+void measureText(fonthandle_t fonthandle, const unicode_t *text, size_t len, BoundingBox &bbox);
 
 /** Render text, aligning it.
     This routine does not attempt to break lines that do not fit the specified width.
  */
-void renderTextAligned(fonthandle_t fonthandle, int &x, int &y, unsigned w, const unicode_t *text, IFont::Alignment align);
+void renderTextAligned(fonthandle_t fonthandle, const unicode_t *text, IFont::Alignment align, unsigned w, int &x, int &y);
 
 int calcLeading(fonthandle_t font1, fonthandle_t font2 = NULL, unsigned lineSpacing = 0);
 

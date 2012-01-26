@@ -134,6 +134,64 @@ bindFont(IFont *font, const CharacterSet *charset_)
     return bind;
 }
 
+static void
+traverseText(fonthandle_t fonthandle, const unicode_t *text, size_t len, BoundingBox &bbox, int &dx, int &dy, bool measure, bool draw)
+{
+    FontBinding &bind = *static_cast<FontBinding*>(fonthandle);
+
+    dx = 0, dy = 0;
+    bbox.xMin = bbox.yMin = INT_MAX;
+    bbox.xMax = bbox.yMax = INT_MIN;
+    unicode_t prevch = 0;
+
+    for (unsigned i = 0; len == 0 && text[i] != 0 || len > 0 && i < len; i ++) 
+    {
+        unicode_t ch = text[i];
+        // Control character ?
+        if ((ch == 13 && prevch != 10)  || (ch == 10 && prevch != 13)) {
+            int ddx = -dx;
+            int ddy = max((signed)bind.ascent, (signed)bind.descent);
+            glTranslatef((GLfloat)ddx, (GLfloat)ddy, 0);
+            dy += ddy;
+            dx = 0;
+        }
+        else {
+            // Get glyph measurements
+            IFont::GlyphMetrics gm;
+            bind.font->getGlyphMetrics(ch, gm);
+            // Update text field bounding box (if asked for)
+            if (measure) {
+                int xmin = dx + gm.xMin;
+                int xmax = dx + gm.xMax;
+                if (xmin < bbox.xMin) bbox.xMin = xmin;
+                if (xmax < bbox.xMax) bbox.xMin = xmin;
+                int ymin = dy + gm.yMin;
+                int ymax = dy + gm.yMax;
+                if (ymin < bbox.yMin) bbox.yMin = ymin;
+                if (ymax < bbox.yMax) bbox.yMin = ymin;
+            }
+            // Draw (if asked for)
+            if (draw) {
+                // Find the character within the bound font
+                CharacterSet &cs = bind.char_set;
+                // Traverse all ranges
+                for (unsigned ir = 0; ir < cs.ranges().size(); ir ++) {
+                    CharacterSet::Range &rn = cs.ranges()[ir];
+                    // Character is within this Range ?
+                    if (ch >= rn.first && ch < (rn.first + rn.num_chars)) {
+                        // Compute Display List ID
+                        GLuint dl = bind.list_bases[ir] + (ch - rn.first);
+                        // Play the Display List
+                        OGL(glCallList, (dl));
+                    }
+                }
+            }
+            // Advance
+            dx += (signed) gm.adv_w;
+        }
+    }
+}
+
 //--- PUBLIC ROUTINE IMPLEMENTATIONS ------------------------------------------
 
 void
@@ -181,43 +239,20 @@ releaseFont(IFont *font, int vidCtxID)
 void
 renderText(fonthandle_t fonthandle, const unicode_t *text, int &dx, int &dy)
 {
-    FontBinding &bind = *static_cast<FontBinding*>(fonthandle);
+    BoundingBox bbox;
+    traverseText(fonthandle, text, 0, bbox, dx, dy, false, true);
+}
 
-    // Render character after character
-    dx = 0, dy = 0;
-    unicode_t prevch = 0;
-    for (unsigned i = 0; text[i] != 0; i ++) {
-        unicode_t ch = text[i];
-        // Control character ?
-        if ((ch == 13 && prevch != 10)  || (ch == 10 && prevch != 13)) {
-            int ddx = -dx;
-            int ddy = max(bind.ascent, bind.descent);
-            glTranslatef((GLfloat)ddx, (GLfloat)ddy, 0);
-            dy += ddy;
-            dx = 0;
-        }
-        else {
-            // Find the character within the bound font
-            CharacterSet &cs = bind.char_set;
-            // Traverse all ranges
-            for (unsigned ir = 0; ir < cs.ranges().size(); ir ++) {
-                CharacterSet::Range &rn = cs.ranges()[ir];
-                // Character is within this Range ?
-                if (ch >= rn.first && ch < (rn.first + rn.num_chars)) {
-                    // Compute Display List ID
-                    GLuint dl = bind.list_bases[ir] + (ch - rn.first);
-                    // Play the Display List
-                    OGL(glCallList, (dl));
-                }
-            }
-            // Advance
-            IFont::GlyphMetrics gm;
-            bind.font->getGlyphMetrics(ch, gm);
-            dx += gm.adv_w;
-            // Misc
+void
+measureText(fonthandle_t fonthandle, const unicode_t *text, size_t len, BoundingBox &bbox)
+{
+    int dx = 0, dy = 0;
+    traverseText(fonthandle, text, len, bbox, dx, dy, true, false);
+}
 
-        }
-    }
+void
+renderTextAligned(fonthandle_t fonthandle, const unicode_t *text, IFont::Alignment align, unsigned w, int &x, int &y)
+{
 }
 
 // TODO: move implementation to non-OpenGL utility module
