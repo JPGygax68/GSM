@@ -243,10 +243,19 @@ releaseFont(IFont *font, int vidCtxID)
 }
 
 void
-renderText(fonthandle_t fonthandle, const unicode_t *text, int &dx, int &dy)
+renderText(fonthandle_t fonthandle, const unicode_t *text, int &x, int &y)
 {
     BoundingBox bbox;
+    traverseText(fonthandle, text, 0, bbox, x, y, false, true);
+}
+
+void
+renderText(fonthandle_t fonthandle, const unicode_t *text)
+{
+    int dx = 0, dy = 0;
+    BoundingBox bbox;
     traverseText(fonthandle, text, 0, bbox, dx, dy, false, true);
+    glTranslatef((GLfloat) -dx, (GLfloat) -dy, 0);
 }
 
 void

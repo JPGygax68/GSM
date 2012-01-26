@@ -47,6 +47,10 @@ void popProjection();
  */
 void renderText(fonthandle_t fonthandle, const unicode_t *text, int &dx, int &dy);
 
+/** Use this version if you do not need to track output position advances.
+ */
+void renderText(fonthandle_t fonthandle, const unicode_t *text);
+
 /** Determine the width of a line of text.
  */
 void measureText(fonthandle_t fonthandle, const unicode_t *text, size_t len, BoundingBox &bbox);
