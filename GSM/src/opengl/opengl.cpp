@@ -3,6 +3,7 @@
 #endif
 #include <GL/GL.h>
 #include <map>
+#include <cmath>
 #include "../../util/oglhelper.hpp"
 #include "../../ibitmap.hpp"
 #include "../../opengl/opengl.hpp"
@@ -15,10 +16,12 @@ namespace ogl {
 //--- PRIVATE TYPES -----------------------------------------------------------
 
 struct FontBinding {
-    CharacterSet char_set;
-    std::vector<int> list_bases;    // one Display List base per Character Range
-    std::vector<GLuint> textures;
-    std::vector<Extents> tex_sizes;
+    IFont                   *font;
+    unsigned                ascent, descent;    // ascend and descent
+    CharacterSet            char_set;
+    std::vector<int>        list_bases;         // one Display List base per Character Range (inside char_set)
+    std::vector<GLuint>     textures;
+    std::vector<Extents>    tex_sizes;
 };
 
 typedef std::map<IFont*, FontBinding*> fonts_t;
@@ -57,7 +60,21 @@ bindFont(IFont *font, const CharacterSet *charset_)
     const CharacterSet & charset = charset_ ? *charset_ : CharacterSet::LATIN1();
 
     FontBinding *binding = new FontBinding();
+    binding->font = font;
 
+    // Measure ascent and descent
+    // TODO: make dependent on character set ?
+    // TODO: move to Font/Font Provider ?
+    binding->ascent = binding->descent = 0;
+    for (const unicode_t *p = L"gM"; *p != 0; p++) {
+        IFont::GlyphMetrics gm;
+        font->getGlyphMetrics(*p, gm);
+        // Update ascent & descent
+        if ((-gm.yMin) > (signed)binding->ascent) binding->ascent = (unsigned) (-gm.yMin);
+        if (gm.yMax > (signed)binding->descent) binding->descent = (unsigned) (gm.yMax);
+    }
+
+    // Convert each character in the character set into a Display List
     for (CharacterSet::iterator it = charset.begin(); it != charset.end(); )
     {
         // Rasterize
@@ -122,18 +139,18 @@ bindFont(IFont *font, const CharacterSet *charset_)
 void
 texturedRectangle(unsigned wb, unsigned hb, int xr, int yr, unsigned wr, unsigned hr, int x, int y)
 {
-	//GLdouble wtex = pixel_to_texture_pos(wb, 1);
-	//GLdouble htex = pixel_to_texture_pos(hb, 1);
-	GLdouble x1t = pixelToTexturePos(wb, xr);
-	GLdouble y1t = 1 - pixelToTexturePos(hb, yr);
-	GLdouble x2t = pixelToTexturePos(wb, xr + wr);
-	GLdouble y2t = 1 - pixelToTexturePos(hb, yr + hr);
+    //GLdouble wtex = pixel_to_texture_pos(wb, 1);
+    //GLdouble htex = pixel_to_texture_pos(hb, 1);
+    GLdouble x1t = pixelToTexturePos(wb, xr);
+    GLdouble y1t = 1 - pixelToTexturePos(hb, yr);
+    GLdouble x2t = pixelToTexturePos(wb, xr + wr);
+    GLdouble y2t = 1 - pixelToTexturePos(hb, yr + hr);
     OGL(glBegin, (GL_QUADS) );
-		OGL(glTexCoord2d, (x1t, y1t)); OGL(glVertex2i, (   x, y   ));
-		OGL(glTexCoord2d, (x1t, y2t)); OGL(glVertex2i, (   x, y+hr));
-		OGL(glTexCoord2d, (x2t, y2t)); OGL(glVertex2i, (x+wr, y+hr));
-		OGL(glTexCoord2d, (x2t, y1t)); OGL(glVertex2i, (x+wr, y   ));
-	OGLI(glEnd, ());
+        OGL(glTexCoord2d, (x1t, y1t)); OGL(glVertex2i, (   x, y   ));
+        OGL(glTexCoord2d, (x1t, y2t)); OGL(glVertex2i, (   x, y+hr));
+        OGL(glTexCoord2d, (x2t, y2t)); OGL(glVertex2i, (x+wr, y+hr));
+        OGL(glTexCoord2d, (x2t, y1t)); OGL(glVertex2i, (x+wr, y   ));
+    OGLI(glEnd, ());
 }
 
 // TODO: Character Set
@@ -167,20 +184,38 @@ renderText(fonthandle_t fonthandle, const unicode_t *text, int &dx, int &dy)
     FontBinding &binding = *static_cast<FontBinding*>(fonthandle);
 
     // Render character after character
+    dx = 0, dy = 0;
+    unicode_t prevch = 0;
     for (unsigned i = 0; text[i] != 0; i ++) {
         unicode_t ch = text[i];
-        // Find the character within the bound font
-        CharacterSet &cs = binding.char_set;
-        // Traverse all ranges
-        for (unsigned ir = 0; ir < cs.ranges().size(); ir ++) {
-            CharacterSet::Range &rn = cs.ranges()[ir];
-            // Character is within this Range ?
-            if (ch >= rn.first && ch < (rn.first + rn.num_chars)) {
-                // Compute Display List ID
-                GLuint dl = binding.list_bases[ir] + (ch - rn.first);
-                // Play the Display List
-                OGL(glCallList, (dl));
+        // Control character ?
+        if ((ch == 13 && prevch != 10)  || (ch == 10 && prevch != 13)) {
+            int ddx = -dx;
+            int ddy = max(binding.ascent, binding.descent);
+            glTranslatef((GLfloat)ddx, (GLfloat)ddy, 0);
+            dy += ddy;
+            dx = 0;
+        }
+        else {
+            // Find the character within the bound font
+            CharacterSet &cs = binding.char_set;
+            // Traverse all ranges
+            for (unsigned ir = 0; ir < cs.ranges().size(); ir ++) {
+                CharacterSet::Range &rn = cs.ranges()[ir];
+                // Character is within this Range ?
+                if (ch >= rn.first && ch < (rn.first + rn.num_chars)) {
+                    // Compute Display List ID
+                    GLuint dl = binding.list_bases[ir] + (ch - rn.first);
+                    // Play the Display List
+                    OGL(glCallList, (dl));
+                }
             }
+            // Advance
+            IFont::GlyphMetrics gm;
+            binding.font->getGlyphMetrics(ch, gm);
+            dx += gm.adv_w;
+            // Misc
+
         }
     }
 }

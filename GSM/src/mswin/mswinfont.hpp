@@ -16,7 +16,11 @@ public:
     virtual const Rasterization rasterize(const CharacterSet & charset, CharacterSet::iterator & it, 
         unsigned max_edge, const RasterizeOptions options);
 
+    virtual void getGlyphMetrics(unicode_t ch, GlyphMetrics &gm);
+
     virtual const Extents getTextExtents(const unicode_t *text, unsigned len);
+
+    bool isTrueType() const { return (metrics.tmPitchAndFamily & TMPF_TRUETYPE) != 0; }
 
 private:
     MSWinFont(MSWinFontProvider *prov, HGDIOBJ hfont);

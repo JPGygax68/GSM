@@ -187,7 +187,6 @@ MSWinFont::rasterize(const CharacterSet & set, CharacterSet::iterator & it, unsi
 
     // Find out how many character glyphs will fit onto a single bitmap
     // TODO: limit height too!
-    bool tt = (metrics.tmPitchAndFamily & TMPF_TRUETYPE) != 0;
     unsigned w = 0, wmax = 0;
     unsigned h = 0, hrmax = 0;
     GlyphMetrics gm;
@@ -199,7 +198,7 @@ MSWinFont::rasterize(const CharacterSet & set, CharacterSet::iterator & it, unsi
         if (charset.find(ch) != charset.end())
         {
             // Get the glyph's metrics
-            if (tt) getGlyphMetricsTT(hdc, metrics, ch, gm); else getGlyphMetricsNonTT(hdc, metrics, ch, gm);
+            getGlyphMetrics(ch, gm);
             // Doesn't fit on the current row?
             if ((w + gm.width()) > max_edge) {
                 // Begin a new row
@@ -240,7 +239,7 @@ MSWinFont::rasterize(const CharacterSet & set, CharacterSet::iterator & it, unsi
         // Is there a glyph for the character ?
         if (charset.find(ch) != charset.end()) {
             // Get the glyph's metrics
-            if (tt) getGlyphMetricsTT(hdc, metrics, ch, gm); else getGlyphMetricsNonTT(hdc, metrics, ch, gm);
+            getGlyphMetrics(ch, gm);
             // Doesn't fit on the current row?
             if ((x + gm.width()) > max_edge) {
                 // Begin a new row
@@ -275,6 +274,12 @@ MSWinFont::rasterize(const CharacterSet & set, CharacterSet::iterator & it, unsi
 
     it = itm;
     return rast;
+}
+
+void
+MSWinFont::getGlyphMetrics(unicode_t ch, IFont::GlyphMetrics &gm)
+{
+    if (isTrueType()) getGlyphMetricsTT(hdc, metrics, ch, gm); else getGlyphMetricsNonTT(hdc, metrics, ch, gm);
 }
 
 const Extents

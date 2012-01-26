@@ -62,6 +62,8 @@ namespace gsm {
         virtual const Rasterization rasterize(const CharacterSet & charset, CharacterSet::iterator & it, 
             unsigned max_edge = 0, const RasterizeOptions options = 0) = 0;
 
+        virtual void getGlyphMetrics(unicode_t ch, GlyphMetrics &gm) = 0;
+
         virtual const Extents getTextExtents(const unicode_t *text, unsigned len) = 0;
 
     };
