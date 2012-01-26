@@ -135,11 +135,11 @@ bindFont(IFont *font, const CharacterSet *charset_)
 }
 
 static void
-traverseText(fonthandle_t fonthandle, const unicode_t *text, size_t len, BoundingBox &bbox, int &dx, int &dy, bool measure, bool draw)
+traverseText(fonthandle_t fonthandle, const unicode_t *text, size_t len, BoundingBox &bbox, int &x, int &y, bool measure, bool draw)
 {
     FontBinding &bind = *static_cast<FontBinding*>(fonthandle);
 
-    dx = 0, dy = 0;
+    int dx = 0, dy = 0;
     bbox.xMin = bbox.yMin = INT_MAX;
     bbox.xMax = bbox.yMax = INT_MIN;
     unicode_t prevch = 0;
@@ -148,12 +148,15 @@ traverseText(fonthandle_t fonthandle, const unicode_t *text, size_t len, Boundin
     {
         unicode_t ch = text[i];
         // Control character ?
-        if ((ch == 13 && prevch != 10)  || (ch == 10 && prevch != 13)) {
-            int ddx = -dx;
-            int ddy = max((signed)bind.ascent, (signed)bind.descent);
-            glTranslatef((GLfloat)ddx, (GLfloat)ddy, 0);
-            dy += ddy;
-            dx = 0;
+        if (ch == 13 || ch == 10) 
+        {
+            if ((ch == 13 && prevch != 10) || (ch == 10 && prevch != 13)) {
+                int ddx = -dx;
+                int ddy = max((signed)bind.ascent, (signed)bind.descent);
+                glTranslatef((GLfloat)ddx, (GLfloat)ddy, 0);
+                dy += ddy;
+                dx = x;
+            }
         }
         else {
             // Get glyph measurements
@@ -190,6 +193,9 @@ traverseText(fonthandle_t fonthandle, const unicode_t *text, size_t len, Boundin
             dx += (signed) gm.adv_w;
         }
     }
+
+    x += dx;
+    y += dy;
 }
 
 //--- PUBLIC ROUTINE IMPLEMENTATIONS ------------------------------------------
@@ -251,8 +257,60 @@ measureText(fonthandle_t fonthandle, const unicode_t *text, size_t len, Bounding
 }
 
 void
-renderTextAligned(fonthandle_t fonthandle, const unicode_t *text, IFont::Alignment align, unsigned w, int &x, int &y)
+renderTextAligned(fonthandle_t fonthandle, const unicode_t *text, size_t len, IFont::Alignment align, int interline, unsigned w, int &y)
 {
+    FontBinding &bind = *static_cast<FontBinding*>(fonthandle);
+
+    unicode_t prevch = 0;
+    unsigned istart = 0;
+    int x = 0, xmin = INT_MAX, xmax = INT_MIN;
+
+    for (unsigned i = 0; ; i ++) 
+    {
+        // End of text ?
+        bool eot = (len == 0 && text[i] == 0) || (len > 0 && i == len);
+
+        // Line complete ?
+        if (eot || (text[i] == 13 || text[i] == 10))
+        {
+            if (eot || ((text[i] == 13 && prevch != 10) || (text[i] == 10 && prevch != 13)))
+            {
+                // Alignment
+                int dx;
+                int wl = xmax - xmin;
+                if (align == IFont::CENTERED)
+                    dx = ((signed)w - wl) / 2;
+                else if (align == IFont::RIGHT)
+                    dx = (signed) w - wl;
+                else
+                    dx = 0;
+                glTranslatef((GLfloat) dx, 0, 0);
+                // Draw line of text
+                int dumx = 0, dumy = 0;
+                BoundingBox dumbb;
+                traverseText(fonthandle, text + istart, i - istart, dumbb, dumx, dumy, false, true);
+                int dy = (int) bind.ascent; // TODO: leading!
+                // Carriage return + linefeed (so to speak)
+                glTranslatef((GLfloat) - (dx + dumx), (GLfloat)dy, 0);
+                y += dy;
+                // Reset line width accumulation variables
+                xmin = INT_MAX, xmax = INT_MIN;
+                x = 0;
+            }
+            if (eot) break;
+            istart = i + 1;
+        }
+        else {
+            // Get glyph measurements
+            IFont::GlyphMetrics gm;
+            bind.font->getGlyphMetrics(text[i], gm);
+            if ((x + gm.xMin) < xmin) xmin = x + gm.xMin;
+            if ((x + gm.xMax) > xmax) xmax = x + gm.xMax;
+            // Advance
+            x += (signed) gm.adv_w;
+        }
+        prevch = text[i];
+    }
 }
 
 // TODO: move implementation to non-OpenGL utility module

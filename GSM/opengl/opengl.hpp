@@ -54,7 +54,7 @@ void measureText(fonthandle_t fonthandle, const unicode_t *text, size_t len, Bou
 /** Render text, aligning it.
     This routine does not attempt to break lines that do not fit the specified width.
  */
-void renderTextAligned(fonthandle_t fonthandle, const unicode_t *text, IFont::Alignment align, unsigned w, int &x, int &y);
+void renderTextAligned(fonthandle_t fonthandle, const unicode_t *text, size_t len, IFont::Alignment align, int interline, unsigned w, int &y);
 
 int calcLeading(fonthandle_t font1, fonthandle_t font2 = NULL, unsigned lineSpacing = 0);
 
