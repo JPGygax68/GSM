@@ -74,89 +74,6 @@ protected:
     HBITMAP hbmp;
 };
 
-#ifdef NOT_DEFINED
-
-class GrayscaleBitmap: public GDIBitmap {
-public:
-    GrayscaleBitmap(unsigned w, unsigned h) {
-        BITMAPINFO_8bpp bmpinfo;
-        initInfoHeader(bmpinfo.bmiHeader, sizeof(BITMAPINFO_8bpp), w, h, 8);
-        initGrayscalePalette(bmpinfo);
-        // Create the bitmap
-        hbmp = CreateDIBSection(NULL, (const BITMAPINFO*) &bmpinfo, DIB_RGB_COLORS, (void**)&pixels, NULL, 0);
-        if (hbmp == 0) throw EMSWinError(GetLastError(), "CreateDIBSection (GrayscaleBitmap)");
-    }
-
-    static GrayscaleBitmap *fromRGB(GDIBitmap &src) {
-        /*
-        typedef byte_t rgb_pixel[4];
-        typedef byte_t gray_pixel;
-        rgb_pixel *srcbits;
-        gray_pixel *destbits;
-        GetBitmapBits(src.handle(), &srcbits);
-        GetBitmapBits(hbmp, &destbits);
-        */
-
-        /*
-        BITMAPINFO_8bpp bmpinfo;
-        initInfoHeader(bmpinfo.bmiHeader, sizeof(BITMAPINFO_8bpp), src.width(), src.height(), 8);
-        //initGrayscalePalette(bmpinfo);
-        HDC hDC = CreateCompatibleDC(NULL);
-        SelectObject(hDC, src.handle());
-
-        GrayscaleBitmap *graybmp = new GrayscaleBitmap(src.width(), src.height());
-        CHECK(GetDIBits, (hDC, src.handle(), 0, src.height(), src.buffer(), (LPBITMAPINFO) &bmpinfo, DIB_RGB_COLORS));
-
-        SelectObject(hDC, graybmp->handle());
-        CHECK(SetDIBits, (hDC, graybmp->handle(), 0, src.height(), graybmp->pixels, (LPBITMAPINFO) &bmpinfo, DIB_RGB_COLORS));
-
-        CHECK(DeleteDC, (hDC));
-        */
-
-        /*
-        GrayscaleBitmap *graybmp = new GrayscaleBitmap(src.width(), src.height());
-        HDC hSrc = CreateCompatibleDC(NULL);
-        HGDIOBJ hPrevSrc = SelectObject(hSrc, src.handle());
-        HDC hDst = CreateCompatibleDC(NULL);
-        HGDIOBJ hPrevDst = SelectObject(hDst, graybmp->handle());
-
-        unsigned w = src.width(), h = src.height();
-        for (unsigned y = 0; y < h; y ++) {
-            for (unsigned x = 0; x < w; x ++) {
-                COLORREF clr = GetPixel(hSrc, x, y);
-                SetPixel(hDst, x, y, clr);
-            }
-        }
-
-        DeleteDC(hSrc);
-        DeleteDC(hDst);
-        */
-
-        //BITMAP srcbmp;
-        //GetObject(src.handle(), sizeof(BITMAP), &srcbmp);
-
-        GrayscaleBitmap *graybmp = new GrayscaleBitmap(src.width(), src.height());
-
-        typedef byte_t color_t[3];
-        const color_t *src_pixels = (const color_t*) src.data(); //srcbmp.bmBits;
-        byte_t *dst_pixels = (byte_t*) graybmp->buffer(); //srcbmp.bmBits;
-
-        unsigned w = src.width(), h = src.height();
-        for (unsigned y = 0; y < h; y ++) {
-            for (unsigned x = 0; x < w; x ++) {
-                unsigned i = y * w + x;
-                byte_t gray = (byte_t) ((unsigned) src_pixels[i][0] + (unsigned) src_pixels[i][1] + (unsigned) src_pixels[i][2]) / 3;
-                dst_pixels[i] = gray;
-            }
-        }
-
-
-        return graybmp;
-    }
-};
-
-#endif
-
 class GrayscaleBitmap: public IBitmap {
 public:
     GrayscaleBitmap(const GDIBitmap &src) {
@@ -246,6 +163,7 @@ MSWinFont::MSWinFont(MSWinFontProvider *prov, HGDIOBJ hfont_)
         throw EMSWinError(GetLastError(), "GetTextMetrics");
 
     // Get the Character Set supported by this font
+    // TODO: do we really need this ?
     DWORD size = GetFontUnicodeRanges(hdc, NULL);
     LPGLYPHSET glyphset = (LPGLYPHSET) new char[size];
     if (GetFontUnicodeRanges(hdc, glyphset) == 0)

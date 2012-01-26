@@ -85,9 +85,9 @@ bindFont(IFont *font, const CharacterSet *charset_)
             // Allocate sequence of Display List IDs for the range
             GLuint lists_base = glGenLists(range.num_chars);
             // Create a Display List for each character in the range
-            for (unsigned ic = 0; ic < range.num_chars; ic ++) {
+            for (unsigned ic = 0; ic < range.num_chars; ic ++, ig++) {
                 OGL(glBindTexture, (GL_TEXTURE_2D, texture) );
-                IFont::GlyphBox &gb = rast.glyph_boxes[ic];
+                IFont::GlyphBox &gb = rast.glyph_boxes[ig];
                 GLuint list = lists_base + ic;
                 OGL(glNewList, (list, GL_COMPILE));
                 OGL(glBindTexture, (GL_TEXTURE_2D, texture));
