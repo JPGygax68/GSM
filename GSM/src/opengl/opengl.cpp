@@ -135,7 +135,7 @@ bindFont(IFont *font, const CharacterSet *charset_)
 }
 
 static void
-traverseText(fonthandle_t fonthandle, const unicode_t *text, size_t len, BoundingBox &bbox, int &x, int &y, bool measure, bool draw)
+traverseText(fonthandle_t fonthandle, const unicode_t *text, size_t len, int interline, BoundingBox &bbox, int &x, int &y, bool measure, bool draw)
 {
     FontBinding &bind = *static_cast<FontBinding*>(fonthandle);
 
@@ -152,7 +152,7 @@ traverseText(fonthandle_t fonthandle, const unicode_t *text, size_t len, Boundin
         {
             if ((ch == 13 && prevch != 10) || (ch == 10 && prevch != 13)) {
                 int ddx = -dx;
-                int ddy = max((signed)bind.ascent, (signed)bind.descent);
+                int ddy = max((signed)bind.ascent + interline, (signed)bind.descent + interline);
                 glTranslatef((GLfloat)ddx, (GLfloat)ddy, 0);
                 dy += ddy;
                 dx = x;
@@ -246,7 +246,7 @@ void
 renderText(fonthandle_t fonthandle, const unicode_t *text, int &x, int &y)
 {
     BoundingBox bbox;
-    traverseText(fonthandle, text, 0, bbox, x, y, false, true);
+    traverseText(fonthandle, text, 0, 0, bbox, x, y, false, true);
 }
 
 void
@@ -254,15 +254,15 @@ renderText(fonthandle_t fonthandle, const unicode_t *text)
 {
     int dx = 0, dy = 0;
     BoundingBox bbox;
-    traverseText(fonthandle, text, 0, bbox, dx, dy, false, true);
+    traverseText(fonthandle, text, 0, 0, bbox, dx, dy, false, true);
     glTranslatef((GLfloat) -dx, (GLfloat) -dy, 0);
 }
 
 void
-measureText(fonthandle_t fonthandle, const unicode_t *text, size_t len, BoundingBox &bbox)
+measureText(fonthandle_t fonthandle, const unicode_t *text, size_t len, int interline, BoundingBox &bbox)
 {
     int dx = 0, dy = 0;
-    traverseText(fonthandle, text, len, bbox, dx, dy, true, false);
+    traverseText(fonthandle, text, len, interline, bbox, dx, dy, true, false);
 }
 
 void
@@ -297,8 +297,8 @@ renderTextAligned(fonthandle_t fonthandle, const unicode_t *text, size_t len, IF
                 // Draw line of text
                 int dumx = 0, dumy = 0;
                 BoundingBox dumbb;
-                traverseText(fonthandle, text + istart, i - istart, dumbb, dumx, dumy, false, true);
-                int dy = (int) bind.ascent; // TODO: leading!
+                traverseText(fonthandle, text + istart, i - istart, 0, dumbb, dumx, dumy, false, true);
+                int dy = (int) bind.ascent + interline; // TODO: leading!
                 // Carriage return + linefeed (so to speak)
                 glTranslatef((GLfloat) - (dx + dumx), (GLfloat)dy, 0);
                 y += dy;
