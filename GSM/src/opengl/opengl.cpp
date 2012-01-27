@@ -201,6 +201,19 @@ traverseText(fonthandle_t fonthandle, const unicode_t *text, size_t len, int int
 //--- PUBLIC ROUTINE IMPLEMENTATIONS ------------------------------------------
 
 void
+rectangle(unsigned wb, unsigned hb, int x , int y)
+{
+    glDisable(GL_TEXTURE_2D);
+    OGL(glBegin, (GL_QUADS) );
+        OGL(glVertex2i, (   x, y   ));
+        OGL(glVertex2i, (   x, y+hb));
+        OGL(glVertex2i, (x+wb, y+hb));
+        OGL(glVertex2i, (x+wb, y   ));
+    OGLI(glEnd, ());
+    glEnable(GL_TEXTURE_2D);
+}
+
+void
 texturedRectangle(unsigned wb, unsigned hb, int xr, int yr, unsigned wr, unsigned hr, int x, int y)
 {
     //GLdouble wtex = pixel_to_texture_pos(wb, 1);

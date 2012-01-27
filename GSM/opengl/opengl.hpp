@@ -14,6 +14,11 @@ typedef void * fonthandle_t;
 
 //--- UTILITIES --------------------------------------------------------------
 
+/** Draw a simple rectangle.
+ */
+void
+rectangle(unsigned wb, unsigned hb, int x = 0, int y = 0);
+
 /** Texture must already be bound when calling this method.
     wb, hb:		bitmap width and height
     xr, yr:		origin from top-left of rectangle within texture bitmap (in pixels)
@@ -21,7 +26,7 @@ typedef void * fonthandle_t;
     x, y  :     position of top-left corner on screen
     */
 void
-texturedRectangle(unsigned wb, unsigned hb, int xr, int yr, unsigned wr, unsigned hr, int x, int y);
+texturedRectangle(unsigned wb, unsigned hb, int xr, int yr, unsigned wr, unsigned hr, int x = 0, int y = 0);
 
 //--- TEXT & FONTS ------------------------------------------------------------
 
