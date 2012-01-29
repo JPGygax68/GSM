@@ -6,6 +6,7 @@
 #include "../../util/format.hpp"
 #include "../../idisplay.hpp"
 #include "../../igfxres.hpp"
+#include "../../iptrmovevt.hpp"
 #include "mswincanvas.hpp"
 #include "mswinerr.hpp"
 #include "mswinsurf.hpp"
@@ -25,6 +26,23 @@ struct CreateParams {
     MSWinSurface *surface;
     ISurface::Attributes surf_attribs;
     IDisplay *display;
+};
+
+class MSWinPointerMoveEvent: public IPointerMotionEvent {
+public:
+    virtual const Position position() {
+        return pos;
+    }
+
+private:
+    MSWinPointerMoveEvent(LPARAM lParam) {
+        pos.x = LOWORD(lParam);
+        pos.y = HIWORD(lParam);
+    }
+
+    Position pos;
+
+    friend LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 };
 
 //--- PRIVATE FUNCTIONS -------------------------------------------------------
@@ -106,6 +124,12 @@ WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		case SC_KEYMENU:
 			return 0;
 		}
+		break;
+	case WM_MOUSEMOVE:
+        {
+            MSWinPointerMoveEvent evt(lParam);
+            surf->display()->onPointerMotionEvent( &evt );
+        }
 		break;
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
