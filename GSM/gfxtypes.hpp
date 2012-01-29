@@ -25,6 +25,10 @@ struct Extents {
     Extents(): w(0), h(0) {}
 };
 
+struct Position { 
+    int x, y; 
+};
+
 struct Rect {
     int x, y;
     unsigned w, h;

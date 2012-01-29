@@ -45,7 +45,44 @@ private:
     friend LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 };
 
+class MSWinPointerButtonEvent: public IPointerButtonEvent {
+public:
+    enum Direction { DOWN = 1, UP = 2, DOUBLE = 3 };
+
+    virtual const Position position() { return pos; }
+
+    virtual Button button() { return btn; }
+    virtual bool pressed() { return dir == DOWN; }
+    virtual bool released() { return dir == UP; }
+    virtual bool doubleClick() { return dir == DOUBLE; }
+
+private:
+
+    MSWinPointerButtonEvent(LPARAM lParam, Button btn_, Direction dir_) {
+        pos.x = LOWORD(lParam);
+        pos.y = HIWORD(lParam);
+        btn = btn_;
+        dir = dir_;
+    }
+
+    Position pos;
+    Button btn;
+    Direction dir;
+
+    friend LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+};
+
 //--- PRIVATE FUNCTIONS -------------------------------------------------------
+
+static IPointerButtonEvent::Button
+wParamToXButton(WPARAM wParam)
+{
+    switch ( HIWORD(wParam) ) {
+        case XBUTTON1: return IPointerButtonEvent::EXTENDED_1;
+        case XBUTTON2: return IPointerButtonEvent::EXTENDED_2;
+        default: return IPointerButtonEvent::NONE;
+    }
+}
 
 LRESULT CALLBACK
 WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -130,9 +167,82 @@ WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
             MSWinPointerMoveEvent evt(lParam);
             surf->display()->onPointerMotionEvent( &evt );
         }
-		break;
-	}
-	return DefWindowProc(hWnd, msg, wParam, lParam);
+        break;
+    case WM_LBUTTONDOWN:
+        {
+            MSWinPointerButtonEvent evt(lParam, IPointerButtonEvent::LEFT, MSWinPointerButtonEvent::DOWN);
+            surf->display()->onPointerButtonEvent( &evt );
+        }
+        break;
+    case WM_LBUTTONUP:
+        {
+            MSWinPointerButtonEvent evt(lParam, IPointerButtonEvent::LEFT, MSWinPointerButtonEvent::UP);
+            surf->display()->onPointerButtonEvent( &evt );
+        }
+        break;
+    case WM_LBUTTONDBLCLK:
+        {
+            MSWinPointerButtonEvent evt(lParam, IPointerButtonEvent::LEFT, MSWinPointerButtonEvent::DOUBLE);
+            surf->display()->onPointerButtonEvent( &evt );
+        }
+        break;
+    case WM_RBUTTONDOWN:
+        {
+            MSWinPointerButtonEvent evt(lParam, IPointerButtonEvent::RIGHT, MSWinPointerButtonEvent::DOWN);
+            surf->display()->onPointerButtonEvent( &evt );
+        }
+        break;
+    case WM_RBUTTONUP:
+        {
+            MSWinPointerButtonEvent evt(lParam, IPointerButtonEvent::RIGHT, MSWinPointerButtonEvent::UP);
+            surf->display()->onPointerButtonEvent( &evt );
+        }
+        break;
+    case WM_RBUTTONDBLCLK:
+        {
+            MSWinPointerButtonEvent evt(lParam, IPointerButtonEvent::RIGHT, MSWinPointerButtonEvent::DOUBLE);
+            surf->display()->onPointerButtonEvent( &evt );
+        }
+        break;
+    case WM_MBUTTONDOWN:
+        {
+            MSWinPointerButtonEvent evt(lParam, IPointerButtonEvent::MIDDLE, MSWinPointerButtonEvent::DOWN);
+            surf->display()->onPointerButtonEvent( &evt );
+        }
+        break;
+    case WM_MBUTTONUP:
+        {
+            MSWinPointerButtonEvent evt(lParam, IPointerButtonEvent::MIDDLE, MSWinPointerButtonEvent::UP);
+            surf->display()->onPointerButtonEvent( &evt );
+        }
+    case WM_MBUTTONDBLCLK:
+        {
+            MSWinPointerButtonEvent evt(lParam, IPointerButtonEvent::MIDDLE, MSWinPointerButtonEvent::DOUBLE);
+            surf->display()->onPointerButtonEvent( &evt );
+        }
+        break;
+    case WM_XBUTTONDOWN:
+        {
+            IPointerButtonEvent::Button btn = wParamToXButton(wParam);
+            MSWinPointerButtonEvent evt(lParam, btn, MSWinPointerButtonEvent::DOWN);
+            surf->display()->onPointerButtonEvent( &evt );
+        }
+        break;
+    case WM_XBUTTONUP:
+        {
+            IPointerButtonEvent::Button btn = wParamToXButton(wParam);
+            MSWinPointerButtonEvent evt(lParam, btn, MSWinPointerButtonEvent::UP);
+            surf->display()->onPointerButtonEvent( &evt );
+        }
+    case WM_XBUTTONDBLCLK:
+        {
+            IPointerButtonEvent::Button btn = wParamToXButton(wParam);
+            MSWinPointerButtonEvent evt(lParam, btn, MSWinPointerButtonEvent::DOUBLE);
+            surf->display()->onPointerButtonEvent( &evt );
+        }
+        break;
+    }
+    return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
 static void
@@ -140,7 +250,7 @@ registerWindowClass()
 {
     WNDCLASS wc;
     //wc.cbSize = sizeof(WNDCLASSEX);
-    wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC; // | CS_DBLCLKS;	//AB(20.11.07) Added CS_OWNDC
+    wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS; // AB(20.11.07) Added CS_OWNDC
     wc.lpfnWndProc = WndProc;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
@@ -210,7 +320,7 @@ MSWinSessionManager::openWindow(int x, int y, int w, int h, const char *caption,
 
     hWnd = CreateWindowEx( 0, WINDOW_CLASS_NAME
         , caption != NULL ? caption : "GSM Window"
-        , WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_OVERLAPPEDWINDOW
+        , WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_OVERLAPPEDWINDOW 
         , x, y, w, h
         , NULL, NULL, NULL /*_module_instance()*/, &cp
         ); 

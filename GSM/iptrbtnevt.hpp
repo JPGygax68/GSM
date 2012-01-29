@@ -7,6 +7,8 @@ namespace gsm {
     public:
         enum Button { NONE = 0, LEFT, RIGHT, MIDDLE, WHEEL, EXTENDED_1, EXTENDED_2 };
 
+        virtual const Position position() = 0;
+
         virtual Button button() = 0;
         virtual bool pressed() = 0;
         virtual bool released() = 0;

@@ -91,7 +91,7 @@ namespace gsm {
         return msg.wParam;
     }
 
-    const IPointerMotionEvent::Position
+    const Position
     MSWinEvent::position()
     {
         Position p;
