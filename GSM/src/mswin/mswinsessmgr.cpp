@@ -448,23 +448,23 @@ MSWinSessionManager::mustQuit()
     return quit || surfaces.empty();
 }
 
-MSWinSessionManager::MetaKeys
+ISessionManager::MetaKeys
 MSWinSessionManager::getMetaKeyStates()
 {
-    unsigned long result = 0;
+    ISessionManager::MetaKeys keys;
 
     if ((GetKeyState(VK_SHIFT) & 0x8000) != 0)
-        result |= 1 << SHIFT;
+        keys.set(SHIFT);
     if ((GetKeyState(VK_CONTROL) & 0x8000) != 0)
-        result |= 1 << CONTROL;
+        keys.set(CONTROL);
     if ((GetKeyState(VK_MENU) & 0x8000) != 0)
-        result |= 1 << ALT;
+        keys.set(ALT);
     if ((GetKeyState(VK_CAPITAL) & 0x8001) != 0)
-        result |= 1 << CAPSLOCK;
+        keys.set(CAPSLOCK);
     if ((GetKeyState(VK_NUMLOCK) & 0x8001) != 0)
-        result |= 1 << NUMLOCK;
+        keys.set(NUMLOCK);
 
-    return result;
+    return keys;
 }
 
 //--- INTERNAL METHODS --------------------------------------------------------

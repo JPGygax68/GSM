@@ -8,7 +8,7 @@ namespace gsm {
 
 class IKeyboardEvent {
 public:
-    enum Keycode { };
+    enum Keycode { SHIFT = 16, CTRL = 17, ALT = 18 };
 
     typedef int keycode_t;
 
