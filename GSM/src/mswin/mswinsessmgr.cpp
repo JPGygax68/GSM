@@ -421,9 +421,14 @@ MSWinSessionManager::fetchNextEvent()
             }
             else {
                 have_evt = true;
+#ifdef NOT_DEFINED
                 if (TranslateMessage(&evt.msg))
                     return true;
                 DispatchMessage(&evt.msg);
+#else
+                (void) TranslateMessage(&evt.msg);
+                DispatchMessage(&evt.msg);
+#endif
                 return true;
             }
         }
