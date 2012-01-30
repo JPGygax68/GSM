@@ -72,6 +72,26 @@ private:
     friend LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 };
 
+class MSWinKeyboardEvent: public IKeyboardEvent {
+public:
+    virtual bool down() { return type == KEY_DOWN; }
+    virtual bool up() { return type == KEY_UP; }
+    virtual bool isCharacter() { return type == CHARACTER; }
+    virtual unicode_t unicode() { return ch; }
+    virtual keycode_t keyCode() { return key; }
+
+private:
+    enum Type { KEY_DOWN = 1, KEY_UP = 2, CHARACTER = 3 };
+
+    MSWinKeyboardEvent(Type type_, int key_, unicode_t ch_): type(type_), key(key_), ch(ch_) {}
+
+    Type type;
+    int key;
+    unicode_t ch;
+
+    friend LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+};
+
 //--- PRIVATE FUNCTIONS -------------------------------------------------------
 
 static IPointerButtonEvent::Button
@@ -162,6 +182,9 @@ WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			return 0;
 		}
 		break;
+
+    //--- MOUSE -------------------------------------------
+
 	case WM_MOUSEMOVE:
         {
             MSWinPointerMoveEvent evt(lParam);
@@ -239,6 +262,27 @@ WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
             IPointerButtonEvent::Button btn = wParamToXButton(wParam);
             MSWinPointerButtonEvent evt(lParam, btn, MSWinPointerButtonEvent::DOUBLE);
             surf->display()->onPointerButtonEvent( &evt );
+        }
+        break;
+
+    //--- KEYBOARD ----------------------------------------
+
+    case WM_KEYDOWN: case WM_SYSKEYDOWN:
+        {
+            MSWinKeyboardEvent evt(MSWinKeyboardEvent::KEY_DOWN, wParam, 0);
+            surf->display()->onKeyboardEvent( &evt );
+        }
+        break;
+    case WM_KEYUP: case WM_SYSKEYUP:
+        {
+            MSWinKeyboardEvent evt(MSWinKeyboardEvent::KEY_UP, wParam, 0);
+            surf->display()->onKeyboardEvent( &evt );
+        }
+        break;
+    case WM_CHAR:
+        {
+            MSWinKeyboardEvent evt(MSWinKeyboardEvent::CHARACTER, 0, wParam);
+            surf->display()->onKeyboardEvent( &evt );
         }
         break;
     }

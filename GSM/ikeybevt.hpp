@@ -8,6 +8,8 @@ namespace gsm {
 
 class IKeyboardEvent {
 public:
+    enum Keycode { };
+
     typedef int keycode_t;
 
     virtual bool down() = 0;
