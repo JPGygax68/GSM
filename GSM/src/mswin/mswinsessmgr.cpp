@@ -126,44 +126,44 @@ WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
-	case WM_CREATE: // TODO (perhaps): OpenGL wiki recommends creating GL context here
-		{
-			/*char buffer[256];
-			GetWindowTextA(hWnd, buffer, sizeof(buffer) );
-			OutputDebugString(format("WM_CREATE on window \"%s\"\n", buffer).c_str() );*/
+    case WM_CREATE: // TODO (perhaps): OpenGL wiki recommends creating GL context here
+        {
+            /*char buffer[256];
+            GetWindowTextA(hWnd, buffer, sizeof(buffer) );
+            OutputDebugString(format("WM_CREATE on window \"%s\"\n", buffer).c_str() );*/
             if (surf->openGLContext() != 0) {
                 HDC hDC = GetDC(hWnd);
                 OutputDebugString(format("WM_CREATE with hGLRC = %x\n", surf->openGLContext()).c_str() );
             CHECK(wglMakeCurrent, (hDC, surf->openGLContext()));
             }
             surf->display()->onInit();
-		}
-		break;
-	case WM_ACTIVATE:
-		{
-			/*char buffer[256];
-			GetWindowTextA(hWnd, buffer, sizeof(buffer) );
-			OutputDebugStringA(format("WM_ACTIVATE on window \"%s\"\n", buffer).c_str() );*/
-		}
-		break;
-	case WM_ERASEBKGND: 
-		//OutputDebugString("WM_ERASEBKGND\n");
-		return 1;
-		break;
-	case WM_SIZE:
+        }
+        break;
+    case WM_ACTIVATE:
+        {
+            /*char buffer[256];
+            GetWindowTextA(hWnd, buffer, sizeof(buffer) );
+            OutputDebugStringA(format("WM_ACTIVATE on window \"%s\"\n", buffer).c_str() );*/
+        }
+        break;
+    case WM_ERASEBKGND: 
+        //OutputDebugString("WM_ERASEBKGND\n");
+        return 1;
+        break;
+    case WM_SIZE:
         if (surf->openGLContext() != 0) {
             HDC hDC = GetDC(hWnd);
             OutputDebugString(format("WM_SIZE with hGLRC = %x\n", surf->openGLContext()).c_str() );
             CHECK(wglMakeCurrent, (hDC, surf->openGLContext()));
         }
         surf->display()->onResize(LOWORD(lParam), HIWORD(lParam));
-		break;
-	case WM_CLOSE:
+        break;
+    case WM_CLOSE:
         // The lookup isn't too bad as it only happens once at the end of the window's lifecycle
         surf->display()->onClose();
         static_cast<MSWinSessionManager*>(findComponent("SessionManager"))->closeMsgReceived(hWnd);
-		break;
-	case WM_PAINT: 
+        break;
+    case WM_PAINT: 
         {
             MSWinCanvas cnv;
             PAINTSTRUCT ps;
@@ -175,13 +175,13 @@ WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
             EndPaint(hWnd, &ps);
             if (done) return 0;
         }
-		break;
-	case WM_SYSCOMMAND:
-		switch (wParam) {    
-		case SC_KEYMENU:
-			return 0;
-		}
-		break;
+        break;
+    case WM_SYSCOMMAND:
+        switch (wParam) {
+            case SC_KEYMENU:
+                return 0;
+        }
+        break;
 
     //--- MOUSE -------------------------------------------
 
@@ -376,7 +376,7 @@ MSWinSessionManager::openWindow(int x, int y, int w, int h, const char *caption,
 }
 
 ISurface *
-MSWinSessionManager::openScreen(int num, ISurface::Attributes attr, IDisplay *screen, ISurface::Attributes attribs)
+MSWinSessionManager::openScreen(int num, IDisplay *screen, ISurface::Attributes attribs)
 {
     HWND hWnd;
 
@@ -395,9 +395,9 @@ MSWinSessionManager::openScreen(int num, ISurface::Attributes attr, IDisplay *sc
 
     hWnd = CreateWindowEx( 0, WINDOW_CLASS_NAME
         , "GSM full-screen window" // TODO: caption != NULL ? caption : wclsname.c_str()
-        , WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_OVERLAPPEDWINDOW
+        , WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN //| WS_OVERLAPPEDWINDOW
         , x, y, w, h // position and size
-        , NULL, NULL, NULL /*_module_instance()*/, screen
+        , NULL, NULL, NULL /*_module_instance()*/, &cp
         ); 
     if (hWnd == NULL) throw EMSWinError(GetLastError(), "CreateWindowEx");
 

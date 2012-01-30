@@ -22,7 +22,7 @@ public:
     openWindow(int x, int y, int w, int h, const char *caption, IDisplay *window, ISurface::Attributes caps = 0);
 
     virtual ISurface *
-    openScreen(int num, ISurface::Attributes attr, IDisplay *screen, ISurface::Attributes caps = 0);
+    openScreen(int num, IDisplay *screen, ISurface::Attributes caps = 0);
 
     virtual bool
     fetchNextEvent();

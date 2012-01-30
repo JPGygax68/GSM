@@ -28,7 +28,7 @@ public:
     openWindow(int x, int y, int w, int h, const char *caption, IDisplay *window, ISurface::Attributes attribs = 0) = 0;
 
     virtual ISurface *
-    openScreen(int num, ISurface::Attributes attr, IDisplay *screen, ISurface::Attributes attribs = 0) = 0;
+    openScreen(int num, IDisplay *screen, ISurface::Attributes attribs = 0) = 0;
 
     /** Returns true if an event has become available (meaning that more might be pending).
      */
