@@ -64,7 +64,7 @@ namespace gsm {
 
         virtual void getGlyphMetrics(unicode_t ch, GlyphMetrics &gm) = 0;
 
-        virtual const Extents getTextExtents(const unicode_t *text, unsigned len) = 0;
+        virtual const BoundingBox getTextBounds(const unicode_t *text, unsigned len) = 0;
 
     };
 

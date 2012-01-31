@@ -282,6 +282,7 @@ MSWinFont::getGlyphMetrics(unicode_t ch, IFont::GlyphMetrics &gm)
     if (isTrueType()) getGlyphMetricsTT(hdc, metrics, ch, gm); else getGlyphMetricsNonTT(hdc, metrics, ch, gm);
 }
 
+/*
 const Extents
 MSWinFont::getTextExtents(const unicode_t *text, unsigned len) 
 {
@@ -294,6 +295,23 @@ MSWinFont::getTextExtents(const unicode_t *text, unsigned len)
     ext.h = (unsigned) (rect.bottom - rect.top);
 
     return ext;
+}
+*/
+
+const BoundingBox
+MSWinFont::getTextBounds(const unicode_t *text, unsigned len) 
+{
+    RECT rect = { 0, 0, 0, 0 };
+
+    CHECK(DrawTextW, (hdc, text, (int) len, &rect, DT_CALCRECT | DT_NOPREFIX | DT_WORDBREAK));
+
+    BoundingBox bbox;
+    bbox.xMin = 0;
+    bbox.xMax = rect.right - rect.left;
+    bbox.yMin = rect.top;
+    bbox.yMax = rect.bottom;
+    
+    return bbox;
 }
 
 } // ns gsm

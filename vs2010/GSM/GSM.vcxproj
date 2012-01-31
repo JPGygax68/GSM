@@ -47,6 +47,7 @@
     <ClInclude Include="..\..\GSM\util\errlog.hpp" />
     <ClInclude Include="..\..\GSM\util\format.hpp" />
     <ClInclude Include="..\..\GSM\util\oglhelper.hpp" />
+    <ClInclude Include="..\..\GSM\util\text.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\GSM\src\charset.cpp" />
@@ -62,6 +63,7 @@
     <ClCompile Include="..\..\GSM\src\mswin\mswinerr.cpp" />
     <ClCompile Include="..\..\GSM\src\mswin\mswinsurf.cpp" />
     <ClCompile Include="..\..\GSM\src\opengl\opengl.cpp" />
+    <ClCompile Include="..\..\GSM\src\util\text.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C685E2C1-D20A-4F49-B50C-9CF8D41B6E73}</ProjectGuid>

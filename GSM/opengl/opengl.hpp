@@ -34,18 +34,21 @@ texturedRectangle(unsigned wb, unsigned hb, int xr, int yr, unsigned wr, unsigne
     The function returns a handle to be specified in text rendering calls.
     TODO: distinguish between monitors to take advantage of ClearType
  */
-fonthandle_t prepareFont(IFont *font, int vidCtxID);
+fonthandle_t
+prepareFont(IFont *font, int vidCtxID);
 
 /** Saves the current projection matrix and sets up a new projection so that 2D coordinates 
     match directly with the pixel grid, with the top-left corner being at (0, 0) and the 
     bottom-right corner at (width, height).
  */
-void pushDirectPixelMapping();
+void
+pushDirectPixelMapping();
 
 /** Restores the previous projection matrix. This is equivalent to doing glPopMatrix()
     with the GL_PROJECTION matrix active, then selecting the GL_MODELVIEW matrix.
  */
-void popProjection();
+void
+popProjection();
 
 /** Renders Unicode text, which may contain line breaks (CR), but no other control
     characters.
