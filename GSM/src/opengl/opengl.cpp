@@ -249,6 +249,27 @@ prepareFont(IFont *font, int vidCtxID)
     return bind;
 }
 
+
+void
+pushDirectPixelMapping()
+{
+    OGL(glMatrixMode, (GL_PROJECTION));
+    OGL(glPushMatrix, ());
+    OGL(glLoadIdentity, ());
+    GLint vp[4];
+    OGL(glGetIntegerv, (GL_VIEWPORT, vp));
+    OGL(glOrtho, (vp[0], vp[2], vp[3], vp[1], -1, 1));
+    OGL(glMatrixMode, (GL_MODELVIEW));
+}
+
+void
+popProjection()
+{
+    OGL(glMatrixMode, (GL_PROJECTION));
+    OGL(glPopMatrix, ());
+    OGL(glMatrixMode, (GL_MODELVIEW));
+}
+
 void
 releaseFont(IFont *font, int vidCtxID)
 {
