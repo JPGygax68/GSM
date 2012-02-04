@@ -42,13 +42,13 @@ prepareFont(IFont *font, int vidCtxID);
     bottom-right corner at (width, height).
  */
 void
-pushDirectPixelMapping();
+prepareForTextRendering();
 
 /** Restores the previous projection matrix. This is equivalent to doing glPopMatrix()
     with the GL_PROJECTION matrix active, then selecting the GL_MODELVIEW matrix.
  */
 void
-popProjection();
+doneWithTextRendering();
 
 /** Renders Unicode text, which may contain line breaks (CR), but no other control
     characters.

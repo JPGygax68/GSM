@@ -11,8 +11,8 @@ namespace gsm {
     class ISurface;
     class IDisplay;
 
-    class MSWinEvent: virtual public IEvent, virtual public IKeyboardEvent, 
-        virtual public IPointerMotionEvent, virtual public IPointerButtonEvent 
+    class MSWinEvent: public IEvent, public IKeyboardEvent, 
+        public IPointerMotionEvent, public IPointerButtonEvent 
     {
     
     public: // IEvent

@@ -107,7 +107,7 @@ wParamToXButton(WPARAM wParam)
 LRESULT CALLBACK
 WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    MSWinSurface *surf = (MSWinSurface*) GetWindowLongPtr(hWnd, GWLP_USERDATA);
+    MSWinSurface *surf = reinterpret_cast<MSWinSurface*>( GetWindowLongPtr(hWnd, GWLP_USERDATA) );
 
     switch(msg)
     {
@@ -116,7 +116,6 @@ WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
             // Re-package user data pointer
             LPCREATESTRUCT pcs = reinterpret_cast<LPCREATESTRUCT>(lParam);
             CreateParams *cp = reinterpret_cast<CreateParams*>(pcs->lpCreateParams);
-            IDisplay *disp = cp->display;
             SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)cp->surface);
             // Assign window handle to Surface
             cp->surface->setWindowHandle(hWnd);
@@ -391,7 +390,7 @@ MSWinSessionManager::openScreen(int num, IDisplay *screen, ISurface::Attributes 
     CreateParams cp;
     cp.surface = surf;
     cp.surf_attribs = attribs;
-    cp.display = dynamic_cast<IDisplay*>(screen);
+    cp.display = static_cast<IDisplay*>(screen);
 
     hWnd = CreateWindowEx( 0, WINDOW_CLASS_NAME
         , "GSM full-screen window" // TODO: caption != NULL ? caption : wclsname.c_str()

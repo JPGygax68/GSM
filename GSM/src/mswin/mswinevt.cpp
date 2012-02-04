@@ -1,4 +1,5 @@
 #include <Windows.h>
+#include "mswinsurf.hpp"
 #include "mswinevt.hpp"
 
 namespace gsm {
@@ -8,7 +9,7 @@ namespace gsm {
     IDisplay *
     MSWinEvent::target()
     {
-        return reinterpret_cast<IDisplay*>(GetWindowLongPtr(msg.hwnd, GWLP_USERDATA)); 
+        return reinterpret_cast<MSWinSurface*>(GetWindowLongPtr(msg.hwnd, GWLP_USERDATA))->display();
     }
 
     bool

@@ -251,23 +251,34 @@ prepareFont(IFont *font, int vidCtxID)
 
 
 void
-pushDirectPixelMapping()
+prepareForTextRendering()
 {
+    OGL(glPushAttrib, (GL_COLOR_BUFFER_BIT|GL_ENABLE_BIT));
+    OGL(glDisable, (GL_LIGHTING));
+    OGL(glEnable, (GL_TEXTURE_2D));
+    OGL(glTexEnvi, (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE));
+    OGL(glEnable, (GL_BLEND));
+    OGL(glDisable, (GL_DEPTH_TEST));
+    OGL(glEnable, (GL_CULL_FACE));
+    OGL(glBlendFunc, (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) );
+
     OGL(glMatrixMode, (GL_PROJECTION));
     OGL(glPushMatrix, ());
     OGL(glLoadIdentity, ());
     GLint vp[4];
     OGL(glGetIntegerv, (GL_VIEWPORT, vp));
     OGL(glOrtho, (vp[0], vp[2], vp[3], vp[1], -1, 1));
+
     OGL(glMatrixMode, (GL_MODELVIEW));
 }
 
 void
-popProjection()
+doneWithTextRendering()
 {
     OGL(glMatrixMode, (GL_PROJECTION));
     OGL(glPopMatrix, ());
     OGL(glMatrixMode, (GL_MODELVIEW));
+    OGL(glPopAttrib, ());
 }
 
 void

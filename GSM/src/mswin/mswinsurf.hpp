@@ -36,12 +36,17 @@ namespace gsm {
         HWND windowHandle() const { return hWnd; }
         void setWindowHandle(HWND hWnd_) { hWnd = hWnd_; }
 
-        IDisplay *display() const { return disp; }
+        IDisplay *display() const { 
+            return disp; }
 
-        HGLRC openGLContext() const { return hGLRC; }
-        void setOpenGLContext(HGLRC hRC) { hGLRC = hRC; }
+        HGLRC openGLContext() const { 
+            return hGLRC; }
 
-        void setVideoContextID(int id) { vidctx_id = id; }
+        void setOpenGLContext(HGLRC hRC) { 
+            hGLRC = hRC; }
+
+        void setVideoContextID(int id) { 
+            vidctx_id = id; }
 
     protected:
         MSWinSurface(IDisplay *disp);
