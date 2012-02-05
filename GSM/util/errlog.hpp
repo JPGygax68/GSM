@@ -1,7 +1,7 @@
 #ifndef __GSM_UTIL_ERRLOG_HPP
 #define __GSM_UTIL_ERRLOG_HPP
 
-#include <gl/GL.h>
+#include <GL/glew.h>
 
 namespace gsm {
 

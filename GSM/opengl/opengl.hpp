@@ -40,6 +40,7 @@ prepareFont(IFont *font, int vidCtxID);
 /** Saves the current projection matrix and sets up a new projection so that 2D coordinates 
     match directly with the pixel grid, with the top-left corner being at (0, 0) and the 
     bottom-right corner at (width, height).
+    DOES NOT clear the MODELVIEW matrix!
  */
 void
 prepareForTextRendering();

@@ -1,13 +1,13 @@
 #ifdef _WIN32
 #include <Windows.h>
 #endif
-#include <GL/GL.h>
+#include <GL/GLew.h>
 #include <map>
 #include <cmath>
 #include "../../util/oglhelper.hpp"
 #include "../../ibitmap.hpp"
-#include "../../opengl/opengl.hpp"
 #include "../../gfxtypes.hpp"
+#include "../../opengl/opengl.hpp"
 
 namespace gsm {
 
@@ -227,7 +227,7 @@ texturedRectangle(unsigned wb, unsigned hb, int xr, int yr, unsigned wr, unsigne
         OGL(glTexCoord2d, (x1t, y2t)); OGL(glVertex2i, (   x, y+hr));
         OGL(glTexCoord2d, (x2t, y2t)); OGL(glVertex2i, (x+wr, y+hr));
         OGL(glTexCoord2d, (x2t, y1t)); OGL(glVertex2i, (x+wr, y   ));
-    OGLI(glEnd, ());
+    OGL(glEnd, ());
 }
 
 // TODO: Character Set
@@ -270,6 +270,8 @@ prepareForTextRendering()
     OGL(glOrtho, (vp[0], vp[2], vp[3], vp[1], -1, 1));
 
     OGL(glMatrixMode, (GL_MODELVIEW));
+    OGL(glPushMatrix, ());
+    OGL(glLoadIdentity, ());
 }
 
 void
@@ -278,6 +280,7 @@ doneWithTextRendering()
     OGL(glMatrixMode, (GL_PROJECTION));
     OGL(glPopMatrix, ());
     OGL(glMatrixMode, (GL_MODELVIEW));
+    OGL(glPopMatrix, ());
     OGL(glPopAttrib, ());
 }
 
