@@ -1,3 +1,13 @@
+/*-----------------------------------------------------------------------------
+ * Graphical Session Manager (GSM)
+ *
+ * Copyright 2012 by Gygax Practical Computing, Biel/Bienne, Switzerland.
+ *
+ * This software is released under the Gnu General Public License.
+ * A copy of that license should have been delivered with this source code.
+ * If not, you can download it from http://www.gnu.org/licenses/gpl.txt.
+ *-----------------------------------------------------------------------------*/
+
 #include <Windows.h>
 #include <set>
 #include <cassert>
@@ -5,7 +15,6 @@
 #include "../../compmgr.hpp"
 #include "../../util/format.hpp"
 #include "../../idisplay.hpp"
-#include "../../igfxres.hpp"
 #include "../../iptrmovevt.hpp"
 #include "mswincanvas.hpp"
 #include "mswinerr.hpp"

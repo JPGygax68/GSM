@@ -1,3 +1,12 @@
+/*-----------------------------------------------------------------------------
+ * This file is part of the Graphical Session Manager (GSM) project.
+ * Copyright 2012 by Gygax Practical Computing, Biel/Bienne, Switzerland.
+ *
+ * This software is released under the Gnu General Public License.
+ * A copy of that license should have been delivered with this source code.
+ * If not, you can download it from http://www.gnu.org/licenses/gpl.txt.
+ *-----------------------------------------------------------------------------*/
+
 #ifndef MSWIN_SESSMGR_HPP
 #define MSWIN_SESSMGR_HPP
 
@@ -47,11 +56,8 @@ public:
 private:
     typedef std::set<MSWinSurface*> surfacelist_t;
     typedef surfacelist_t::iterator surface_iterator_t;
-    typedef std::set<IGraphicsResource*> gfxresources_t;
-    typedef gfxresources_t::iterator gfxres_iterator_t;
 
     surfacelist_t surfaces;
-    gfxresources_t  gfx_resources;
     bool have_evt;
     MSWinEvent evt;
     bool quit;

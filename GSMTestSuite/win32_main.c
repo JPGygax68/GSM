@@ -11,7 +11,7 @@
 #include <windows.h>
 
 #ifdef _WIN32_WCE
-# define DIR_SEPERATOR TEXT("\\")
+# define DIR_SEPARATOR TEXT("\\")
 # undef _getcwd
 # define _getcwd(str,len)	wcscpy(str,TEXT(""))
 # define setbuf(f,b)
@@ -20,7 +20,7 @@
 # define freopen	_wfreopen
 # define remove(x)	DeleteFile(x)
 #else
-# define DIR_SEPERATOR TEXT("/")
+# define DIR_SEPARATOR TEXT("/")
 # include <direct.h>
 #endif
 
@@ -282,10 +282,10 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR szCmdLine, int sw)
 
 #ifdef _WIN32_WCE
 	wcsncpy( stdoutPath, path, arraysize(stdoutPath) );
-	wcsncat( stdoutPath, DIR_SEPERATOR STDOUT_FILE, arraysize(stdoutPath) );
+	wcsncat( stdoutPath, DIR_SEPARATOR STDOUT_FILE, arraysize(stdoutPath) );
 #else
 	strncpy( stdoutPath, path, arraysize(stdoutPath) );
-	strncat( stdoutPath, DIR_SEPERATOR STDOUT_FILE, arraysize(stdoutPath) );
+	strncat( stdoutPath, DIR_SEPARATOR STDOUT_FILE, arraysize(stdoutPath) );
 #endif
     
 	/* Redirect standard input and standard output */
@@ -306,10 +306,10 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR szCmdLine, int sw)
 
 #ifdef _WIN32_WCE
 	wcsncpy( stderrPath, path, arraysize(stdoutPath) );
-	wcsncat( stderrPath, DIR_SEPERATOR STDOUT_FILE, arraysize(stdoutPath) );
+	wcsncat( stderrPath, DIR_SEPARATOR STDOUT_FILE, arraysize(stdoutPath) );
 #else
 	strncpy( stderrPath, path, arraysize(stderrPath) );
-	strncat( stderrPath, DIR_SEPERATOR STDERR_FILE, arraysize(stderrPath) );
+	strncat( stderrPath, DIR_SEPARATOR STDERR_FILE, arraysize(stderrPath) );
 #endif
 
 	newfp = freopen(stderrPath, TEXT("w"), stderr);
