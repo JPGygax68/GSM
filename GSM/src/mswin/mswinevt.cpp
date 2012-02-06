@@ -9,7 +9,9 @@ namespace gsm {
     IDisplay *
     MSWinEvent::target()
     {
-        return reinterpret_cast<MSWinSurface*>(GetWindowLongPtr(msg.hwnd, GWLP_USERDATA))->display();
+        MSWinSurface *surf = reinterpret_cast<MSWinSurface*>(GetWindowLongPtr(msg.hwnd, GWLP_USERDATA));
+        if (surf == NULL) return 0;
+        return surf->display();
     }
 
     bool
