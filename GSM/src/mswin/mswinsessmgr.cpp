@@ -302,7 +302,7 @@ registerWindowClass()
 {
     WNDCLASS wc;
     //wc.cbSize = sizeof(WNDCLASSEX);
-    wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS; // AB(20.11.07) Added CS_OWNDC
+    wc.style = CS_OWNDC | CS_DBLCLKS; //CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS; // AB(20.11.07) Added CS_OWNDC
     wc.lpfnWndProc = WndProc;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
@@ -403,7 +403,7 @@ MSWinSessionManager::openScreen(int num, IDisplay *screen, ISurface::Attributes 
 
     hWnd = CreateWindowEx( 0, WINDOW_CLASS_NAME
         , "GSM full-screen window" // TODO: caption != NULL ? caption : wclsname.c_str()
-        , WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN //| WS_OVERLAPPEDWINDOW
+        , WS_POPUP //| WS_CLIPSIBLINGS | WS_CLIPCHILDREN
         , x, y, w, h // position and size
         , NULL, NULL, NULL /*_module_instance()*/, &cp
         ); 

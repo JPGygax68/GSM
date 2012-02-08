@@ -8,6 +8,7 @@
  *-----------------------------------------------------------------------------*/
 
 #include <cassert>
+#include "../../util/oglhelper.hpp"
 #include "mswinerr.hpp"
 #include "mswinogl.hpp"
 #include "mswinsurf.hpp"
@@ -78,6 +79,9 @@ MSWinSurface::present(int monitor)
     if (hGLRC != 0) {
         HDC hDC = GetDC(hWnd);
         CHECK(SwapBuffers, (hDC));
+		//OGL(glFinish, ());
+		//OGL(glFlush, ());
+		//CHECK(wglMakeCurrent, (0, 0));
         //wglSwapLayerBuffers(hDC, WGL_SWAP_MAIN_PLANE);
     }
 }
