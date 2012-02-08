@@ -41,6 +41,12 @@ namespace gsm {
          */
         virtual int videoContextID() { return vidctx_id; }
 
+		virtual void * createExtraContext();
+
+		virtual void selectExtraContext(void *ctx);
+
+		virtual void deleteExtraContext(void *ctx);
+
     public:
         HWND windowHandle() const { return hWnd; }
         void setWindowHandle(HWND hWnd_) { hWnd = hWnd_; }

@@ -7,6 +7,7 @@
  * If not, you can download it from http://www.gnu.org/licenses/gpl.txt.
  *-----------------------------------------------------------------------------*/
 
+#include <cassert>
 #include "mswinerr.hpp"
 #include "mswinogl.hpp"
 #include "mswinsurf.hpp"
@@ -81,12 +82,28 @@ MSWinSurface::present(int monitor)
     }
 }
 
-/*
-void
-MSWinSurface::bindGraphicsResources()
+void *
+MSWinSurface::createExtraContext()
 {
-    for (unsigned i = 0; i < gfx
+	assert(hGLRC != 0);
+	HDC hDC = GetDC(hWnd);
+	HGLRC hRC = wglCreateContext(hDC);
+	if (hRC == 0) throw EMSWinError(GetLastError(), "wglCreateContext() (extra context)");
+	// TODO: share lists
+	return hRC;
 }
-*/
+
+void
+MSWinSurface::selectExtraContext(void *ctx)
+{
+	HDC hDC = GetDC(hWnd);
+	CHECK(wglMakeCurrent, (hDC, (HGLRC)ctx));
+}
+
+void
+MSWinSurface::deleteExtraContext(void *ctx)
+{
+	CHECK(wglDeleteContext, ((HGLRC)ctx));
+}
 
 } // ns mswinsurf

@@ -84,6 +84,23 @@ public:
      */
     virtual void
     present(int monitor = 0) = 0;
+
+	/** Sometimes, it is necessary to render to a surface from more than one thread. In such cases,
+		OpenGL, and probably other APIs too, require a separate context. This call creates such
+		an "extra" context.
+	 */
+	virtual void *
+	createExtraContext() = 0;
+
+	/** Activates an "extra" rendering context created by createExtraContext().
+	 */
+	virtual void
+	selectExtraContext(void *ctx) = 0;
+
+	/** Deletes an "extra" rendering context created by createExtraContext().
+	 */
+	virtual void
+	deleteExtraContext(void *ctx) = 0;
 };
 
 } // ns gsm
