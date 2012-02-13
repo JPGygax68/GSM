@@ -115,7 +115,7 @@ assignToVideoContext(HGLRC hRC)
             // Succeeded, so add the new Rendering Context to this Video Context
             it->push_back(hRC);
             // We're done, this is the Context Group we were looking for
-            return i;
+            return 1 + i;
         }
     }
     // Could not share with any Video Context, so create and add new Video Context
