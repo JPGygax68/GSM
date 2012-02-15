@@ -276,7 +276,7 @@ prepareForTextRendering()
     OGL(glLoadIdentity, ());
     GLint vp[4];
     OGL(glGetIntegerv, (GL_VIEWPORT, vp));
-    OGL(glOrtho, (vp[0], vp[2], vp[3], vp[1], -1, 1));
+    OGL(glOrtho, (0, vp[2], vp[3], 0, -1, 1));
 
     OGL(glMatrixMode, (GL_MODELVIEW));
     OGL(glPushMatrix, ());
