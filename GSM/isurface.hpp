@@ -24,7 +24,8 @@ public:
 
     enum Attribute {
         SINGLE_BUFFERED,
-        SUPPORTS_OPENGL
+        SUPPORTS_OPENGL,
+        FORCE_FRAME             // Put a frame even around fullscreen surface
     };
     typedef bitset<Attribute> Attributes;
 

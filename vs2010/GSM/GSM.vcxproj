@@ -106,7 +106,7 @@
     </Link>
     <Lib />
     <Lib>
-      <AdditionalDependencies>OpenGL32.lib;GLu32.lib</AdditionalDependencies>
+      <AdditionalDependencies>dwmapi.lib;OpenGL32.lib;GLu32.lib</AdditionalDependencies>
       <ForceSymbolReferences>class gsm::IComponent * __cdecl gsm::findComponent(char const *)</ForceSymbolReferences>
     </Lib>
   </ItemDefinitionGroup>
@@ -128,7 +128,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>OpenGL32.lib;GLu32.lib</AdditionalDependencies>
+      <AdditionalDependencies>dwmapi.lib;OpenGL32.lib;GLu32.lib</AdditionalDependencies>
       <ForceSymbolReferences>class gsm::IComponent * __cdecl gsm::findComponent(char const *)</ForceSymbolReferences>
     </Lib>
   </ItemDefinitionGroup>
