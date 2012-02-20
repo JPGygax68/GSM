@@ -322,8 +322,10 @@ unregisterWindowClass()
 {
     // TODO: this can fail because no one takes care of closing windows that were left open
 
-    if (! UnregisterClass(WINDOW_CLASS_NAME, NULL))
-        throw EMSWinError(GetLastError(), "UnregisterClass");
+    if (! UnregisterClass(WINDOW_CLASS_NAME, NULL)) {
+        // TODO: log!
+        //throw EMSWinError(GetLastError(), "UnregisterClass");
+    }
 }
 
 static void
