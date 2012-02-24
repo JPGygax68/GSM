@@ -71,7 +71,8 @@ selectPixelFormat(HDC hDC, bool double_buffered)
         WGL_SAMPLES_ARB,			double_buffered ? 4 : 0,
         0, 0
     };
-    if (double_buffered) {
+	// Multisampling ?
+    if (iAttributes[16] == GL_TRUE) {
         // TODO: make sample count configurable
         for (unsigned samples = 4; samples > 0; samples -= 2) {
             iAttributes[19] = samples;
