@@ -72,14 +72,14 @@ selectPixelFormat(HDC hDC, bool double_buffered)
         0, 0
     };
 	// Multisampling ?
-    if (iAttributes[16] == GL_TRUE) {
+    if (iAttributes[17] == GL_TRUE) {
         // TODO: make sample count configurable
         for (unsigned samples = 4; samples > 0; samples -= 2) {
             iAttributes[19] = samples;
             bStatus = wglChoosePixelFormatARB(hDC, iAttributes, fAttributes,1, pixelFormats, &numFormats);
             if (bStatus == GL_TRUE && numFormats > 0) {
                 return pixelFormats[0];
-			}
+            }
         }
     }
     else {
