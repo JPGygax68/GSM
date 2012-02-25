@@ -27,6 +27,9 @@ private:
     friend class Registrator;
 
 public:
+    virtual unsigned
+    getScreenResolution(int num);
+
     virtual ISurface *
     openWindow(int x, int y, int w, int h, const char *caption, IDisplay *window, ISurface::Attributes caps = 0);
 

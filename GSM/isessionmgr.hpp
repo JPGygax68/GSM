@@ -33,6 +33,11 @@ public:
     };
     typedef bitset<MetaKey> MetaKeys;
 
+    /*  Must return the pixel resolution of the specified screen in DPI (Dots Per Inch).
+     */
+    virtual unsigned
+    getScreenResolution(int num) = 0;
+
     virtual ISurface *
     openWindow(int x, int y, int w, int h, const char *caption, IDisplay *window, ISurface::Attributes attribs = 0) = 0;
 

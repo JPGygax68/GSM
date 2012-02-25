@@ -31,6 +31,13 @@ static const char *WINDOW_CLASS_NAME = "GSM Window Class";
 
 //--- PRIVATE TYPES -----------------------------------------------------------
 
+struct GetScreenResolution_Data {
+    int requested_monitor_num;
+    int current_monitor_num;
+    int size;
+    int pixels;
+};
+
 struct CreateParams {
     MSWinSurface *surface;
     ISurface::Attributes surf_attribs;
@@ -345,6 +352,19 @@ getScreenRect(int num, int & x, int & y, unsigned & w, unsigned & h)
     h = dm.dmPelsHeight;
 }
 
+static BOOL CALLBACK
+MonitorEnumProc(__in  HMONITOR hMonitor, __in  HDC hdcMonitor, __in  LPRECT lprcMonitor, __in  LPARAM dwData)
+{
+    GetScreenResolution_Data *data = reinterpret_cast<GetScreenResolution_Data*>(dwData);
+    
+    if (data->current_monitor_num == data->requested_monitor_num) {
+        data->size = GetDeviceCaps(hdcMonitor, VERTSIZE);
+        data->pixels = GetDeviceCaps(hdcMonitor, VERTRES);
+        return FALSE;
+    }
+    else
+        return TRUE;
+}
 
 //--- DISPLAY MANAGER IMPLEMENTATION ------------------------------------------
 
@@ -358,6 +378,27 @@ MSWinSessionManager::MSWinSessionManager()
 MSWinSessionManager::~MSWinSessionManager()
 {
     unregisterWindowClass();
+}
+
+unsigned
+MSWinSessionManager::getScreenResolution(int num)
+{
+    GetScreenResolution_Data data;
+    HDC hDC = GetDC(NULL);
+    data.current_monitor_num = 0;
+    data.pixels = data.size = 0;
+    data.requested_monitor_num = num;
+
+    EnumDisplayMonitors(hDC, NULL, MonitorEnumProc, reinterpret_cast<LPARAM>(&data));
+    unsigned result = 0;
+    if (data.size > 0) {
+        result = data.pixels * 10 * 254 / data.size / 100;
+    }
+    else
+        result = 0;
+    
+    ReleaseDC(NULL, hDC);
+    return result;
 }
 
 ISurface *

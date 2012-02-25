@@ -12,6 +12,7 @@
 
 #include <Windows.h>
 #include "../../charset.hpp"
+#include "../../ifontprov.hpp"
 #include "../../ifont.hpp"
 
 namespace gsm {
@@ -32,7 +33,7 @@ public:
     bool isTrueType() const { return (metrics.tmPitchAndFamily & TMPF_TRUETYPE) != 0; }
 
 private:
-    MSWinFont(MSWinFontProvider *prov, HGDIOBJ hfont);
+    MSWinFont(MSWinFontProvider *prov, Type type, const std::string & name, unsigned height, Attributes attribs);
 
     friend class MSWinFontProvider;
 

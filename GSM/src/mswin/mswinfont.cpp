@@ -152,15 +152,51 @@ next_pow2(unsigned a)
 
 //--- MSWINFONT IMPLEMENTATION ------------------------------------------------
 
-MSWinFont::MSWinFont(MSWinFontProvider *prov, HGDIOBJ hfont_)
-    : provider(prov), hfont(hfont_)
+MSWinFont::MSWinFont(MSWinFontProvider *prov, Type type, const std::string & name, unsigned height, Attributes attribs)
+    : provider(prov)
 {
+    // Create a Logical Font
+    HGDIOBJ hfont = 0;
+    if (name.empty() && type == IFont::SYSTEM) {
+        hfont = GetStockObject(ANSI_VAR_FONT);
+    }
+    else {
+        if (height == 0) height = 16; // TODO: use constant
+        LOGFONT lf;
+        lf.lfHeight = height;
+        lf.lfWidth = 0;
+        lf.lfEscapement = 0;
+        lf.lfOrientation = 0;
+        lf.lfWeight = attribs.test(IFont::BOLD) ? FW_BOLD : FW_NORMAL;
+        lf.lfItalic = attribs.test(IFont::ITALIC) ? 1 : 0;
+        lf.lfUnderline = attribs.test(IFont::UNDERLINE) ? TRUE : FALSE;
+        lf.lfStrikeOut = attribs.test(IFont::STRIKEOUT) ? TRUE : FALSE;
+        lf.lfCharSet = ANSI_CHARSET;
+        lf.lfOutPrecision = OUT_DEFAULT_PRECIS;
+        lf.lfClipPrecision = CLIP_DEFAULT_PRECIS;
+        lf.lfQuality = height <= 18 ? NONANTIALIASED_QUALITY : PROOF_QUALITY;
+        switch (type) {
+            case IFont::DECORATIVE:	lf.lfPitchAndFamily = FF_DECORATIVE; break;
+            case IFont::MODERN:		lf.lfPitchAndFamily = FF_MODERN; break;
+            case IFont::ROMAN:		lf.lfPitchAndFamily = FF_ROMAN; break;
+            case IFont::SCRIPT:		lf.lfPitchAndFamily = FF_SCRIPT; break;
+            case IFont::SWISS:		lf.lfPitchAndFamily = FF_SWISS; break;
+            default:				lf.lfPitchAndFamily = FF_DONTCARE; break;
+        }
+        strncpy_s(lf.lfFaceName, LF_FACESIZE, name.c_str(), LF_FACESIZE);
+        hfont = CreateFontIndirect(&lf);
+    }
+
     // Create a dummy bitmap (1x1 pixels) and a DC for it
     GDIBitmap bmp(1, 1, 24);
     hdc = CreateCompatibleDC(NULL);
     HGDIOBJ hPrevBmp = SelectObject(hdc, bmp.handle()); // discarding previous bitmap (if any)
-    SelectObject(hdc, hfont);
     SetMapMode(hdc, MM_TEXT);
+
+    // "Set" the font
+    SelectObject(hdc, hfont);
+
+    // Other rendering settings
     SetTextColor(hdc, RGB(255, 255, 255) );
     SetBkMode(hdc, TRANSPARENT);
     //SetBkColor(hdc, RGB(100,100,100) );
@@ -168,11 +204,9 @@ MSWinFont::MSWinFont(MSWinFontProvider *prov, HGDIOBJ hfont_)
     SetTextAlign(hdc, TA_BASELINE);
 
     // Get the font metrics
-    if (!GetTextMetrics(hdc, &metrics))
-        throw EMSWinError(GetLastError(), "GetTextMetrics");
+    CHECK(GetTextMetrics, (hdc, &metrics));
 
     // Get the Character Set supported by this font
-    // TODO: do we really need this ?
     DWORD size = GetFontUnicodeRanges(hdc, NULL);
     LPGLYPHSET glyphset = (LPGLYPHSET) new char[size];
     if (GetFontUnicodeRanges(hdc, glyphset) == 0)
