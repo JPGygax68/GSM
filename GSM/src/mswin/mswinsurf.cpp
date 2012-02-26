@@ -78,11 +78,8 @@ MSWinSurface::present(int monitor)
 {
     if (hGLRC != 0) {
         HDC hDC = GetDC(hWnd);
-        CHECK(wglMakeCurrent, (0, 0));
         CHECK(SwapBuffers, (hDC));
-		//OGL(glFinish, ());
-		//OGL(glFlush, ());
-        //wglSwapLayerBuffers(hDC, WGL_SWAP_MAIN_PLANE);
+        CHECK(wglMakeCurrent, (0, 0));
     }
 }
 
