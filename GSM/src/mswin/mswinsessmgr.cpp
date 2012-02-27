@@ -175,7 +175,9 @@ WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         break;
     case WM_CLOSE:
         // The lookup isn't too bad as it only happens once at the end of the window's lifecycle
-        if (! surf->display()->onClose()) return 0;
+        if (! surf->display()->onClose()) {
+			return 0; // we don't call DefWindowProc, so the window won't be closed
+		}
         static_cast<MSWinSessionManager*>(findComponent("SessionManager"))->closeMsgReceived(hWnd);
         break; // Let DefWindowProc destroy the window
     case WM_PAINT: 
