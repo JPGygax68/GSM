@@ -109,35 +109,51 @@ assignToVideoContext(HGLRC hRC)
     // Traverse existing Video Contexts to see if we can share gfx resources with any of them
     video_contexts_t::iterator it = video_contexts.begin();
     int i = 0;
+	int iempty = -1;
     for ( ; it != video_contexts.end(); it ++, i++) 
     {
-        // Try to share resource lists with first Context in the group
-        if (wglShareLists(it->front(), hRC) == TRUE) {
-            // Succeeded, so add the new Rendering Context to this Video Context
-            it->push_back(hRC);
-            // We're done, this is the Context Group we were looking for
-            return 1 + i;
-        }
+		if (!it->empty()) {
+			// Try to share resource lists with first Context in the group
+			if (wglShareLists(it->front(), hRC) == TRUE) {
+				// Succeeded, so add the new Rendering Context to this Video Context
+				it->push_back(hRC);
+				// We're done, this is the Context Group we were looking for
+				return 1 + i;
+			}
+		}
+		else if (iempty < 0) {
+			iempty = i;
+		}
     }
-    // Could not share with any Video Context, so create and add new Video Context
-    video_context_t vctx;
-    vctx.push_back(hRC);
-    video_contexts.push_back(vctx);
-    return 1 + i; // add 1 to reserve 0 = unassigned
+    // Could not share with any Video Context, so create and add new Video Context (or reuse an empty one)
+	if (iempty < 0) {
+		video_context_t vctx;
+		vctx.push_back(hRC);
+		video_contexts.push_back(vctx);
+	    return 1 + i; // add 1 to reserve 0 = unassigned
+	}
+	else {
+		video_contexts[iempty].push_back(hRC);
+		return 1 + iempty;
+	}
 }
 
-static void
+static bool
 removeRCFromVideoContext(HGLRC hRC)
 {
     video_contexts_t::iterator it = video_contexts.begin();
     for ( ; it != video_contexts.end(); it ++) 
     {
         video_context_t & vctx = *it;
-        for (video_context_t::iterator irc = vctx.begin(); irc != vctx.end(); irc ++)
-            if (*irc == hRC) {
-                vctx.erase(irc);
-                return;
-            }
+		if (vctx.size() > 1) {
+			for (video_context_t::iterator irc = vctx.begin(); irc != vctx.end(); irc ++)
+				if (*irc == hRC) {
+					vctx.erase(irc);
+					return true;
+				}
+		}
+		// could not remove the RC (was the last in the video context)
+		return false;
     }
     assert(false);
 }
@@ -216,8 +232,9 @@ setupWindowForOpenGL(MSWinSurface *surf, ISurface::Attributes attribs)
 void
 retireContext(HGLRC hRC)
 {
-    removeRCFromVideoContext(hRC);
-    if (! wglDeleteContext(hRC)) throw EMSWinError(GetLastError(), "wglDeleteContext");
+    if (removeRCFromVideoContext(hRC)) {
+		if (! wglDeleteContext(hRC)) throw EMSWinError(GetLastError(), "wglDeleteContext");
+	}
 }
 
 } // ns gsm
