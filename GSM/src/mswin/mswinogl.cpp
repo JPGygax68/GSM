@@ -156,6 +156,7 @@ removeRCFromVideoContext(HGLRC hRC)
 		return false;
     }
     assert(false);
+	return false;
 }
 
 //--- PUBLIC ROUTINES ---------------------------------------------------------
