@@ -236,7 +236,7 @@ texturedRectangle(unsigned wb, unsigned hb, int xr, int yr, unsigned wr, unsigne
         OGL(glTexCoord2d, (x1t, y2t)); OGL(glVertex2i, (   x, y+hr));
         OGL(glTexCoord2d, (x2t, y2t)); OGL(glVertex2i, (x+wr, y+hr));
         OGL(glTexCoord2d, (x2t, y1t)); OGL(glVertex2i, (x+wr, y   ));
-    OGL(glEnd, ());
+    OGLI(glEnd, ());
 }
 
 // TODO: Character Set
