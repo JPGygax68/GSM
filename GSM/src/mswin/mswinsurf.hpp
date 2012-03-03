@@ -19,7 +19,7 @@ namespace gsm {
 
     class MSWinSurface: public ISurface {
     public:
-        ~MSWinSurface();
+        virtual ~MSWinSurface();
 
     public: // ISurface
         virtual void show();

@@ -25,7 +25,7 @@ MSWinSurface::MSWinSurface(IDisplay *disp_)
 
 MSWinSurface::~MSWinSurface()
 {
-    if (! CloseWindow(hWnd) )
+    if (! DestroyWindow(hWnd) )
         throw EMSWinError(GetLastError(), "CloseWindow");
 
     if (hGLRC != 0) {
