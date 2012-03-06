@@ -201,7 +201,8 @@ initGlew()
         if (! wglMakeCurrent(hDC, hRC)) throw EMSWinError(GetLastError(), "wglMakeCurrent() failed on invisible OpenGL window");
 
         // Initialize GLEW
-        if (glewInit() != GLEW_OK)
+		glewExperimental = TRUE;
+		if (glewInit() != GLEW_OK)
             throw EMSWinError(GetLastError(), "glewInit()");
 
         init_done = true;
