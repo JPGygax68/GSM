@@ -310,8 +310,7 @@ static void
 registerWindowClass()
 {
     WNDCLASS wc;
-    //wc.cbSize = sizeof(WNDCLASSEX);
-    wc.style = CS_OWNDC | CS_DBLCLKS; //CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS; // AB(20.11.07) Added CS_OWNDC
+    wc.style = CS_OWNDC | CS_DBLCLKS;
     wc.lpfnWndProc = WndProc;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;

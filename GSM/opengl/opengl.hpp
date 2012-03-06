@@ -10,6 +10,8 @@
 #ifndef __GSM_OPENGL_OPENGL_HPP
 #define __GSM_OPENGL_OPENGL_HPP
 
+#include <GL/glew.h>
+
 #include "../types.hpp"
 #include "../ifont.hpp"
 
