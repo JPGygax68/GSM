@@ -13,10 +13,12 @@
 #include <string>
 #include <stdarg.h>
 
-const std::string
+#include "..\dll.h"
+
+const std::string GSM_API
 format(const char *fmt, ...);
 
-const std::wstring
+const std::wstring GSM_API
 format(const wchar_t *fmt, ...);
 
 #endif // __GSM_UTIL_FORMAT_HPP

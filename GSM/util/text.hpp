@@ -10,8 +10,9 @@
 #ifndef __GSM_UTIL_TEXT_HPP
 #define __GSM_UTIL_TEXT_HPP
 
-#include "bitset.hpp"
+#include "../dll.h"
 #include "../ifont.hpp"
+#include "bitset.hpp"
 
 namespace gsm {
 
@@ -28,11 +29,13 @@ typedef void (*ttCallbackFunc)(void *userdata, unsigned char_idx, const Bounding
 
 /** Traverse text.
  */
-void traverseText(IFont *font, const unicode_t *text, size_t len, int linespacing, ttCallbackFunc cb, void *userdata);
+void GSM_API
+traverseText(IFont *font, const unicode_t *text, size_t len, int linespacing, ttCallbackFunc cb, void *userdata);
 
 /** Get the bounding box (relative to an assumed insertion point at 0,0) of a span of text.
  */
-const BoundingBox getTextBounds(IFont *font, const unicode_t *text, size_t len = 0, int linespacing = 0);
+const BoundingBox GSM_API
+getTextBounds(IFont *font, const unicode_t *text, size_t len = 0, int linespacing = 0);
 
 } // ns gsm
 

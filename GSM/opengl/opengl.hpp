@@ -12,6 +12,7 @@
 
 #include <GL/glew.h>
 
+#include "../dll.h"
 #include "../types.hpp"
 #include "../ifont.hpp"
 
@@ -27,7 +28,7 @@ typedef void * fonthandle_t;
 
 /** Draw a simple rectangle.
  */
-void
+void GSM_API
 rectangle(unsigned wb, unsigned hb, int x = 0, int y = 0);
 
 /** Texture must already be bound when calling this method.
@@ -36,7 +37,7 @@ rectangle(unsigned wb, unsigned hb, int x = 0, int y = 0);
     wr, hr:		width and height of rectangle within texture bitmap (in pixels)
     x, y  :     position of top-left corner on screen
     */
-void
+void GSM_API
 texturedRectangle(unsigned wb, unsigned hb, int xr, int yr, unsigned wr, unsigned hr, int x = 0, int y = 0);
 
 //--- TEXT & FONTS ------------------------------------------------------------
@@ -45,7 +46,7 @@ texturedRectangle(unsigned wb, unsigned hb, int xr, int yr, unsigned wr, unsigne
     The function returns a handle to be specified in text rendering calls.
     TODO: distinguish between monitors to take advantage of ClearType
  */
-fonthandle_t
+fonthandle_t GSM_API
 prepareFont(IFont *font, int vidCtxID);
 
 /** Saves the current projection matrix and sets up a new projection so that 2D coordinates 
@@ -53,38 +54,44 @@ prepareFont(IFont *font, int vidCtxID);
     bottom-right corner at (width, height).
     DOES NOT clear the MODELVIEW matrix!
  */
-void
+void GSM_API
 prepareForTextRendering();
 
 /** Restores the previous projection matrix. This is equivalent to doing glPopMatrix()
     with the GL_PROJECTION matrix active, then selecting the GL_MODELVIEW matrix.
  */
-void
+void GSM_API
 doneWithTextRendering();
 
 /** Renders Unicode text, which may contain line breaks (CR), but no other control
     characters.
  */
-void renderText(fonthandle_t fonthandle, const unicode_t *text, int &dx, int &dy);
+void GSM_API
+renderText(fonthandle_t fonthandle, const unicode_t *text, int &dx, int &dy);
 
 /** Use this version if you do not need to track output position advances.
  */
-void renderText(fonthandle_t fonthandle, const unicode_t *text);
+void GSM_API
+renderText(fonthandle_t fonthandle, const unicode_t *text);
 
 /** Determine the width of a line of text.
  */
-void measureText(fonthandle_t fonthandle, const unicode_t *text, size_t len, int interline, BoundingBox &bbox);
+void GSM_API
+measureText(fonthandle_t fonthandle, const unicode_t *text, size_t len, int interline, BoundingBox &bbox);
 
 /** Render text, aligning it.
     This routine does not attempt to break lines that do not fit the specified width.
  */
-void renderTextAligned(fonthandle_t fonthandle, const unicode_t *text, size_t len, IFont::Alignment align, int interline, unsigned w, int &y);
+void GSM_API
+renderTextAligned(fonthandle_t fonthandle, const unicode_t *text, size_t len, IFont::Alignment align, int interline, unsigned w, int &y);
 
-int calcLeading(fonthandle_t font1, fonthandle_t font2 = NULL, unsigned lineSpacing = 0);
+int GSM_API
+calcLeading(fonthandle_t font1, fonthandle_t font2 = NULL, unsigned lineSpacing = 0);
 
 //--- DEBUG -------------------------------------------------------------------
 
-bool dbg_getFontTexture(fonthandle_t fonthandle, unsigned range_index, GLuint &tex, unsigned &w, unsigned &h);
+bool  GSM_API
+dbg_getFontTexture(fonthandle_t fonthandle, unsigned range_index, GLuint &tex, unsigned &w, unsigned &h);
 
 } // ns opengl
 } // ns gsm

@@ -21,6 +21,7 @@
 #include <vector>
 #include <algorithm>
 
+#include "..\dll.h"
 #include "errlog.hpp"
 
 namespace gsm {
@@ -89,7 +90,7 @@ inline void copy_vector4(Float *vec, Float *src) {
 // CLASSES ----------------------------------------------------------------------------
 
 template <typename Float>
-class Vector3 {
+class GSM_API Vector3 {
 public:
 	Vector3() {
 		_vec[0] = _vec[1] = _vec[2] = 0;
@@ -118,7 +119,7 @@ private:
 };
 
 template <typename Float>
-class Vector4 {
+class GSM_API Vector4 {
 public:
 	Vector4() {
 		_vec[0] = _vec[1] = _vec[2] = 0;
@@ -145,7 +146,7 @@ private:
 };
 
 template <typename Float>
-class Color3: public Vector3<Float> {
+class GSM_API Color3: public Vector3<Float> {
 public:
 	Color3(): Vector3() {}
 	Color3(const Float *src): Vector3(src) {}
@@ -153,7 +154,7 @@ public:
 };
 
 template <typename Float>
-class Color4: public Vector4<Float> {
+class GSM_API Color4: public Vector4<Float> {
 public:
 	Color4() { set(0, 0, 0, 0); }
 	Color4(Float r, Float g, Float b, Float a = 1): Vector4(r, g, b, a) {}
@@ -163,7 +164,7 @@ public:
 	}
 };
 
-class Positionable {
+class GSM_API Positionable {
 public:
 	Positionable() {
 		position();
@@ -188,7 +189,7 @@ void set_position(Obj & obj, Float x, Float y, Float z) {
 	static_cast<Positionable&>(obj).position(x, y, z);
 }
 
-class Light: public Positionable {
+class GSM_API Light: public Positionable {
 public:
 	Light() {
 		//_index = index_;
