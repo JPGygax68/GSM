@@ -10,21 +10,22 @@
 #ifndef __GSM_HPP
 #define __GSM_HPP
 
+#include "dll.h"
 #include "compmgr.hpp"          // the Component Manager is the starting point and is always needed
 #include "isessionmgr.hpp"      // cannot do much at all without a Session Manager
 
 namespace gsm {
 
-class ISessionManager;
-class IFontProvider;
+    class ISessionManager;
+    class IFontProvider;
 
-void init();
+    void GSM_API init();
 
-void shutdown();
+    void GSM_API shutdown();
 
-ISessionManager *sessionManager();
+    ISessionManager GSM_API * sessionManager();
 
-IFontProvider *fontProvider();
+    IFontProvider GSM_API * fontProvider();
 
 } // ns gsm
 

@@ -10,9 +10,11 @@
 #ifndef __GSM_ICANVAS_HPP
 #define __GSM_ICANVAS_HPP
 
+#include "dll.h"
+
 namespace gsm {
 
-class ICanvas {
+class GSM_API ICanvas {
 public:
 };
 

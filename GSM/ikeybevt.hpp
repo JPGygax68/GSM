@@ -10,12 +10,14 @@
 #ifndef __GSM_IKEYBEVT_HPP
 #define __GSM_IKEYBEVT_HPP
 
+#include "dll.h"
+
 #include "types.hpp"
 #include "ievent.hpp"
 
 namespace gsm {
 
-class IKeyboardEvent {
+class GSM_API IKeyboardEvent {
 public:
     enum Keycode { SHIFT = 16, CTRL = 17, ALT = 18 };
 

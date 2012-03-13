@@ -10,6 +10,7 @@
 #ifndef __GSM_IDISPLAY_HPP
 #define __GSM_IDISPLAY_HPP
 
+#include "dll.h"
 #include "icanvas.hpp"
 
 namespace gsm {
@@ -18,7 +19,7 @@ class IKeyboardEvent;
 class IPointerMotionEvent;
 class IPointerButtonEvent;
 
-class IDisplay {
+class GSM_API IDisplay {
 public:
     virtual void onInit() = 0;
     virtual void onResize(int w, int h) = 0;

@@ -13,15 +13,9 @@
 
 #-- My filters ----------------------------------
 
-#
-# My all-purpose backup directory, and other stuff
-#
-*/Backup/*
-gygax/
+lib/*
+bin/*
 
-#
-# Others
-#
 *.orig
 *.old
 *.backup

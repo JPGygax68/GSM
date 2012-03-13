@@ -10,9 +10,11 @@
 #ifndef __GSM_IPTRBTNEVT_HPP
 #define __GSM_IPTRBTNEVT_HPP
 
+#include "dll.h"
+
 namespace gsm {
 
-    class IPointerButtonEvent {
+    class GSM_API IPointerButtonEvent {
     public:
         enum Button { NONE = 0, LEFT, RIGHT, MIDDLE, WHEEL, EXTENDED_1, EXTENDED_2 };
 

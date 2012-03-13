@@ -10,9 +10,11 @@
 #ifndef __GSM_IBITMAP_HPP
 #define __GSM_IBITMAP_HPP
 
+#include "dll.h"
+
 namespace gsm {
 
-    class IBitmap {
+    class GSM_API IBitmap {
     public:
         virtual ~IBitmap() {}
         virtual unsigned width() const = 0;

@@ -12,6 +12,8 @@
 
 #include <string>
 #include <vector>
+
+#include "dll.h"
 #include "types.hpp"
 #include "gfxtypes.hpp"
 #include "util/bitset.hpp"
@@ -24,7 +26,7 @@ namespace gsm {
     /** The IFont interface represents a rasterized font as provided by the Font 
         Provider.
      */
-    class IFont {
+    class GSM_API IFont {
     public:
 
         static const unsigned DEFAULT_MAX_BITMAP_SIZE = 1024;

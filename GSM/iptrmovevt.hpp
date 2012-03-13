@@ -10,11 +10,13 @@
 #ifndef __GSM_IPTRMOVEVT_HPP
 #define __GSM_IPTRMOVEVT_HPP
 
+#include "dll.h"
+
 #include "gfxtypes.hpp"
 
 namespace gsm {
 
-    class IPointerMotionEvent {
+    class GSM_API IPointerMotionEvent {
     public:
 
         virtual const Position position() = 0;

@@ -11,6 +11,8 @@
 #define __GSM_IFONTPROV_HPP
 
 #include <string>
+
+#include "dll.h"
 #include "icomp.hpp"
 #include "util/bitset.hpp"
 
@@ -18,7 +20,7 @@
 
 namespace gsm {
 
-    class IFontProvider: public IComponent {
+    class GSM_API IFontProvider: public IComponent {
     public:
 
         enum Unit { PIXELS = 0, POINTS };

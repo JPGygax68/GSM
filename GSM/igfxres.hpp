@@ -12,11 +12,13 @@
 #ifndef __GSM_GFXRES_HPP
 #define __GSM_GFXRES_HPP
 
+#include "dll.h"
+
 namespace gsm {
 
     class IBoundGraphicsResource;
 
-    class IGraphicsResource {
+    class GSM_API IGraphicsResource {
     public:
         virtual void * bind(int vidMemCtxID) = 0;
         virtual bool isBound(int vidMemCtxID) = 0;

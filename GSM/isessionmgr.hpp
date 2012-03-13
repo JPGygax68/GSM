@@ -14,6 +14,8 @@
         and resource unbind must be called for all resources attached to each).
  */
 
+#include "dll.h"
+
 #include "icomp.hpp"
 #include "isurface.hpp"
 #include "util/bitset.hpp"
@@ -25,7 +27,7 @@ class IDisplay;
 class IEvent;
 class IGraphicsResource;
 
-class ISessionManager: public IComponent {
+class GSM_API ISessionManager: public IComponent {
 public:
 
     enum MetaKey {

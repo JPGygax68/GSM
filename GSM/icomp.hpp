@@ -10,9 +10,11 @@
 #ifndef __GSM_ICOMP_HPP
 #define __GSM_ICOMP_HPP
 
+#include "dll.h"
+
 namespace gsm {
 
-    class IComponent {
+    class GSM_API IComponent {
     public:
         virtual ~IComponent() {}
     };

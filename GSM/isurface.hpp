@@ -10,6 +10,8 @@
 #ifndef __GSM_ISURFACE_HPP
 #define __GSM_ISURFACE_HPP
 
+#include "dll.h"
+
 #include "util/bitset.hpp"
 
 namespace gsm {
@@ -17,7 +19,7 @@ namespace gsm {
 class IEvent;
 struct Rect;
 
-class ISurface {
+class GSM_API ISurface {
 public:
 
     virtual ~ISurface() {}
