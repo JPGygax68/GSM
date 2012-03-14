@@ -125,9 +125,6 @@
     <ClCompile Include="..\..\GSM\src\compmgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GSM\src\format.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\GSM\src\mswin\mswinerr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

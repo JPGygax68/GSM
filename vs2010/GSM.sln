@@ -7,16 +7,26 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GSM", "GSM\GSM.vcxproj", "{
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug DLL|Win32 = Debug DLL|Win32
 		Debug|Win32 = Debug|Win32
+		Release DLL|Win32 = Release DLL|Win32
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6CD58E6F-BBA4-47CE-A0A4-335A4B09B91A}.Debug DLL|Win32.ActiveCfg = Debug DLL|Win32
+		{6CD58E6F-BBA4-47CE-A0A4-335A4B09B91A}.Debug DLL|Win32.Build.0 = Debug DLL|Win32
 		{6CD58E6F-BBA4-47CE-A0A4-335A4B09B91A}.Debug|Win32.ActiveCfg = Debug|Win32
 		{6CD58E6F-BBA4-47CE-A0A4-335A4B09B91A}.Debug|Win32.Build.0 = Debug|Win32
+		{6CD58E6F-BBA4-47CE-A0A4-335A4B09B91A}.Release DLL|Win32.ActiveCfg = Release DLL|Win32
+		{6CD58E6F-BBA4-47CE-A0A4-335A4B09B91A}.Release DLL|Win32.Build.0 = Release DLL|Win32
 		{6CD58E6F-BBA4-47CE-A0A4-335A4B09B91A}.Release|Win32.ActiveCfg = Release|Win32
 		{6CD58E6F-BBA4-47CE-A0A4-335A4B09B91A}.Release|Win32.Build.0 = Release|Win32
+		{C685E2C1-D20A-4F49-B50C-9CF8D41B6E73}.Debug DLL|Win32.ActiveCfg = Debug DLL|Win32
+		{C685E2C1-D20A-4F49-B50C-9CF8D41B6E73}.Debug DLL|Win32.Build.0 = Debug DLL|Win32
 		{C685E2C1-D20A-4F49-B50C-9CF8D41B6E73}.Debug|Win32.ActiveCfg = Debug|Win32
 		{C685E2C1-D20A-4F49-B50C-9CF8D41B6E73}.Debug|Win32.Build.0 = Debug|Win32
+		{C685E2C1-D20A-4F49-B50C-9CF8D41B6E73}.Release DLL|Win32.ActiveCfg = Release DLL|Win32
+		{C685E2C1-D20A-4F49-B50C-9CF8D41B6E73}.Release DLL|Win32.Build.0 = Release DLL|Win32
 		{C685E2C1-D20A-4F49-B50C-9CF8D41B6E73}.Release|Win32.ActiveCfg = Release|Win32
 		{C685E2C1-D20A-4F49-B50C-9CF8D41B6E73}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
