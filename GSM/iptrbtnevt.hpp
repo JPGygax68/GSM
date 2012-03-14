@@ -11,6 +11,7 @@
 #define __GSM_IPTRBTNEVT_HPP
 
 #include "dll.h"
+#include "gfxtypes.hpp"
 
 namespace gsm {
 
