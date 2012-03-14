@@ -8,7 +8,6 @@
  *-----------------------------------------------------------------------------*/
 
 #include <cassert>
-#include "../../util/oglhelper.hpp"
 #include "mswinerr.hpp"
 #include "mswinogl.hpp"
 #include "mswinsurf.hpp"

@@ -13,7 +13,6 @@
 #include <GL/GLew.h>
 #include <map>
 #include <cmath>
-#include "../../util/oglhelper.hpp"
 #include "../../ibitmap.hpp"
 #include "../../gfxtypes.hpp"
 #include "../../opengl/opengl.hpp"
@@ -225,8 +224,6 @@ rectangle(unsigned wb, unsigned hb, int x , int y)
 void
 texturedRectangle(unsigned wb, unsigned hb, int xr, int yr, unsigned wr, unsigned hr, int x, int y)
 {
-    //GLdouble wtex = pixel_to_texture_pos(wb, 1);
-    //GLdouble htex = pixel_to_texture_pos(hb, 1);
     GLdouble x1t = pixelToTexturePos(wb, xr);
     GLdouble y1t = 1 - pixelToTexturePos(hb, yr);
     GLdouble x2t = pixelToTexturePos(wb, xr + wr);
@@ -236,6 +233,43 @@ texturedRectangle(unsigned wb, unsigned hb, int xr, int yr, unsigned wr, unsigne
         OGL(glTexCoord2d, (x1t, y2t)); OGL(glVertex2i, (   x, y+hr));
         OGL(glTexCoord2d, (x2t, y2t)); OGL(glVertex2i, (x+wr, y+hr));
         OGL(glTexCoord2d, (x2t, y1t)); OGL(glVertex2i, (x+wr, y   ));
+    OGLI(glEnd, ());
+}
+
+void
+drawBevelFrame(unsigned w, unsigned h, unsigned bw, const Float4 *colors, int x, int y)
+{
+    // Draw north slope
+    glColor4fv(colors[0]);
+    OGL(glBegin, (GL_TRIANGLE_STRIP));
+        glVertex2i(x, y);
+        glVertex2i(x + bw, y + bw);
+        glVertex2i(x + w, y );
+        glVertex2i(x + w - bw, y + bw);
+    OGLI(glEnd, ());
+    // East slope
+    glColor4fv(colors[1]);
+    OGL(glBegin, (GL_TRIANGLE_STRIP));
+        glVertex2i(x + w, y);
+        glVertex2i(x + w - bw, y + bw);
+        glVertex2i(x + w, y + h);
+        glVertex2i(x + w - bw, y + h - bw);
+    OGLI(glEnd, ());
+    // South slope
+    glColor4fv(colors[2]);
+    OGL(glBegin, (GL_TRIANGLE_STRIP));
+        glVertex2i(x + w - bw, y + h - bw);
+        glVertex2i(x + bw, y + h - bw);
+        glVertex2i(x + w, y + h);
+        glVertex2i(x, y + h);
+    OGLI(glEnd, ());
+    // Left slope
+    glColor4fv(colors[3]);
+    OGL(glBegin, (GL_TRIANGLE_STRIP));
+        glVertex2i(x, y);
+        glVertex2i(x, y + h);
+        glVertex2i(x + bw, y + bw);
+        glVertex2i(x + bw, y + h - bw);
     OGLI(glEnd, ());
 }
 

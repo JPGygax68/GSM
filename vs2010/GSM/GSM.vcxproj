@@ -52,7 +52,6 @@
     <ClInclude Include="..\..\GSM\util\bitset.hpp" />
     <ClInclude Include="..\..\GSM\util\errlog.hpp" />
     <ClInclude Include="..\..\GSM\util\format.hpp" />
-    <ClInclude Include="..\..\GSM\util\oglhelper.hpp" />
     <ClInclude Include="..\..\GSM\util\text.hpp" />
   </ItemGroup>
   <ItemGroup>

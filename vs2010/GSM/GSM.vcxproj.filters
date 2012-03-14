@@ -45,9 +45,6 @@
     <ClInclude Include="..\..\GSM\src\mswin\mswinevt.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\GSM\util\oglhelper.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\GSM\util\errlog.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
