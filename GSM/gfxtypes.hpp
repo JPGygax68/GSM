@@ -59,6 +59,13 @@ struct Position {
 struct Rect {
     int x, y;
     unsigned w, h;
+    Rect(): x(0), y(0), w(0), h(0) {}
+    Rect(int x_, int y_, unsigned w_, unsigned h_): x(x_), y(y_), w(w_), h(h_) {}
+    bool 
+    isPointInside(int x_, int y_) { 
+        return x_ >= x && x_ < (x + (signed)w) 
+            && y_ >= y && y_ < (y + (signed)h); 
+    }
 };
 
 } // ns gsm

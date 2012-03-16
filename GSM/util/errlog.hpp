@@ -10,6 +10,8 @@
 #ifndef __GSM_UTIL_ERRLOG_HPP
 #define __GSM_UTIL_ERRLOG_HPP
 
+#include <Windows.h>
+#include <algorithm>
 #include <GL/glew.h>
 
 namespace gsm {

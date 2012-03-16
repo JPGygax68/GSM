@@ -163,7 +163,7 @@ traverseText(fonthandle_t fonthandle, const unicode_t *text, size_t len, int int
                 int ddy = max((signed)bind.ascent + interline, (signed)bind.descent + interline);
                 if (draw) glTranslatef((GLfloat)ddx, (GLfloat)ddy, 0);
                 dy += ddy;
-                dx = x;
+                dx = 0;
             }
         }
         else {

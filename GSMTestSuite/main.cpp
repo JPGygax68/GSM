@@ -13,7 +13,6 @@
 #include <set>
 #include <GL/glew.h>
 #include <GL/GLU.h>
-#include <GSM/util/oglhelper.hpp>
 #include <GSM/util/text.hpp>
 #include <GSM/gsm.hpp>
 #include <GSM/ifontprov.hpp>

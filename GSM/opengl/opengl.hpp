@@ -18,6 +18,7 @@
 #include "../dll.h"
 #include "../types.hpp"
 #include "../ifont.hpp"
+#include "../util/errlog.hpp"
 
 namespace gsm {
 
@@ -45,7 +46,7 @@ public:
 #if _DEBUG && (!_NO_OPENGL_CHECKS)
 
 	//#ifdef _OGLERROR_THROW
-		#define OGLREPORT(err, ctx) throw Error(err, ctx)
+		#define OGLREPORT(err, ctx) throw gsm::ogl::Error(err, ctx)
 	//#else
 	//	#define OGLREPORT(err, ctx) gsm::ErrorLogger::instance()->log(err, ctx)
 	//#endif
@@ -235,6 +236,8 @@ doneWithTextRendering();
 
 /** Renders Unicode text, which may contain line breaks (CR), but no other control
     characters.
+    - This routine modifies the transformation matrix by doing pixel-aligned translations.
+    - The horizontal and vertical displacements are also added to the dx and dy parameters.
  */
 void GSM_API
 renderText(fonthandle_t fonthandle, const unicode_t *text, int &dx, int &dy);
