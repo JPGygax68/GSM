@@ -36,9 +36,11 @@ rectangle(unsigned wb, unsigned hb, int x = 0, int y = 0);
     xr, yr:		origin from top-left of rectangle within texture bitmap (in pixels)
     wr, hr:		width and height of rectangle within texture bitmap (in pixels)
     x, y  :     position of top-left corner on screen
+	yFlipped:	if true, the bitmap is "upside-down" (bottom pixels first in memory)
     */
 void GSM_API
-texturedRectangle(unsigned wb, unsigned hb, int xr, int yr, unsigned wr, unsigned hr, int x = 0, int y = 0);
+texturedRectangle(unsigned wb, unsigned hb, int xr, int yr, unsigned wr, unsigned hr, int x = 0, int y = 0, 
+	bool yFlipped = false);
 
 //--- TEXT & FONTS ------------------------------------------------------------
 
