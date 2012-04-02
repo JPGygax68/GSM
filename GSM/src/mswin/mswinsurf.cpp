@@ -24,6 +24,9 @@ MSWinSurface::MSWinSurface(IDisplay *disp_)
 
 MSWinSurface::~MSWinSurface()
 {
+    for (unsigned i = 0; i < extra_contexts.size(); i++)
+    	CHECK(wglDeleteContext, (extra_contexts[i]));
+
     if (! DestroyWindow(hWnd) )
         throw EMSWinError(GetLastError(), "CloseWindow");
 
@@ -103,7 +106,11 @@ MSWinSurface::selectExtraContext(void *ctx)
 void
 MSWinSurface::deleteExtraContext(void *ctx)
 {
-	CHECK(wglDeleteContext, ((HGLRC)ctx));
+    for (std::vector<HGLRC>::iterator it = extra_contexts.begin(); it != extra_contexts.end(); it ++) 
+        if (*it == (HGLRC) ctx) {
+            CHECK(wglDeleteContext, ((HGLRC)ctx));
+            extra_contexts.erase(it);
+        }
 }
 
 } // ns mswinsurf

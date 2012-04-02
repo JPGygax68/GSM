@@ -10,6 +10,7 @@
 #ifndef __GSM_MSWINSURF_HPP
 #define __GSM_MSWINSURF_HPP
 
+#include <vector>
 #include <Windows.h>
 #include "../../isurface.hpp"
 
@@ -69,10 +70,11 @@ namespace gsm {
     private:
         void bindGraphicsResources();
 
-        IDisplay *disp;
-        HWND    hWnd;
-        HGLRC   hGLRC;
-        int     vidctx_id;
+        IDisplay                            *disp;
+        HWND                                hWnd;
+        HGLRC                               hGLRC;
+        int                                 vidctx_id;
+        std::vector<HGLRC>                  extra_contexts;
         friend class MSWinSessionManager;
     };
 
