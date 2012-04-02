@@ -78,8 +78,8 @@ bindFont(IFont *font, const CharacterSet *charset_)
         IFont::GlyphMetrics gm;
         font->getGlyphMetrics(*p, gm);
         // Update ascent & descent
-        if ((-gm.yMin) > (signed)bind->ascent) bind->ascent = (unsigned) (-gm.yMin);
-        if (gm.yMax > (signed)bind->descent) bind->descent = (unsigned) (gm.yMax);
+        if ((-gm.yMin) > (signed) bind->ascent ) bind->ascent  = (unsigned) (-gm.yMin);
+        if (( gm.yMax) > (signed) bind->descent) bind->descent = (unsigned) ( gm.yMax);
     }
 
     // Convert each character in the character set into a Display List
@@ -89,9 +89,9 @@ bindFont(IFont *font, const CharacterSet *charset_)
         IFont::Rasterization rast = font->rasterize(charset, it);
         // Some preparation
         IBitmap *bmp = rast.bitmap;
-        bind->list_bases.reserve(rast.character_set.ranges().size());
-        bind->textures.reserve(rast.character_set.ranges().size());
-        bind->tex_sizes.reserve(rast.character_set.ranges().size());
+        bind->list_bases.reserve( rast.character_set.ranges().size() );
+        bind->textures  .reserve( rast.character_set.ranges().size() );
+        bind->tex_sizes .reserve( rast.character_set.ranges().size() );
         // Create alpha texture from rasterized bitmap
         GLuint texture;
         OGL(glGenTextures, (1, &texture) );
@@ -131,8 +131,8 @@ bindFont(IFont *font, const CharacterSet *charset_)
             // Add range to bind's character set (+debug info)
             bind->char_set.add(range);
             bind->list_bases.push_back(lists_base);
-            bind->textures.push_back(texture);
-            bind->tex_sizes.push_back(Extents(bmp->width(), bmp->height()));
+            bind->textures  .push_back(texture);
+            bind->tex_sizes .push_back(Extents(bmp->width(), bmp->height()));
         }
         // Done with this bitmap
         delete rast.bitmap;
@@ -225,9 +225,9 @@ void
 texturedRectangle(unsigned wb, unsigned hb, int xr, int yr, unsigned wr, unsigned hr, int x, int y)
 {
     GLdouble x1t = pixelToTexturePos(wb, xr);
-    GLdouble y1t = 1 - pixelToTexturePos(hb, yr);
+    GLdouble y1t = pixelToTexturePos(hb, yr); //1 - pixelToTexturePos(hb, yr);
     GLdouble x2t = pixelToTexturePos(wb, xr + wr);
-    GLdouble y2t = 1 - pixelToTexturePos(hb, yr + hr);
+    GLdouble y2t = pixelToTexturePos(hb, yr + hr); //1 - pixelToTexturePos(hb, yr + hr);
     OGL(glBegin, (GL_QUADS) );
         OGL(glTexCoord2d, (x1t, y1t)); OGL(glVertex2i, (   x, y   ));
         OGL(glTexCoord2d, (x1t, y2t)); OGL(glVertex2i, (   x, y+hr));
@@ -237,10 +237,11 @@ texturedRectangle(unsigned wb, unsigned hb, int xr, int yr, unsigned wr, unsigne
 }
 
 void
-drawBevelFrame(unsigned w, unsigned h, unsigned bw, const Float4 *colors, int x, int y)
+drawBevelFrame(unsigned w, unsigned h, unsigned bw, const Float4 *colors, int x, int y, GLfloat opacity)
 {
     // Draw north slope
-    glColor4fv(colors[0]);
+    //glColor4fv(colors[0]);
+    glColor4fv( (const GLfloat*) Color4f::from3(colors[0], opacity) );
     OGL(glBegin, (GL_TRIANGLE_STRIP));
         glVertex2i(x, y);
         glVertex2i(x + bw, y + bw);
@@ -248,7 +249,8 @@ drawBevelFrame(unsigned w, unsigned h, unsigned bw, const Float4 *colors, int x,
         glVertex2i(x + w - bw, y + bw);
     OGLI(glEnd, ());
     // East slope
-    glColor4fv(colors[1]);
+    //glColor4fv(colors[1]);
+    glColor4fv( (const GLfloat*) Color4f::from3(colors[1], opacity) );
     OGL(glBegin, (GL_TRIANGLE_STRIP));
         glVertex2i(x + w, y);
         glVertex2i(x + w - bw, y + bw);
@@ -256,7 +258,8 @@ drawBevelFrame(unsigned w, unsigned h, unsigned bw, const Float4 *colors, int x,
         glVertex2i(x + w - bw, y + h - bw);
     OGLI(glEnd, ());
     // South slope
-    glColor4fv(colors[2]);
+    //glColor4fv(colors[2]);
+    glColor4fv( (const GLfloat*) Color4f::from3(colors[2], opacity) );
     OGL(glBegin, (GL_TRIANGLE_STRIP));
         glVertex2i(x + w - bw, y + h - bw);
         glVertex2i(x + bw, y + h - bw);
@@ -264,7 +267,8 @@ drawBevelFrame(unsigned w, unsigned h, unsigned bw, const Float4 *colors, int x,
         glVertex2i(x, y + h);
     OGLI(glEnd, ());
     // Left slope
-    glColor4fv(colors[3]);
+    //glColor4fv(colors[3]);
+    glColor4fv( (const GLfloat*) Color4f::from3(colors[3], opacity) );
     OGL(glBegin, (GL_TRIANGLE_STRIP));
         glVertex2i(x, y);
         glVertex2i(x, y + h);

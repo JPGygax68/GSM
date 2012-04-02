@@ -13,12 +13,16 @@
 #include <string>
 #include <sstream>
 #include <stdexcept>
-#include <GL/glew.h>
 
 #include "../dll.h"
 #include "../types.hpp"
 #include "../ifont.hpp"
 #include "../util/errlog.hpp"
+
+#ifdef _WIN32
+#include <Windows.h>
+#endif
+#include <GL/glew.h>
 
 namespace gsm {
 
@@ -81,25 +85,74 @@ typedef GLfloat  Float4[4];
 typedef GLdouble Double3[3];
 typedef GLdouble Double4[4];
 
+// COLOR TYPES ----------------------------------------------------------------
+
+template <typename ValueType>
+class Color4 {
+
+public:
+    static const Color4 
+    from3(const ValueType *vec, ValueType opacity = (ValueType)1.0) {
+        Color4<ValueType> clr;
+        clr[0] = vec[0];
+        clr[1] = vec[1];
+        clr[2] = vec[2];
+        clr[3] = (ValueType) opacity;
+        return clr;
+    }
+
+    static const Color4
+    from4(const ValueType *vec) {
+        Color4<ValueType> clr;
+        clr[0] = vec[0];
+        clr[1] = vec[1];
+        clr[2] = vec[2];
+        clr[3] = vec[3];
+        return clr;
+    }
+
+    Color4() { vals[0] = vals[1] = vals[2] = vals[3] = 0; }
+
+    Color4(const Color4 &src) {
+        vals[0] = src.vals[0], vals[1] = src.vals[1], vals[2] = src.vals[2], vals[3] = src.vals[3]; }
+
+    operator const ValueType * () const { return vals; }
+
+    operator ValueType * () { return vals; }
+
+    void setOpacity(ValueType opacity) { vals[3] = opacity; }
+
+private:
+    ValueType vals[4];
+};
+
+typedef Color4<GLfloat> Color4f;
+
+typedef Color4<GLdouble> Color4d;
+
 // GENERIC FUNCTIONS ----------------------------------------------------------
 
 template <typename Float>
-inline void setArray3(Float *vec, Float x, Float y, Float z) {
+inline void
+setArray3(Float *vec, Float x, Float y, Float z) {
 	vec[0] = x, vec[1] = y, vec[2] = z;
 }
 
 template <typename Float>
-inline void setArray4(Float *vec, Float x, Float y, Float z, Float w) {
+inline void
+setArray4(Float *vec, Float x, Float y, Float z, Float w) {
 	vec[0] = x, vec[1] = y, vec[2] = z, vec[3] = w;
 }
 
 template <typename Float>
-inline void copyArray3(Float *vec, const Float *src) {
+inline void
+copyArray3(Float *vec, const Float *src) {
 	vec[0] = src[0], vec[1] = src[1], vec[2] = src[2];
 }
 
 template <typename Float>
-inline void copyArray4(Float *vec, const Float *src) {
+inline void
+copyArray4(Float *vec, const Float *src) {
 	vec[0] = src[0], vec[1] = src[1], vec[2] = src[2], vec[3] = src[3];
 }
 
@@ -194,10 +247,12 @@ void GSM_API
 rectangle(unsigned wb, unsigned hb, int x = 0, int y = 0);
 
 /** Texture must already be bound when calling this method.
-    wb, hb:		bitmap width and height
-    xr, yr:		origin from top-left of rectangle within texture bitmap (in pixels)
-    wr, hr:		width and height of rectangle within texture bitmap (in pixels)
-    x, y  :     position of top-left corner on screen
+    wb, hb:		Bitmap width and height
+    xr, yr:		Origin from top-left of rectangle within texture bitmap (in pixels)
+    wr, hr:		Rendered, i.e. on-screen width and height of the rectangle (in pixels)
+                If smaller than the bitmap, the bitmap will be truncated; if larger, 
+                the bitmap will be repeated.
+    x, y  :     Position of top-left corner on screen
     */
 void GSM_API
 texturedRectangle(unsigned wb, unsigned hb, int xr, int yr, unsigned wr, unsigned hr, int x = 0, int y = 0);
@@ -209,7 +264,7 @@ texturedRectangle(unsigned wb, unsigned hb, int xr, int yr, unsigned wr, unsigne
  *  be *inside* the rectangle (i.e. included in the width and height).
  */
 void GSM_API
-drawBevelFrame(unsigned w, unsigned h, unsigned bw, const Float4 *colors, int x = 0, int y = 0);
+drawBevelFrame(unsigned w, unsigned h, unsigned bw, const Float4 *colors, int x = 0, int y = 0, GLfloat opacity = 1.0f);
 
 //--- TEXT & FONTS ------------------------------------------------------------
 
