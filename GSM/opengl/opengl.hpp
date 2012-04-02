@@ -253,9 +253,11 @@ rectangle(unsigned wb, unsigned hb, int x = 0, int y = 0);
                 If smaller than the bitmap, the bitmap will be truncated; if larger, 
                 the bitmap will be repeated.
     x, y  :     Position of top-left corner on screen
+	yFlipped:	if true, the bitmap is "upside-down" (bottom pixels first in memory)
     */
 void GSM_API
-texturedRectangle(unsigned wb, unsigned hb, int xr, int yr, unsigned wr, unsigned hr, int x = 0, int y = 0);
+texturedRectangle(unsigned wb, unsigned hb, int xr, int yr, unsigned wr, unsigned hr, int x = 0, int y = 0, 
+	bool yFlipped = false);
 
 /** Draws a bevelled, pixel-aligned rectangular frame.
  *  The "colors" parameter specifies the color of each bevel "slope", in the following order:

@@ -10,6 +10,7 @@
 #ifndef __GSM_IPTRBTNEVT_HPP
 #define __GSM_IPTRBTNEVT_HPP
 
+#include "gfxtypes.hpp"
 #include "dll.h"
 #include "gfxtypes.hpp"
 

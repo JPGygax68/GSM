@@ -120,7 +120,7 @@ bindFont(IFont *font, const CharacterSet *charset_)
                 if (gb.width() > 0 && gb.height() > 0) {
                     int xtex = gb.xLeft, ytex = gb.yTop;
                     unsigned wtex = gb.width(), htex = gb.height();
-                    texturedRectangle(bmp->width(), bmp->height(), xtex, ytex, wtex, htex, gb.xMin, gb.yMin);
+                    texturedRectangle(bmp->width(), bmp->height(), xtex, ytex, wtex, htex, gb.xMin, gb.yMin, true);
                 }
                 OGL(glBindTexture, (GL_TEXTURE_2D, 0));
                 // Advance to start position of next character
@@ -222,12 +222,12 @@ rectangle(unsigned wb, unsigned hb, int x , int y)
 }
 
 void
-texturedRectangle(unsigned wb, unsigned hb, int xr, int yr, unsigned wr, unsigned hr, int x, int y)
+texturedRectangle(unsigned wb, unsigned hb, int xr, int yr, unsigned wr, unsigned hr, int x, int y, bool yFlipped)
 {
     GLdouble x1t = pixelToTexturePos(wb, xr);
-    GLdouble y1t = pixelToTexturePos(hb, yr); //1 - pixelToTexturePos(hb, yr);
+    GLdouble y1t = pixelToTexturePos(hb, yr); if (yFlipped) y1t = 1 - y1t;
     GLdouble x2t = pixelToTexturePos(wb, xr + wr);
-    GLdouble y2t = pixelToTexturePos(hb, yr + hr); //1 - pixelToTexturePos(hb, yr + hr);
+    GLdouble y2t = pixelToTexturePos(hb, yr + hr); if (yFlipped) y2t = 1 - y2t;
     OGL(glBegin, (GL_QUADS) );
         OGL(glTexCoord2d, (x1t, y1t)); OGL(glVertex2i, (   x, y   ));
         OGL(glTexCoord2d, (x1t, y2t)); OGL(glVertex2i, (   x, y+hr));
