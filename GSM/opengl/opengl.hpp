@@ -33,10 +33,11 @@ namespace ogl {
 // EXCEPTIONS AND ERROR HANDLING ---------------------------------------------
 
 class Error : public std::runtime_error {
-	static const char * get_error_string(GLenum err) {
+	static const std::string 
+    get_error_string(GLenum err) {
 		std::stringstream ss;
-		ss << err << std::ends;
-		return ss.str().c_str();
+		ss << err << ": " << (const char *) gluErrorString(err) << std::ends;
+		return ss.str();
 	}
 public:
 	Error(GLenum err, const char * context) :
