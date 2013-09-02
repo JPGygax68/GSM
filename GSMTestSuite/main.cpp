@@ -135,8 +135,8 @@ private:
         OGL(glMatrixMode, (GL_MODELVIEW));
         OGL(glLoadIdentity, ());
 
-        ogl::fonthandle_t hdrfh = ogl::prepareFont(headerFont, vidCtxID);
-        ogl::fonthandle_t txtfh = ogl::prepareFont(textFont, vidCtxID);
+        ogl::fonthandle_t hdrfh = ogl::prepareFont(headerFont, vidCtxID, & CharacterList::LATIN1() );
+        ogl::fonthandle_t txtfh = ogl::prepareFont(textFont, vidCtxID, & CharacterList::LATIN1() );
 
         int x = 0, y = 0;
 

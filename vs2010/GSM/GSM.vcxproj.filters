@@ -84,9 +84,6 @@
     <ClInclude Include="..\..\GSM\types.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\GSM\charset.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\GSM\src\mswin\mswinfontprov.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -117,6 +114,9 @@
     <ClInclude Include="..\..\GSM\dll.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\GSM\charlist.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\GSM\src\compmgr.cpp">
@@ -137,9 +137,6 @@
     <ClCompile Include="..\..\GSM\src\mswin\mswinevt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GSM\src\charset.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\GSM\src\mswin\mswinfontprov.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -153,6 +150,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\GSM\src\util\text.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\GSM\src\charlist.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

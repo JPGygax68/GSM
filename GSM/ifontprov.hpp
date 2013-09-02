@@ -38,7 +38,8 @@ namespace gsm {
         virtual IFont * getFont(IFont::Type type = IFont::ANY,
 	        const std::string &name = "", 
             size_t height = 0, 
-            IFont::Attributes attribs = 0
+            IFont::Attributes attribs = 0,
+			IFont::CharSet charset = IFont::CHARSET_DEFAULT
             ) = 0;
 
     };

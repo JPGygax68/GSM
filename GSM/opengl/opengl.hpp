@@ -276,7 +276,7 @@ drawBevelFrame(unsigned w, unsigned h, unsigned bw, const Float4 *colors, int x 
     TODO: distinguish between monitors to take advantage of ClearType
  */
 fonthandle_t GSM_API
-prepareFont(IFont *font, int vidCtxID);
+prepareFont(IFont *font, int vidCtxID, const CharacterList * charlist = nullptr);
 
 /** Saves the current projection matrix and sets up a new projection so that 2D coordinates 
     match directly with the pixel grid, with the top-left corner being at (0, 0) and the 
