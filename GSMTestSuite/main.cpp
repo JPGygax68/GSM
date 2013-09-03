@@ -1,4 +1,4 @@
-/*-----------------------------------------------------------------------------
+ï»¿/*-----------------------------------------------------------------------------
  * This file is part of the Graphical Session Manager (GSM) project.
  * Copyright 2012 by Gygax Practical Computing, Biel/Bienne, Switzerland.
  *
@@ -158,8 +158,8 @@ private:
         ogl::renderText(hdrfh, L"Hello World!");
         glTranslatef(0, (GLfloat) ogl::calcLeading(hdrfh, txtfh), 0);
         const unicode_t * text = 
-            L"Que j'aime à faire apprendre un nombre utile aux sages\n"
-            L"Immortel, Archimède";
+            L"Que j'aime Ã  faire apprendre un nombre utile aux sages\n"
+            L"Immortel, ArchimÃ¨de";
         ogl::renderTextAligned(txtfh, text, 0, IFont::LEFT    , 0, 400, y);
         ogl::renderTextAligned(txtfh, text, 0, IFont::CENTERED, 2, 400, y);
         ogl::renderTextAligned(txtfh, text, 0, IFont::RIGHT   , 4, 400, y);

@@ -66,7 +66,8 @@ static FontBinding *
 bindFont(IFont *font, const CharacterList * charlist)
 {
     //const CharacterList * charlist = CharacterList::forCharSet(charset_);
-	if (charlist == nullptr) charlist = font->characterList();
+	if (!charlist) charlist = font->characterList();
+	//if (!charlist) charlist = & CharacterList::LATIN1();
 
     FontBinding *bind = new FontBinding();
     bind->font = font;
@@ -279,7 +280,7 @@ drawBevelFrame(unsigned w, unsigned h, unsigned bw, const Float4 *colors, int x,
 }
 
 fonthandle_t
-prepareFont(IFont *font, int vidCtxID, const CharacterList * charlist)
+prepareFont(IFont *font, int vidCtxID, const CharacterList *charlist)
 {
     // Get the Font List for the specified Video Context
     fonts_t *fonts = getFontList(vidCtxID);
