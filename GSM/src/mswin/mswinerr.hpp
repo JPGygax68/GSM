@@ -10,6 +10,7 @@
 #ifndef __GSM_MSWINERR_HPP
 #define __GSM_MSWINERR_HPP
 
+#include <string>
 #include <exception>
 #include "../../util/format.hpp"
 
@@ -18,6 +19,7 @@ namespace gsm {
 class EMSWinError: public std::exception {
 public:
     EMSWinError(int err, const char *context = NULL);
+    EMSWinError(int err, const std::string &context = "");
 };
 
 } // ns gsm

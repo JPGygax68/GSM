@@ -8,6 +8,7 @@
  *-----------------------------------------------------------------------------*/
 
 #include <Windows.h>
+#include <sstream>
 #include "../../ibitmap.hpp"
 #include "mswinerr.hpp"
 #include "../../util/text.hpp"
@@ -24,7 +25,11 @@ public:
         initInfoHeader(bih, sizeof(BITMAPINFOHEADER), w, h, bits);
         // Create the bitmap
         hbmp = CreateDIBSection(NULL, (const BITMAPINFO*) &bih, DIB_RGB_COLORS, (void**)&pixels, NULL, 0);
-        if (hbmp == 0) throw EMSWinError(GetLastError(), "CreateDIBSection (GDIBitmap)");
+        if (hbmp == 0) {
+            std::stringstream ss;
+            ss << "GDIBitmap ctor: CreateDIBSection(w = " << w << ", h = " << h << ")" << std::ends;
+            throw EMSWinError(GetLastError(), ss.str().c_str());
+        }
     }
 
     virtual ~GDIBitmap() {
