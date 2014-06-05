@@ -300,7 +300,14 @@ prepareFont(IFont *font, int vidCtxID, const CharacterList *charlist)
 void
 prepareForTextRendering()
 {
-    OGL(glPushAttrib, (GL_COLOR_BUFFER_BIT|GL_ENABLE_BIT));
+	/*
+	GLint depth1;
+	glGetIntegerv (GL_MODELVIEW_STACK_DEPTH, &depth1);
+	GLint depth2;
+	glGetIntegerv (GL_PROJECTION_STACK_DEPTH, &depth2);
+	*/
+
+	OGL(glPushAttrib, (GL_COLOR_BUFFER_BIT|GL_ENABLE_BIT));
     OGL(glDisable, (GL_LIGHTING));
     OGL(glEnable, (GL_TEXTURE_2D));
     OGL(glTexEnvi, (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE));
@@ -312,23 +319,36 @@ prepareForTextRendering()
     OGL(glMatrixMode, (GL_PROJECTION));
     OGL(glPushMatrix, ());
     OGL(glLoadIdentity, ());
-    GLint vp[4];
+    
+	GLint vp[4];
     OGL(glGetIntegerv, (GL_VIEWPORT, vp));
     OGL(glOrtho, (0, vp[2], vp[3], 0, -1, 1));
 
     OGL(glMatrixMode, (GL_MODELVIEW));
+	/*
     OGL(glPushMatrix, ());
     OGL(glLoadIdentity, ());
+	*/
 }
 
 void
 doneWithTextRendering()
 {
-    OGL(glMatrixMode, (GL_PROJECTION));
-    OGL(glPopMatrix, ());
+	/*
+	GLint depth1;
+	glGetIntegerv (GL_MODELVIEW_STACK_DEPTH, &depth1);
+	GLint depth2;
+	glGetIntegerv (GL_PROJECTION_STACK_DEPTH, &depth2);
+	*/
+
+	/*
     OGL(glMatrixMode, (GL_MODELVIEW));
     OGL(glPopMatrix, ());
+	*/
+    OGL(glMatrixMode, (GL_PROJECTION));
+    OGL(glPopMatrix, ());
     OGL(glPopAttrib, ());
+    OGL(glMatrixMode, (GL_MODELVIEW));
 }
 
 void
