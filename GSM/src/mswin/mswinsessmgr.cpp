@@ -310,6 +310,7 @@ static void
 registerWindowClass()
 {
     WNDCLASS wc;
+    memset(&wc, 0, sizeof(wc));
     wc.style = CS_OWNDC | CS_DBLCLKS;
     wc.lpfnWndProc = WndProc;
     wc.cbClsExtra = 0;
