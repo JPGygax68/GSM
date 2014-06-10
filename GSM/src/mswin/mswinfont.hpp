@@ -29,6 +29,9 @@ public:
     virtual const Rasterization 
 	rasterize(const CharacterList & charlist_, CharacterList::iterator & it, unsigned max_edge, const RasterizeOptions options);
 
+	virtual const FontHeight
+	getFontHeight();
+
     virtual void 
 	getGlyphMetrics(unicode_t ch, GlyphMetrics &gm);
 

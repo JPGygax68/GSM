@@ -325,10 +325,9 @@ prepareForTextRendering()
     OGL(glOrtho, (0, vp[2], vp[3], 0, -1, 1));
 
     OGL(glMatrixMode, (GL_MODELVIEW));
-	/*
+
     OGL(glPushMatrix, ());
     OGL(glLoadIdentity, ());
-	*/
 }
 
 void
@@ -341,10 +340,9 @@ doneWithTextRendering()
 	glGetIntegerv (GL_PROJECTION_STACK_DEPTH, &depth2);
 	*/
 
-	/*
     OGL(glMatrixMode, (GL_MODELVIEW));
     OGL(glPopMatrix, ());
-	*/
+
     OGL(glMatrixMode, (GL_PROJECTION));
     OGL(glPopMatrix, ());
     OGL(glPopAttrib, ());

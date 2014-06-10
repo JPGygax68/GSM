@@ -57,6 +57,10 @@ namespace gsm {
             int xLeft, yTop;   /// Top-right corner of glyph rectangle
         };
 
+		struct FontHeight {
+			int ascent, descent; // pixels from the baseline, both positive
+		};
+
         /** A Rasterization is a bitmap containing rasterized glyphs for a subset
             of a Character Set.
          */
@@ -74,6 +78,8 @@ namespace gsm {
 		 */
 		virtual const CharacterList *
 		characterList() = 0;
+
+		virtual const FontHeight getFontHeight() = 0;
 
         /** This function must be called repeatedly until the Character Set iterator
             has arrived at the end of the set.

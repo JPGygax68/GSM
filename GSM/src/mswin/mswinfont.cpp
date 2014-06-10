@@ -355,6 +355,15 @@ MSWinFont::rasterize(const CharacterList & set, CharacterList::iterator & it, un
     return rast;
 }
 
+const IFont::FontHeight
+MSWinFont::getFontHeight()
+{
+	FontHeight fh;
+	fh.ascent  = metrics.tmAscent;
+	fh.descent = metrics.tmDescent;
+	return fh;
+}
+
 void
 MSWinFont::getGlyphMetrics(unicode_t ch, IFont::GlyphMetrics &gm)
 {
