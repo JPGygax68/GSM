@@ -310,6 +310,7 @@ static void
 registerWindowClass()
 {
     WNDCLASS wc;
+    memset(&wc, 0, sizeof(wc));
     wc.style = CS_OWNDC | CS_DBLCLKS;
     wc.lpfnWndProc = WndProc;
     wc.cbClsExtra = 0;
@@ -516,9 +517,10 @@ MSWinSessionManager::getMetaKeyStates()
         keys.set(CONTROL);
     if ((GetKeyState(VK_MENU) & 0x8000) != 0)
         keys.set(ALT);
-    if ((GetKeyState(VK_CAPITAL) & 0x8001) != 0)
+	// For toggle keys, we're only interested in the toggle state
+    if ((GetKeyState(VK_CAPITAL) & 0x0001) != 0)
         keys.set(CAPSLOCK);
-    if ((GetKeyState(VK_NUMLOCK) & 0x8001) != 0)
+    if ((GetKeyState(VK_NUMLOCK) & 0x0001) != 0)
         keys.set(NUMLOCK);
 
     return keys;

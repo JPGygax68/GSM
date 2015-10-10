@@ -26,7 +26,7 @@ namespace ogl {
 struct FontBinding {
     IFont                   *font;
     unsigned                ascent, descent;    // ascend and descent
-    CharacterSet            char_set;
+    CharacterList           char_set;
     std::vector<int>        list_bases;         // one Display List base per Character Range (inside char_set)
     std::vector<GLuint>     textures;
     std::vector<Extents>    tex_sizes;
@@ -63,9 +63,11 @@ getFontList(int vidCtxID)
 }
 
 static FontBinding *
-bindFont(IFont *font, const CharacterSet *charset_)
+bindFont(IFont *font, const CharacterList * charlist)
 {
-    const CharacterSet & charset = charset_ ? *charset_ : CharacterSet::LATIN1();
+    //const CharacterList * charlist = CharacterList::forCharSet(charset_);
+	if (!charlist) charlist = font->characterList();
+	//if (!charlist) charlist = & CharacterList::LATIN1();
 
     FontBinding *bind = new FontBinding();
     bind->font = font;
@@ -83,15 +85,15 @@ bindFont(IFont *font, const CharacterSet *charset_)
     }
 
     // Convert each character in the character set into a Display List
-    for (CharacterSet::iterator it = charset.begin(); it != charset.end(); )
+    for (CharacterList::iterator it = charlist->begin(); it != charlist->end(); )
     {
         // Rasterize
-        IFont::Rasterization rast = font->rasterize(charset, it);
+        IFont::Rasterization rast = font->rasterize(*charlist, it);
         // Some preparation
         IBitmap *bmp = rast.bitmap;
-        bind->list_bases.reserve( rast.character_set.ranges().size() );
-        bind->textures  .reserve( rast.character_set.ranges().size() );
-        bind->tex_sizes .reserve( rast.character_set.ranges().size() );
+        bind->list_bases.reserve( rast.character_list.ranges().size() );
+        bind->textures  .reserve( rast.character_list.ranges().size() );
+        bind->tex_sizes .reserve( rast.character_list.ranges().size() );
         // Create alpha texture from rasterized bitmap
         GLuint texture;
         OGL(glGenTextures, (1, &texture) );
@@ -102,11 +104,11 @@ bindFont(IFont *font, const CharacterSet *charset_)
         OGL(glBindTexture, (GL_TEXTURE_2D, 0) );
         // TODO: delete bitmap
         // Add range by range
-        CharacterSet::ranges_t & ranges = rast.character_set.ranges();
+        CharacterList::ranges_t & ranges = rast.character_list.ranges();
         unsigned ig = 0; // glyph index
         for (unsigned ir = 0; ir < ranges.size(); ir++) 
         {
-            CharacterSet::Range & range = ranges[ir];
+            CharacterList::Range & range = ranges[ir];
             // Allocate sequence of Display List IDs for the range
             GLuint lists_base = glGenLists(range.num_chars);
             // Create a Display List for each character in the range
@@ -184,10 +186,10 @@ traverseText(fonthandle_t fonthandle, const unicode_t *text, size_t len, int int
             // Draw (if asked for)
             if (draw) {
                 // Find the character within the bound font
-                CharacterSet &cs = bind.char_set;
+                CharacterList &cs = bind.char_set;
                 // Traverse all ranges
                 for (unsigned ir = 0; ir < cs.ranges().size(); ir ++) {
-                    CharacterSet::Range &rn = cs.ranges()[ir];
+                    CharacterList::Range &rn = cs.ranges()[ir];
                     // Character is within this Range ?
                     if (ch >= rn.first && ch < (rn.first + rn.num_chars)) {
                         // Compute Display List ID
@@ -277,10 +279,8 @@ drawBevelFrame(unsigned w, unsigned h, unsigned bw, const Float4 *colors, int x,
     OGLI(glEnd, ());
 }
 
-// TODO: Character Set
-
 fonthandle_t
-prepareFont(IFont *font, int vidCtxID)
+prepareFont(IFont *font, int vidCtxID, const CharacterList *charlist)
 {
     // Get the Font List for the specified Video Context
     fonts_t *fonts = getFontList(vidCtxID);
@@ -290,7 +290,7 @@ prepareFont(IFont *font, int vidCtxID)
     if (it != fonts->end()) return it->second;
 
     // No, so we need to "bind" the Font now, and enter it into the list
-    FontBinding *bind = bindFont(font, NULL);
+    FontBinding *bind = bindFont(font, charlist);
     fonts->insert( fonts_t::value_type(font, bind) );
 
     return bind;
@@ -300,7 +300,14 @@ prepareFont(IFont *font, int vidCtxID)
 void
 prepareForTextRendering()
 {
-    OGL(glPushAttrib, (GL_COLOR_BUFFER_BIT|GL_ENABLE_BIT));
+	/*
+	GLint depth1;
+	glGetIntegerv (GL_MODELVIEW_STACK_DEPTH, &depth1);
+	GLint depth2;
+	glGetIntegerv (GL_PROJECTION_STACK_DEPTH, &depth2);
+	*/
+
+	OGL(glPushAttrib, (GL_COLOR_BUFFER_BIT|GL_ENABLE_BIT));
     OGL(glDisable, (GL_LIGHTING));
     OGL(glEnable, (GL_TEXTURE_2D));
     OGL(glTexEnvi, (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE));
@@ -312,11 +319,13 @@ prepareForTextRendering()
     OGL(glMatrixMode, (GL_PROJECTION));
     OGL(glPushMatrix, ());
     OGL(glLoadIdentity, ());
-    GLint vp[4];
+    
+	GLint vp[4];
     OGL(glGetIntegerv, (GL_VIEWPORT, vp));
     OGL(glOrtho, (0, vp[2], vp[3], 0, -1, 1));
 
     OGL(glMatrixMode, (GL_MODELVIEW));
+
     OGL(glPushMatrix, ());
     OGL(glLoadIdentity, ());
 }
@@ -324,11 +333,20 @@ prepareForTextRendering()
 void
 doneWithTextRendering()
 {
-    OGL(glMatrixMode, (GL_PROJECTION));
-    OGL(glPopMatrix, ());
+	/*
+	GLint depth1;
+	glGetIntegerv (GL_MODELVIEW_STACK_DEPTH, &depth1);
+	GLint depth2;
+	glGetIntegerv (GL_PROJECTION_STACK_DEPTH, &depth2);
+	*/
+
     OGL(glMatrixMode, (GL_MODELVIEW));
     OGL(glPopMatrix, ());
+
+    OGL(glMatrixMode, (GL_PROJECTION));
+    OGL(glPopMatrix, ());
     OGL(glPopAttrib, ());
+    OGL(glMatrixMode, (GL_MODELVIEW));
 }
 
 void

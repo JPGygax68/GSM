@@ -16,6 +16,8 @@
 #include "mswinsurf.hpp"
 #include "mswinogl.hpp"
 
+#pragma comment (lib, "glew32.lib")
+
 namespace gsm {
 
 //--- PRIVATE TYPES ----------------------------------------------------------
@@ -201,8 +203,9 @@ initGlew()
         if (! wglMakeCurrent(hDC, hRC)) throw EMSWinError(GetLastError(), "wglMakeCurrent() failed on invisible OpenGL window");
 
         // Initialize GLEW
-		glewExperimental = TRUE;
-		if (glewInit() != GLEW_OK)
+        glewExperimental = TRUE;
+
+        if (glewInit() != GLEW_OK)
             throw EMSWinError(GetLastError(), "glewInit()");
 
         init_done = true;
@@ -229,6 +232,13 @@ setupWindowForOpenGL(MSWinSurface *surf, ISurface::Attributes attribs)
 
     // Try to make the Rendering Context part of a Video Context
     surf->setVideoContextID( assignToVideoContext(hRC) );
+
+#ifdef NOT_DEFINED
+    // Initialize GLEW for this context
+    glewExperimental = TRUE;
+    if (glewInit() != GLEW_OK)
+        throw EMSWinError(GetLastError(), "glewInit()");
+#endif
 }
 
 void

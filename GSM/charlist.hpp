@@ -7,8 +7,8 @@
  * If not, you can download it from http://www.gnu.org/licenses/gpl.txt.
  *-----------------------------------------------------------------------------*/
 
-#ifndef __GSM_CHARSET_HPP
-#define __GSM_CHARSET_HPP
+#ifndef __GSM_CHARLIST_HPP
+#define __GSM_CHARLIST_HPP
 
 #include <deque>
 #include <cassert>
@@ -16,7 +16,7 @@
 
 namespace gsm {
 
-class CharacterSet {
+class CharacterList {
 public:
     struct Range { 
         unicode_t first;
@@ -59,18 +59,21 @@ public:
             return ! (other == *this); }
 
     private:
-        iterator(const CharacterSet &set_, unsigned irange_, unsigned ichar_)
+        iterator(const CharacterList &set_, unsigned irange_, unsigned ichar_)
             : set(&set_), irange(irange_), ichar(ichar_) {}
-        iterator(const CharacterSet &set_)
+        iterator(const CharacterList &set_)
             : set(&set_), irange(set_._ranges.size()), ichar(0) {}
 
-        const CharacterSet * set;
+        const CharacterList * set;
         unsigned irange, ichar;
 
-        friend class CharacterSet;
+        friend class CharacterList;
     };
 
-    static const CharacterSet & LATIN1();
+    static const CharacterList & LATIN1();
+    static const CharacterList & CHINESE();
+
+    static const CharacterList * forCharSet(int charset);
 
     ranges_t & ranges() { return _ranges; }
 
@@ -99,4 +102,4 @@ private:
 
 } // ns gsm
 
-#endif // __GSM_CHARSET_HPP
+#endif // __GSM_CHARLIST_HPP

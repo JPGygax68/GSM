@@ -7,14 +7,28 @@
  * If not, you can download it from http://www.gnu.org/licenses/gpl.txt.
  *-----------------------------------------------------------------------------*/
 
-#include "../charset.hpp"
+#include "../charlist.hpp"
+#include "../ifont.hpp"
+#include "../types.hpp"
 
 namespace gsm {
 
-const CharacterSet &
-CharacterSet::LATIN1()
+const CharacterList *
+CharacterList::forCharSet(int charset)
 {
-    static CharacterSet charset;
+    switch(charset) {
+    case IFont::CHINESEBIG5:
+    case IFont::GB2312:
+        return & CHINESE();
+    default: 
+        return & LATIN1();
+    }
+}
+
+const CharacterList &
+CharacterList::LATIN1()
+{
+    static CharacterList charset;
     static bool init_done = false;
 
     if (!init_done) {
@@ -27,8 +41,22 @@ CharacterSet::LATIN1()
     return charset;
 }
 
+const CharacterList &
+CharacterList::CHINESE()
+{
+    static CharacterList charset;
+    static bool init_done = false;
+
+    if (!init_done) {
+        charset.addRange(0x4E00, 0x9FFF);
+        init_done = true;
+    }
+
+    return charset;
+}
+
 void
-CharacterSet::add(unicode_t first, unsigned num_chars)
+CharacterList::add(unicode_t first, unsigned num_chars)
 {
     for (ranges_t::iterator it = _ranges.begin(); it != _ranges.end(); it ++)
     {
@@ -70,19 +98,19 @@ CharacterSet::add(unicode_t first, unsigned num_chars)
 }
 
 void
-CharacterSet::add(const Range &range)
+CharacterList::add(const Range &range)
 {
     _ranges.push_back(range);
 }
 
 void
-CharacterSet::addRange(unicode_t first, unicode_t last)
+CharacterList::addRange(unicode_t first, unicode_t last)
 {
     add(first, last - first + 1);
 }
 
-const CharacterSet::iterator
-CharacterSet::find(unicode_t ch) const
+const CharacterList::iterator
+CharacterList::find(unicode_t ch) const
 {
     for (unsigned ir = 0; ir < _ranges.size(); ir ++) {
         int ich = _ranges[ir].index(ch);
@@ -98,7 +126,7 @@ CharacterSet::find(unicode_t ch) const
     touches.
  */
 void
-CharacterSet::collapse_from(ranges_t::iterator & from)
+CharacterList::collapse_from(ranges_t::iterator & from)
 {
     ranges_t::iterator it1 = from, it2 = from + 1;
     while (it2 != _ranges.end() && (it1->first + it1->num_chars) >= it2->first)

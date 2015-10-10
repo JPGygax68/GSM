@@ -11,7 +11,7 @@
 #define __MWIN_FONT_HPP
 
 #include <Windows.h>
-#include "../../charset.hpp"
+#include "../../charlist.hpp"
 #include "../../ifontprov.hpp"
 #include "../../ifont.hpp"
 
@@ -23,22 +23,31 @@ class MSWinFont: public IFont {
 public:
     ~MSWinFont();
 
-    virtual const Rasterization rasterize(const CharacterSet & charset, CharacterSet::iterator & it, 
-        unsigned max_edge, const RasterizeOptions options);
+	virtual const CharacterList *
+	characterList();
 
-    virtual void getGlyphMetrics(unicode_t ch, GlyphMetrics &gm);
+    virtual const Rasterization 
+	rasterize(const CharacterList & charlist_, CharacterList::iterator & it, unsigned max_edge, const RasterizeOptions options);
 
-    virtual const BoundingBox getTextBounds(const unicode_t *text, unsigned len);
+	virtual const FontHeight
+	getFontHeight();
 
-    bool isTrueType() const { return (metrics.tmPitchAndFamily & TMPF_TRUETYPE) != 0; }
+    virtual void 
+	getGlyphMetrics(unicode_t ch, GlyphMetrics &gm);
+
+    virtual const BoundingBox 
+	getTextBounds(const unicode_t *text, unsigned len);
+
+    bool 
+	isTrueType() const { return (metrics.tmPitchAndFamily & TMPF_TRUETYPE) != 0; }
 
 private:
-    MSWinFont(MSWinFontProvider *prov, Type type, const std::string & name, unsigned height, Attributes attribs);
+    MSWinFont(MSWinFontProvider *prov, Type type, const std::string & name, unsigned height, Attributes attribs, CharSet charset = CHARSET_DEFAULT);
 
     friend class MSWinFontProvider;
 
     MSWinFontProvider   *provider;
-    CharacterSet        charset;
+    CharacterList       charlist;
     HGDIOBJ             hfont;
     TEXTMETRIC          metrics;
     HBITMAP             hbmp;

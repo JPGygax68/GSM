@@ -15,6 +15,10 @@ namespace gsm {
 const std::string makeErrorString(int err);
 
 EMSWinError::EMSWinError(int err, const char *context)
+    : std::exception( (makeErrorString(err) + "in function " + (context ? context : "")).c_str() )
+{}
+
+EMSWinError::EMSWinError(int err, const std::string &context)
     : std::exception( (makeErrorString(err) + "in function " + context).c_str() )
 {}
 

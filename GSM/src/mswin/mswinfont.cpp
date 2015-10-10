@@ -8,6 +8,7 @@
  *-----------------------------------------------------------------------------*/
 
 #include <Windows.h>
+#include <sstream>
 #include "../../ibitmap.hpp"
 #include "mswinerr.hpp"
 #include "../../util/text.hpp"
@@ -24,7 +25,11 @@ public:
         initInfoHeader(bih, sizeof(BITMAPINFOHEADER), w, h, bits);
         // Create the bitmap
         hbmp = CreateDIBSection(NULL, (const BITMAPINFO*) &bih, DIB_RGB_COLORS, (void**)&pixels, NULL, 0);
-        if (hbmp == 0) throw EMSWinError(GetLastError(), "CreateDIBSection (GDIBitmap)");
+        if (hbmp == 0) {
+            std::stringstream ss;
+            ss << "GDIBitmap ctor: CreateDIBSection(w = " << w << ", h = " << h << ")" << std::ends;
+            throw EMSWinError(GetLastError(), ss.str().c_str());
+        }
     }
 
     virtual ~GDIBitmap() {
@@ -151,9 +156,33 @@ next_pow2(unsigned a)
     return rval;
 }
 
+static BYTE
+convertCharset(IFont::CharSet charset)
+{
+	switch (charset) {
+	case IFont::CHARSET_DEFAULT:	return DEFAULT_CHARSET;
+	case IFont::ANSI:				return ANSI_CHARSET;
+	case IFont::BALTIC:				return BALTIC_CHARSET;
+	case IFont::CHINESEBIG5:		return CHINESEBIG5_CHARSET;
+	case IFont::EASTEUROPE:			return EASTEUROPE_CHARSET;
+	case IFont::GB2312:				return GB2312_CHARSET;
+	case IFont::GREEK:				return GREEK_CHARSET;
+	case IFont::HANGUL:				return HANGUL_CHARSET;
+	case IFont::MAC:				return MAC_CHARSET;
+	case IFont::OEM:				return OEM_CHARSET;
+	case IFont::RUSSIAN:			return RUSSIAN_CHARSET;
+	case IFont::SHIFTJIS:			return SHIFTJIS_CHARSET;
+	case IFont::SYMBOL:				return SYMBOL_CHARSET;
+	case IFont::TURKISH:			return TURKISH_CHARSET;
+	case IFont::VIETNAMESE:			return VIETNAMESE_CHARSET;
+	default:						assert(false);
+	}
+	return 0;
+}
+
 //--- MSWINFONT IMPLEMENTATION ------------------------------------------------
 
-MSWinFont::MSWinFont(MSWinFontProvider *prov, Type type, const std::string & name, unsigned height, Attributes attribs)
+MSWinFont::MSWinFont(MSWinFontProvider *prov, Type type, const std::string & name, unsigned height, Attributes attribs, CharSet charset)
     : provider(prov)
 {
     // Create a Logical Font
@@ -172,7 +201,7 @@ MSWinFont::MSWinFont(MSWinFontProvider *prov, Type type, const std::string & nam
         lf.lfItalic = attribs.test(IFont::ITALIC) ? 1 : 0;
         lf.lfUnderline = attribs.test(IFont::UNDERLINE) ? TRUE : FALSE;
         lf.lfStrikeOut = attribs.test(IFont::STRIKEOUT) ? TRUE : FALSE;
-        lf.lfCharSet = ANSI_CHARSET;
+        lf.lfCharSet = convertCharset(charset);
         lf.lfOutPrecision = OUT_DEFAULT_PRECIS;
         lf.lfClipPrecision = CLIP_DEFAULT_PRECIS;
         lf.lfQuality = height <= 18 ? NONANTIALIASED_QUALITY : PROOF_QUALITY;
@@ -214,7 +243,7 @@ MSWinFont::MSWinFont(MSWinFontProvider *prov, Type type, const std::string & nam
         throw EMSWinError(GetLastError(), "GetFontUnicodeRanges");
     for (unsigned i = 0; i < glyphset->cRanges; i ++) {
         WCRANGE & src = glyphset->ranges[i];
-        charset.add(src.wcLow, src.cGlyphs);
+        charlist.add(src.wcLow, src.cGlyphs);
     }
 }
 
@@ -224,8 +253,14 @@ MSWinFont::~MSWinFont()
     DeleteObject(hbmp);
 }
 
+const CharacterList *
+MSWinFont::characterList()
+{
+	return &charlist;
+}
+
 const MSWinFont::Rasterization
-MSWinFont::rasterize(const CharacterSet & set, CharacterSet::iterator & it, unsigned max_edge, const RasterizeOptions opts)
+MSWinFont::rasterize(const CharacterList & set, CharacterList::iterator & it, unsigned max_edge, const RasterizeOptions opts)
 {
     max_edge = max_edge > 0 ? max_edge : DEFAULT_MAX_BITMAP_SIZE;
 
@@ -234,12 +269,12 @@ MSWinFont::rasterize(const CharacterSet & set, CharacterSet::iterator & it, unsi
     unsigned w = 0, wmax = 0;
     unsigned h = 0, hrmax = 0;
     GlyphMetrics gm;
-    CharacterSet::iterator itm = it;
+    CharacterList::iterator itm = it;
     for (; itm != set.end(); itm ++) 
     {
         unicode_t ch = *itm;
         // Is there a glyph for the character ?
-        if (charset.find(ch) != charset.end())
+        if (charlist.find(ch) != charlist.end())
         {
             // Get the glyph's metrics
             getGlyphMetrics(ch, gm);
@@ -277,11 +312,11 @@ MSWinFont::rasterize(const CharacterSet & set, CharacterSet::iterator & it, unsi
     // Now render the glyphs into the bitmap
     unsigned x = 0, y = 0;
     hrmax = 0;
-    for (CharacterSet::iterator itr = it; itr != itm; itr ++)
+    for (CharacterList::iterator itr = it; itr != itm; itr ++)
     {
         unicode_t ch = *itr;
         // Is there a glyph for the character ?
-        if (charset.find(ch) != charset.end()) {
+        if (charlist.find(ch) != charlist.end()) {
             // Get the glyph's metrics
             getGlyphMetrics(ch, gm);
             // Doesn't fit on the current row?
@@ -303,7 +338,7 @@ MSWinFont::rasterize(const CharacterSet & set, CharacterSet::iterator & it, unsi
             gb.yTop = y;
             rast.glyph_boxes.push_back(gb);
             // Add Character to set
-            rast.character_set.add(ch);
+            rast.character_list.add(ch);
             // Advance to next spot
             x += gm.width();
         }
@@ -318,6 +353,15 @@ MSWinFont::rasterize(const CharacterSet & set, CharacterSet::iterator & it, unsi
 
     it = itm;
     return rast;
+}
+
+const IFont::FontHeight
+MSWinFont::getFontHeight()
+{
+	FontHeight fh;
+	fh.ascent  = metrics.tmAscent;
+	fh.descent = metrics.tmDescent;
+	return fh;
 }
 
 void

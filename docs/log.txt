@@ -1,0 +1,13 @@
+2014-06-11
+==========
+
+Note:
+
+It just occurred to me that there is a need for GL resource disposal management.
+
+This comes from the fact that switch between GL contexts has unspecified runtime cost. Because of that, delegating this to a callback (with possibly an added, optional "on completion" callback) would allow GSM to handle this: either calling the callback immediately if the context happens to be active [does GSM keep track of the active display/context?], or deferring it till after the buffer swap / presentation (or possibly only until the context becomes active).
+
+---
+
+- Observation: text rendering seems to be very slow (drop the framerate at insane rates) - why ?
+  - Would it make sense to try and improve this using shaders ?

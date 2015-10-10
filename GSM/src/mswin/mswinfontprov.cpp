@@ -16,9 +16,9 @@
 namespace gsm {
 
 IFont *
-MSWinFontProvider::getFont(IFont::Type type, const std::string &name, size_t height, IFont::Attributes attribs)
+MSWinFontProvider::getFont(IFont::Type type, const std::string &name, size_t height, IFont::Attributes attribs, IFont::CharSet charset)
 {
-    return new MSWinFont(this, type, name, height, attribs);
+    return new MSWinFont(this, type, name, height, attribs, charset);
 }
 
 } // ns gsm
