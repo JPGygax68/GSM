@@ -58,8 +58,10 @@ namespace gsm {
         HGLRC openGLContext() const { 
             return hGLRC; }
 
-        void setOpenGLContext(HGLRC hRC) { 
-            hGLRC = hRC; }
+        void setOpenGLContext(HGLRC hRC, bool is_external = false) { 
+            hGLRC = hRC; 
+            externalRC = is_external;
+        }
 
         void setVideoContextID(int id) { 
             vidctx_id = id; }
@@ -73,6 +75,7 @@ namespace gsm {
         IDisplay                            *disp;
         HWND                                hWnd;
         HGLRC                               hGLRC;
+        bool                                externalRC;
         int                                 vidctx_id;
         std::vector<HGLRC>                  extra_contexts;
         friend class MSWinSessionManager;

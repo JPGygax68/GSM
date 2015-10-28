@@ -24,7 +24,10 @@ void
 setupWindowForOpenGL(MSWinSurface *surf, ISurface::Attributes attribs);
 
 void
-retireContext(HGLRC hRC);
+removeRenderingContextFromVideoContext(HGLRC hRC);
+
+void
+retireRenderingContext(HGLRC hRC);
 
 } // ns gsm
 

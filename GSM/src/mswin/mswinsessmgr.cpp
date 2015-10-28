@@ -148,8 +148,8 @@ WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
             OutputDebugString(format("WM_CREATE on window \"%s\"\n", buffer).c_str() );*/
             if (surf->openGLContext() != 0) {
                 HDC hDC = GetDC(hWnd);
-                OutputDebugString(format("WM_CREATE with hGLRC = %x\n", surf->openGLContext()).c_str() );
-            CHECK(wglMakeCurrent, (hDC, surf->openGLContext()));
+                //OutputDebugString(format("WM_CREATE with hGLRC = %x\n", surf->openGLContext()).c_str() );
+                CHECK(wglMakeCurrent, (hDC, surf->openGLContext()));
             }
             surf->display()->onInit();
         }
@@ -168,7 +168,7 @@ WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_SIZE:
         if (surf->openGLContext() != 0) {
             HDC hDC = GetDC(hWnd);
-            OutputDebugString(format("WM_SIZE with hGLRC = %x\n", surf->openGLContext()).c_str() );
+            //OutputDebugString(format("WM_SIZE with hGLRC = %x\n", surf->openGLContext()).c_str() );
             CHECK(wglMakeCurrent, (hDC, surf->openGLContext()));
         }
         surf->display()->onResize(LOWORD(lParam), HIWORD(lParam));
@@ -176,8 +176,8 @@ WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_CLOSE:
         // The lookup isn't too bad as it only happens once at the end of the window's lifecycle
         if (! surf->display()->onClose()) {
-			return 0; // we don't call DefWindowProc, so the window won't be closed
-		}
+            return 0; // we don't call DefWindowProc, so the window won't be closed
+        }
         static_cast<MSWinSessionManager*>(findComponent("SessionManager"))->closeMsgReceived(hWnd);
         break; // Let DefWindowProc destroy the window
     case WM_PAINT: 
@@ -186,7 +186,7 @@ WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hDC = BeginPaint(hWnd, &ps);
                 if (surf->openGLContext() != 0) {
-                    CHECK(wglMakeCurrent, (hDC, surf->openGLContext()));
+                    //CHECK(wglMakeCurrent, (hDC, surf->openGLContext()));
                 }
                 bool done = surf->display()->onPaint(&cnv, surf->videoContextID());
             EndPaint(hWnd, &ps);

@@ -51,7 +51,7 @@ public:
     virtual bool fetchNextEvent() = 0;
 
     /** Can only be called if a preceding call to processPendingEvents() returned true.
-        After this call, the event be handled completely before processPendingEvents()
+        After this call, the event must be handled completely before processPendingEvents()
         is called again.
      */
     virtual IEvent * getEvent() = 0;

@@ -21,11 +21,17 @@ void shutdown();
 void
 init()
 {
-    atexit( shutdown );
+	static bool done = false;
+
+	if (!done) 
+	{
+		atexit(shutdown);
 #ifdef WIN32
-    MSWinSessionManager::registerIt();
-    MSWinFontProvider::registerIt();
+		MSWinSessionManager::registerIt();
+		MSWinFontProvider::registerIt();
 #endif
+		done = true;
+	}
 }
 
 void

@@ -119,12 +119,12 @@ assignToVideoContext(HGLRC hRC)
 			if (wglShareLists(it->front(), hRC) == TRUE) {
 				// Succeeded, so add the new Rendering Context to this Video Context
 				it->push_back(hRC);
-				// We're done, this is the Context Group we were looking for
+				// We're done, this is the Video Context we were looking for
 				return 1 + i;
 			}
 		}
 		else if (iempty < 0) {
-			iempty = i;
+			iempty = i; // remember this Video Context as available
 		}
     }
     // Could not share with any Video Context, so create and add new Video Context (or reuse an empty one)
@@ -140,25 +140,24 @@ assignToVideoContext(HGLRC hRC)
 	}
 }
 
-static bool
-removeRCFromVideoContext(HGLRC hRC)
+void
+removeRenderingContextFromVideoContext(HGLRC hRC)
 {
     video_contexts_t::iterator it = video_contexts.begin();
     for ( ; it != video_contexts.end(); it ++) 
     {
         video_context_t & vctx = *it;
-		if (vctx.size() > 1) {
+		//if (vctx.size() > 1) {
 			for (video_context_t::iterator irc = vctx.begin(); irc != vctx.end(); irc ++)
 				if (*irc == hRC) {
 					vctx.erase(irc);
-					return true;
+					return;
 				}
-		}
-		// could not remove the RC (was the last in the video context)
-		return false;
+		//}
     }
+
+    // Failed to remove the rendering context - something went really wrong
     assert(false);
-	return false;
 }
 
 //--- PUBLIC ROUTINES ---------------------------------------------------------
@@ -242,11 +241,10 @@ setupWindowForOpenGL(MSWinSurface *surf, ISurface::Attributes attribs)
 }
 
 void
-retireContext(HGLRC hRC)
+retireRenderingContext(HGLRC hRC)
 {
-    if (removeRCFromVideoContext(hRC)) {
-		if (! wglDeleteContext(hRC)) throw EMSWinError(GetLastError(), "wglDeleteContext");
-	}
+    removeRenderingContextFromVideoContext(hRC);
+    if (! wglDeleteContext(hRC)) throw EMSWinError(GetLastError(), "wglDeleteContext");
 }
 
 } // ns gsm

@@ -19,19 +19,25 @@ MSWinSurface::MSWinSurface(IDisplay *disp_)
     disp = disp_;
     hWnd = 0;
     hGLRC = 0;
+    externalRC = false;
     vidctx_id = 0;
 }
 
 MSWinSurface::~MSWinSurface()
 {
-    for (unsigned i = 0; i < extra_contexts.size(); i++)
-    	CHECK(wglDeleteContext, (extra_contexts[i]));
+	// TODO: return values are ignored because we're inside a no-throw dtor.
+	// Improve this to fall back to some kind of logging.
 
-    if (! DestroyWindow(hWnd) )
-        throw EMSWinError(GetLastError(), "CloseWindow");
+	for (unsigned i = 0; i < extra_contexts.size(); i++)
+		wglDeleteContext(extra_contexts[i]); // TODO: log error
+
+    if (! DestroyWindow(hWnd) ) {} // TODO: log error
 
     if (hGLRC != 0) {
-        retireContext(hGLRC);
+        if (!externalRC) 
+            retireRenderingContext(hGLRC); 
+        else 
+            removeRenderingContextFromVideoContext(hGLRC);
     }
 }
 
