@@ -203,9 +203,11 @@ initGlew()
 
         // Initialize GLEW
         glewExperimental = TRUE;
+        if (glewInit() != GLEW_OK) throw EMSWinError(GetLastError(), "glewInit()");
 
-        if (glewInit() != GLEW_OK)
-            throw EMSWinError(GetLastError(), "glewInit()");
+        /* By assigning this GL context to a video context, we give GL resources
+           a chance to persist even after the last real window has been closed:  */
+        assignToVideoContext(hRC);
 
         init_done = true;
     }
