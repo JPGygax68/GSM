@@ -13,6 +13,8 @@
 
 #-- My filters ----------------------------------
 
+build*/*
+
 lib/*
 bin/*
 
@@ -23,6 +25,8 @@ bin/*
 *.csv
 *.backup
 Backup_*.cdr
+*.VC.opendb
+*.VC.db
 
 #-- Original filters ----------------------------
  

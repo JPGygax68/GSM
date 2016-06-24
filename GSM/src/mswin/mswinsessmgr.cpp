@@ -448,7 +448,7 @@ MSWinSessionManager::openScreen(int num, IDisplay *screen, ISurface::Attributes 
 
     hWnd = CreateWindowEx( 0, WINDOW_CLASS_NAME
         , "GSM full-screen window" // TODO: caption != NULL ? caption : wclsname.c_str()
-        , WS_POPUP | (attribs.test(ISurface::FORCE_FRAME) ? WS_BORDER : 0) //| WS_CLIPSIBLINGS | WS_CLIPCHILDREN
+        , WS_POPUP | (attribs.test(ISurface::FORCE_FRAME) ? WS_BORDER : 0) | WS_CLIPSIBLINGS | WS_CLIPCHILDREN
         , x, y, w, h // position and size
         , NULL, NULL, NULL /*_module_instance()*/, &cp
         ); 
