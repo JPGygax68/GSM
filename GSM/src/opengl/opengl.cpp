@@ -98,8 +98,8 @@ bindFont(IFont *font, const CharacterList * charlist)
         GLuint texture;
         OGL(glGenTextures, (1, &texture) );
         OGL(glBindTexture, (GL_TEXTURE_2D, texture) );
-        OGL(glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR) );
-        OGL(glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR) );
+        OGL(glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST) );
+        OGL(glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST) );
         OGL(glTexImage2D, (GL_TEXTURE_2D, 0, GL_ALPHA, bmp->width(), bmp->height(), 0, GL_ALPHA, GL_UNSIGNED_BYTE, bmp->data()) );
         OGL(glBindTexture, (GL_TEXTURE_2D, 0) );
         // TODO: delete bitmap
