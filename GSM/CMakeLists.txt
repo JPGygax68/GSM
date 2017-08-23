@@ -51,3 +51,8 @@ if (WIN32)
 else()
   target_link_libraries(GSM PRIVATE opengl glu)
 endif()
+
+find_package(GLEW REQUIRED)
+target_link_libraries(GSM PUBLIC ${GLEW_LIBRARY})
+message(${GLEW_INCLUDE_DIR})
+target_include_directories(GSM PUBLIC ${GLEW_INCLUDE_DIR})
