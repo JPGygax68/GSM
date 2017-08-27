@@ -18,6 +18,7 @@ namespace gsm {
     class IKeyboardEvent;
     class IPointerMotionEvent;
     class IPointerButtonEvent;
+    class IMouseWheelEvent;
 
     class GSM_API IEvent {
     public:
@@ -27,6 +28,7 @@ namespace gsm {
         virtual bool isKeyboard() = 0;
         virtual bool isPointerMotion() = 0;
         virtual bool isPointerButton() = 0;
+        virtual bool isMouseWheel() = 0;
         virtual bool isCloseWindow() = 0;
         virtual bool isWindowSize() = 0;
         virtual bool isWindowManagement() = 0;
@@ -34,6 +36,7 @@ namespace gsm {
         virtual IKeyboardEvent *asKeyboard() = 0;
         virtual IPointerMotionEvent *asPointerMotion() = 0;
         virtual IPointerButtonEvent *asPointerButton() = 0;
+        virtual IMouseWheelEvent *asMouseWheelEvent() = 0;
 
     };
 

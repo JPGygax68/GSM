@@ -50,6 +50,11 @@ namespace gsm {
             || (code >= WM_XBUTTONDOWN && code <= WM_XBUTTONDBLCLK);
     }
 
+    bool MSWinEvent::isMouseWheel()
+    {
+        return LOWORD(msg.message) == WM_MOUSEWHEEL;
+    }
+
     bool
     MSWinEvent::isCloseWindow()
     {
@@ -178,6 +183,12 @@ namespace gsm {
 	        default:
 		        return false;
         }
+    }
+
+    int MSWinEvent::delta()
+    {
+        uint16_t hw = HIWORD(msg.wParam);
+        return *reinterpret_cast<int16_t*>(&hw);
     }
 
 } // ns gsm

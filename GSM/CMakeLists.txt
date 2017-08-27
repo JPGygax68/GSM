@@ -20,6 +20,7 @@ add_library(GSM
   ievent.hpp
   iptrbtnevt.hpp
   iptrmovevt.hpp
+  imousewhlevt.hpp
   ikeybevt.hpp
   igfxres.hpp
 
@@ -45,6 +46,9 @@ add_library(GSM
 )
 
 target_compile_definitions(GSM PUBLIC GSM_STATIC)
+
+#message("GSM source dir: ${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(GSM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 
 if (WIN32)
   target_link_libraries(GSM PRIVATE OpenGL32 GLU32)
