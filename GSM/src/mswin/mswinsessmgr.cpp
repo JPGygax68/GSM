@@ -464,7 +464,7 @@ MSWinSessionManager::fetchNextEvent()
 {
     assert(!have_evt);
 
-    for (surface_iterator_t it = surfaces.begin(); it != surfaces.end(); it ++) 
+    for (surface_iterator_t it = surfaces.begin(); it != surfaces.end(); ++it) 
     {
         if (PeekMessage(&evt.msg, (*it)->hWnd, 0, 0, PM_REMOVE) ) 
         {
