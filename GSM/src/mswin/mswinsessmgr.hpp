@@ -39,8 +39,9 @@ public:
     virtual bool
     fetchNextEvent();
 
-    virtual IEvent *
-    getEvent();
+    IEvent *getEvent() override;
+
+    IEvent *peekEvent() override;
 
     virtual bool
     mustQuit();    // someone has asked to close session

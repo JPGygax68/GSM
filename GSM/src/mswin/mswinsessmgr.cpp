@@ -489,19 +489,22 @@ MSWinSessionManager::fetchNextEvent()
     return false;
 }
 
-IEvent *
-MSWinSessionManager::getEvent()
+IEvent *MSWinSessionManager::getEvent()
 {
     if (have_evt) {
         have_evt = false;
         return &evt;
     }
-    else
-        return NULL;
+
+    return nullptr;
 }
 
-bool
-MSWinSessionManager::mustQuit()
+IEvent *MSWinSessionManager::peekEvent()
+{
+    return have_evt ? &evt : nullptr;
+}
+
+bool MSWinSessionManager::mustQuit()
 {
     return quit || surfaces.empty();
 }

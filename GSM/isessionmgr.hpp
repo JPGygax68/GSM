@@ -56,6 +56,8 @@ public:
      */
     virtual IEvent * getEvent() = 0;
 
+    virtual IEvent * peekEvent() = 0;
+
     // TODO: define a dispatchEvent() and / or a processPendingEvents() ?
 
     virtual bool mustQuit() = 0;

@@ -7,7 +7,7 @@
  * If not, you can download it from http://www.gnu.org/licenses/gpl.txt.
  *-----------------------------------------------------------------------------*/
 
-#include <Windows.h>
+#include <Windowsx.h>
 #include "mswinsurf.hpp"
 #include "mswinevt.hpp"
 
@@ -111,10 +111,13 @@ namespace gsm {
     const Position
     MSWinEvent::position()
     {
-        Position p;
-        p.x = LOWORD(msg.lParam);
-        p.y = HIWORD(msg.lParam);
-        return p;
+        POINT p;
+        p.x = GET_X_LPARAM(msg.lParam);
+        p.y = GET_Y_LPARAM(msg.lParam);
+        if (msg.message == WM_MOUSEWHEEL) {
+            (void)MapWindowPoints(HWND_DESKTOP, msg.hwnd, &p, 1);
+        }
+        return Position{ p.x, p.y };
     }
 
     IPointerButtonEvent::Button
