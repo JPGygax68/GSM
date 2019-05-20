@@ -12,11 +12,12 @@
 
 #include <limits>
 
+
 namespace gsm {
 
 struct BoundingBox {
-	int		xMin, yMin;
-	int		xMax, yMax;
+	int		xMin = std::numeric_limits<int>::max(), yMin = std::numeric_limits<int>::max();
+	int		xMax = std::numeric_limits<int>::min(), yMax = std::numeric_limits<int>::min();
 
     unsigned width()  const { return (unsigned) (-xMin + xMax); }
 	unsigned height() const { return (unsigned) (-yMin + yMax); }

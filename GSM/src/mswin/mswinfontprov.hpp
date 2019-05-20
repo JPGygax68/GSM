@@ -21,7 +21,7 @@ public:
     registerIt() { registerComponent("FontProvider", new MSWinFontProvider() ); }
 
     virtual IFont *
-	getFont(IFont::Type type, const std::string &name, size_t height, IFont::Attributes attribs, IFont::CharSet = IFont::CHARSET_DEFAULT);
+	getFont(IFont::Type type, const std::string &name, unsigned int height, IFont::Attributes attribs, IFont::CharSet = IFont::CHARSET_DEFAULT);
 };
 
 } // ns gsm

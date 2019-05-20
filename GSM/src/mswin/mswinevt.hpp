@@ -60,7 +60,7 @@ namespace gsm {
         int delta() override;
 
     protected:
-        MSG msg;
+		MSG msg = { 0 };
         friend class MSWinSessionManager;
     };
 

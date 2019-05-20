@@ -10,9 +10,16 @@
 #ifndef __GSM_UTIL_ERRLOG_HPP
 #define __GSM_UTIL_ERRLOG_HPP
 
+#define WINDOWS_LEAN_AND_MEAN
+#define NOMINMAX
 #include <Windows.h>
+
+#define NOMINMAX
+#include <Windows.h>
+
 #include <algorithm>
 #include <GL/glew.h>
+
 
 namespace gsm {
 
@@ -33,7 +40,6 @@ public:
 
 	void register_log_func(log_func func) {
 		log_funcs.push_back(func);
-		unsigned n = log_funcs.size();
 	}
 
 	void remove_log_func(log_func func) {
@@ -46,7 +52,6 @@ public:
 			ss << "OpenGL error " << err << " while executing " << ctx << std::endl;
 			OutputDebugStringA( ss.str().c_str() );
 		}
-		unsigned n = log_funcs.size();
 		for (log_func_list::iterator it = log_funcs.begin(); it != log_funcs.end(); it++) 
 			(*it)(err, ctx);
 	}

@@ -10,7 +10,10 @@
 #ifndef MSWIN_SESSMGR_HPP
 #define MSWIN_SESSMGR_HPP
 
+#define WINDOWS_LEAN_AND_MEAN
+#define NOMINMAX
 #include <windows.h>
+
 #include <set>
 
 #include "mswinevt.hpp"

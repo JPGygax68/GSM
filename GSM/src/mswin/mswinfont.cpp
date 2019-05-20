@@ -7,7 +7,10 @@
  * If not, you can download it from http://www.gnu.org/licenses/gpl.txt.
  *-----------------------------------------------------------------------------*/
 
+#define WINDOWS_LEAN_AND_MEAN
+#define NOMINMAX
 #include <Windows.h>
+
 #include <sstream>
 #include "../../ibitmap.hpp"
 #include "mswinerr.hpp"
@@ -61,7 +64,7 @@ protected:
         RGBQUAD bmiColors[256];
     } BITMAPINFO_8bpp;
 
-    static void initInfoHeader(BITMAPINFOHEADER &bih, size_t size, unsigned w, unsigned h, unsigned bits) {
+    static void initInfoHeader(BITMAPINFOHEADER &bih, DWORD size, unsigned w, unsigned h, unsigned bits) {
         // Bitmap parameters
         bih.biSize = size;
         bih.biWidth = w, bih.biHeight = h;

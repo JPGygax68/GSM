@@ -8,7 +8,10 @@
  * If not, you can download it from http://www.gnu.org/licenses/gpl.txt.
  *-----------------------------------------------------------------------------*/
 
+#define WINDOWS_LEAN_AND_MEAN
+#define NOMINMAX
 #include <Windows.h>
+
 #include <set>
 #include <cassert>
 #include "../../isessionmgr.hpp"
@@ -39,9 +42,9 @@ struct GetScreenResolution_Data {
 };
 
 struct CreateParams {
-    MSWinSurface *surface;
-    ISurface::Attributes surf_attribs;
-    IDisplay *display;
+	MSWinSurface* surface = nullptr;
+	ISurface::Attributes surf_attribs = 0;
+    IDisplay *display = nullptr;
 };
 
 class MSWinPointerMoveEvent: public IPointerMotionEvent {
@@ -286,19 +289,19 @@ WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
     case WM_KEYDOWN: case WM_SYSKEYDOWN:
         {
-            MSWinKeyboardEvent evt(MSWinKeyboardEvent::KEY_DOWN, wParam, 0);
+            MSWinKeyboardEvent evt(MSWinKeyboardEvent::KEY_DOWN, static_cast<int>(wParam), 0);
             surf->display()->onKeyboardEvent( &evt );
         }
         break;
     case WM_KEYUP: case WM_SYSKEYUP:
         {
-            MSWinKeyboardEvent evt(MSWinKeyboardEvent::KEY_UP, wParam, 0);
+            MSWinKeyboardEvent evt(MSWinKeyboardEvent::KEY_UP, static_cast<int>(wParam), 0);
             surf->display()->onKeyboardEvent( &evt );
         }
         break;
     case WM_CHAR:
         {
-            MSWinKeyboardEvent evt(MSWinKeyboardEvent::CHARACTER, 0, wParam);
+            MSWinKeyboardEvent evt(MSWinKeyboardEvent::CHARACTER, 0, static_cast<unicode_t>(wParam));
             surf->display()->onKeyboardEvent( &evt );
         }
         break;

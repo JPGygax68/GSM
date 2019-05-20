@@ -105,7 +105,7 @@ namespace gsm {
     IKeyboardEvent::keycode_t
     MSWinEvent::keyCode()
     {
-        return msg.wParam;
+		return static_cast<keycode_t>(msg.wParam);
     }
 
     const Position

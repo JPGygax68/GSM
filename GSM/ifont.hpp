@@ -49,12 +49,12 @@ namespace gsm {
             (for western fonts, only the advance width is used).
          */
         struct GlyphMetrics: public BoundingBox {
-            size_t adv_w;       /// advance width
-            size_t adv_h;       /// advance height
+            unsigned int adv_w = 0;       /// advance width
+            unsigned int adv_h = 0;       /// advance height
         };
 
         struct GlyphBox: public GlyphMetrics {
-            int xLeft, yTop;   /// Top-right corner of glyph rectangle
+			int xLeft = 0, yTop = 0;
         };
 
 		struct FontHeight {

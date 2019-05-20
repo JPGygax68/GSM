@@ -7,7 +7,10 @@
  * If not, you can download it from http://www.gnu.org/licenses/gpl.txt.
  *-----------------------------------------------------------------------------*/
 
+#define WINDOWS_LEAN_AND_MEAN
+#define NOMINMAX
 #include <Windows.h>
+
 #include "mswinfont.hpp"
 #include "mswinfontprov.hpp"
 
@@ -16,7 +19,7 @@
 namespace gsm {
 
 IFont *
-MSWinFontProvider::getFont(IFont::Type type, const std::string &name, size_t height, IFont::Attributes attribs, IFont::CharSet charset)
+MSWinFontProvider::getFont(IFont::Type type, const std::string &name, unsigned int height, IFont::Attributes attribs, IFont::CharSet charset)
 {
     return new MSWinFont(this, type, name, height, attribs, charset);
 }

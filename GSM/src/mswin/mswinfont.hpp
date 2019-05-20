@@ -10,7 +10,10 @@
 #ifndef __MWIN_FONT_HPP
 #define __MWIN_FONT_HPP
 
+#define WINDOWS_LEAN_AND_MEAN
+#define NOMINMAX
 #include <Windows.h>
+
 #include "../../charlist.hpp"
 #include "../../ifontprov.hpp"
 #include "../../ifont.hpp"

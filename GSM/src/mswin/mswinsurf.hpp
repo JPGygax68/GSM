@@ -10,9 +10,13 @@
 #ifndef __GSM_MSWINSURF_HPP
 #define __GSM_MSWINSURF_HPP
 
-#include <vector>
+#define WINDOWS_LEAN_AND_MEAN
+#define NOMINMAX
 #include <Windows.h>
+
+#include <vector>
 #include "../../isurface.hpp"
+
 
 namespace gsm {
 

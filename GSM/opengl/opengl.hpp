@@ -20,7 +20,9 @@
 #include "../util/errlog.hpp"
 
 #ifdef _WIN32
+#define NOMINMAX
 #include <Windows.h>
+
 #endif
 #include <GL/glew.h>
 
@@ -176,7 +178,7 @@ public:
 		return _position; }
 
 private:
-	Float3	_position;
+	Float3	_position = { 0 };
 };
 
 template <class Obj, typename Float>
@@ -233,9 +235,9 @@ public:
 	}
 
 private:
-	Float4      _ambient;
-	Float4      _diffuse;
-	Float4      _specular;
+	Float4      _ambient = { 0 };
+	Float4      _diffuse = { 0 };
+	Float4      _specular = { 0 };
 };
 
 typedef void * fonthandle_t;

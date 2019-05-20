@@ -62,7 +62,7 @@ public:
         iterator(const CharacterList &set_, unsigned irange_, unsigned ichar_)
             : set(&set_), irange(irange_), ichar(ichar_) {}
         iterator(const CharacterList &set_)
-            : set(&set_), irange(set_._ranges.size()), ichar(0) {}
+            : set(&set_), irange(static_cast<unsigned>(set_._ranges.size())), ichar(0) {}
 
         const CharacterList * set;
         unsigned irange, ichar;

@@ -8,11 +8,19 @@
  *-----------------------------------------------------------------------------*/
 
 #ifdef _WIN32
+#define WINDOWS_LEAN_AND_MEAN
+#define NOMINMAX
 #include <Windows.h>
+
+#define NOMINMAX
+#include <Windows.h>
+
 #endif
 #include <GL/GLew.h>
 #include <map>
-#include <cmath>
+#include <algorithm>
+// #include <cmath>
+
 #include "../../ibitmap.hpp"
 #include "../../gfxtypes.hpp"
 #include "../../opengl/opengl.hpp"
@@ -150,8 +158,8 @@ traverseText(fonthandle_t fonthandle, const unicode_t *text, size_t len, int int
     FontBinding &bind = *static_cast<FontBinding*>(fonthandle);
 
     int dx = 0, dy = 0;
-    bbox.xMin = bbox.yMin = INT_MAX;
-    bbox.xMax = bbox.yMax = INT_MIN;
+	bbox.xMin = bbox.yMin = std::numeric_limits<int>::max();
+	bbox.xMax = bbox.yMax = std::numeric_limits<int>::min();
     unicode_t prevch = 0;
 
     for (unsigned i = 0; len == 0 && text[i] != 0 || len > 0 && i < len; i ++) 
@@ -162,7 +170,7 @@ traverseText(fonthandle_t fonthandle, const unicode_t *text, size_t len, int int
         {
             if ((ch == 13 && prevch != 10) || (ch == 10 && prevch != 13)) {
                 int ddx = -dx;
-                int ddy = max((signed)bind.ascent + interline, (signed)bind.descent + interline);
+                int ddy = std::max((signed)bind.ascent + interline, (signed)bind.descent + interline);
                 if (draw) glTranslatef((GLfloat)ddx, (GLfloat)ddy, 0);
                 dy += ddy;
                 dx = 0;

@@ -10,7 +10,10 @@
 #ifndef __GSM_MSWINOGL_HPP
 #define __GSM_MSWINOGL_HPP
 
+#define WINDOWS_LEAN_AND_MEAN
+#define NOMINMAX
 #include <Windows.h>
+
 #include "../../isurface.hpp"
 
 namespace gsm {
