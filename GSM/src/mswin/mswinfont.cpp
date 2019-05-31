@@ -7,14 +7,10 @@
  * If not, you can download it from http://www.gnu.org/licenses/gpl.txt.
  *-----------------------------------------------------------------------------*/
 
-#define WINDOWS_LEAN_AND_MEAN
-#define NOMINMAX
-#include <Windows.h>
-
 #include <sstream>
 #include "../../ibitmap.hpp"
-#include "mswinerr.hpp"
 #include "../../util/text.hpp"
+#include "mswinerr.hpp"
 #include "mswinfont.hpp"
 
 namespace gsm {

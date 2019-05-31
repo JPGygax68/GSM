@@ -8,7 +8,7 @@
  * If not, you can download it from http://www.gnu.org/licenses/gpl.txt.
  *-----------------------------------------------------------------------------*/
 
-#define WINDOWS_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <Windows.h>
 
@@ -426,6 +426,11 @@ MSWinSessionManager::openWindow(int x, int y, int w, int h, const char *caption,
         ); 
     if (hWnd == NULL) throw EMSWinError(GetLastError(), "CreateWindowEx");
 
+#ifdef GLBINDINGS_GLEW
+#else
+
+#endif
+
     surfaces.insert(surf);
 
     return surf;
@@ -436,7 +441,7 @@ MSWinSessionManager::openScreen(int num, IDisplay *screen, ISurface::Attributes 
 {
     HWND hWnd;
 
-    if (attribs.test(ISurface::SUPPORTS_OPENGL)) initGlew();
+    if (attribs.test(ISurface::SUPPORTS_OPENGL)) initOpenGL();
 
     int x, y;
     unsigned w, h;

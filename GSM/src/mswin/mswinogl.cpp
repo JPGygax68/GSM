@@ -9,14 +9,21 @@
 
 #include <vector>
 #include <cassert>
+#ifdef GLBINDINGS_GLEW
 #include <GL/glew.h>
 #include <GL/wglew.h>
+#pragma comment (lib, "glew32.lib")
+#else
+#include <glad/glad.h>
+#ifdef WIN32
+#include <glad/glad_wgl.h>
+#endif
+#endif
 
 #include "mswinerr.hpp"
 #include "mswinsurf.hpp"
 #include "mswinogl.hpp"
 
-#pragma comment (lib, "glew32.lib")
 
 namespace gsm {
 
@@ -163,7 +170,7 @@ removeRenderingContextFromVideoContext(HGLRC hRC)
 //--- PUBLIC ROUTINES ---------------------------------------------------------
 
 void
-initGlew()
+initOpenGL()
 {
     static const char * DUMMY_WINDOW_CLASS_NAME = "GSM OPENGL INVISIBLE WINDOW CLASS";
 
@@ -195,15 +202,17 @@ initGlew()
         // Create initial GL context
         HDC hDC = GetDC(hWnd);
         if (hDC == NULL) throw EMSWinError(GetLastError(), "GetDC() of invisible OpenGL window" );
-        if (! SetPixelFormat(hDC, selectPreliminaryPixelFormat(hDC), NULL) )
+        if (! SetPixelFormat(hDC, selectPreliminaryPixelFormat(hDC), nullptr) )
             throw EMSWinError(GetLastError(), "SetPixelFormat() on invisible OpenGL window");
         HGLRC hRC = wglCreateContext(hDC);
         if (hRC == 0) throw EMSWinError(GetLastError(), "wglCreateContext() for invisible OpenGL window");
         if (! wglMakeCurrent(hDC, hRC)) throw EMSWinError(GetLastError(), "wglMakeCurrent() failed on invisible OpenGL window");
 
         // Initialize GLEW
+#ifdef GLBINDINGS_GLEW
         glewExperimental = TRUE;
         if (glewInit() != GLEW_OK) throw EMSWinError(GetLastError(), "glewInit()");
+#endif
 
         /* By assigning this GL context to a video context, we give GL resources
            a chance to persist even after the last real window has been closed:  */
@@ -216,14 +225,18 @@ initGlew()
 void
 setupWindowForOpenGL(MSWinSurface *surf, ISurface::Attributes attribs)
 {
-    initGlew();
+    initOpenGL();
 
     // Get a DC
     HDC hDC = GetDC(surf->windowHandle());  // TODO: is it ok to call GetDC() every time a DC is needed?
 
+#ifdef WIN32
+	gladLoadWGL(hDC);
+#endif
+
     // Select and set a pixel format
     int pixel_format = selectPixelFormat(hDC, !attribs.test(ISurface::SINGLE_BUFFERED));
-    if (! SetPixelFormat(hDC, pixel_format, NULL))
+    if (! SetPixelFormat(hDC, pixel_format, nullptr))
         throw EMSWinError(GetLastError(), "SetPixelFormat");
 
     // Create an OpenGL context
@@ -234,11 +247,13 @@ setupWindowForOpenGL(MSWinSurface *surf, ISurface::Attributes attribs)
     // Try to make the Rendering Context part of a Video Context
     surf->setVideoContextID( assignToVideoContext(hRC) );
 
-#ifdef NOT_DEFINED
+#ifdef GLBINDING_GLEW
     // Initialize GLEW for this context
     glewExperimental = TRUE;
     if (glewInit() != GLEW_OK)
         throw EMSWinError(GetLastError(), "glewInit()");
+#else
+	gladLoadGL();
 #endif
 }
 

@@ -10,15 +10,17 @@
 #ifndef __GSM_UTIL_ERRLOG_HPP
 #define __GSM_UTIL_ERRLOG_HPP
 
-#define WINDOWS_LEAN_AND_MEAN
+#ifdef WIN32
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#ifndef NOMINMAX
 #define NOMINMAX
+#endif
 #include <Windows.h>
-
-#define NOMINMAX
-#include <Windows.h>
-
-#include <algorithm>
-#include <GL/glew.h>
+#endif
+#include <gl/gl.h>
+#include <sstream>
 
 
 namespace gsm {

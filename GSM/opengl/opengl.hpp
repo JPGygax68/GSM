@@ -11,7 +11,7 @@
 #define __GSM_OPENGL_OPENGL_HPP
 
 #include <string>
-#include <sstream>
+// #include <sstream>
 #include <stdexcept>
 
 #include "../dll.h"
@@ -19,12 +19,14 @@
 #include "../ifont.hpp"
 #include "../util/errlog.hpp"
 
+#ifdef GLBINDINGS_GLEW
 #ifdef _WIN32
 #define NOMINMAX
 #include <Windows.h>
-
 #endif
-#include <GL/glew.h>
+#endif
+#include <gl/gl.h>
+
 
 namespace gsm {
 
@@ -37,9 +39,7 @@ namespace ogl {
 class Error : public std::runtime_error {
 	static const std::string 
     get_error_string(GLenum err) {
-		std::stringstream ss;
-		ss << err << ": " << (const char *) gluErrorString(err) << std::ends;
-		return ss.str();
+		return std::to_string(err);
 	}
 public:
 	Error(GLenum err, const char * context) :

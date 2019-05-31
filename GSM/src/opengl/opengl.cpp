@@ -7,16 +7,11 @@
  * If not, you can download it from http://www.gnu.org/licenses/gpl.txt.
  *-----------------------------------------------------------------------------*/
 
-#ifdef _WIN32
-#define WINDOWS_LEAN_AND_MEAN
-#define NOMINMAX
-#include <Windows.h>
-
-#define NOMINMAX
-#include <Windows.h>
-
-#endif
+#ifdef GLBINDINGS_GLEW
 #include <GL/GLew.h>
+#else
+#include <glad/glad.h>
+#endif
 #include <map>
 #include <algorithm>
 // #include <cmath>

@@ -7,12 +7,17 @@
  * If not, you can download it from http://www.gnu.org/licenses/gpl.txt.
  *-----------------------------------------------------------------------------*/
 
+#ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <Windows.h>
+#endif
+#include <gl/gl.h>
+#include <gl/glu.h>
 #include <exception>
 #include <iostream>
 #include <cassert>
 #include <set>
-#include <GL/glew.h>
-#include <GL/GLU.h>
 #include <GSM/util/text.hpp>
 #include <GSM/gsm.hpp>
 #include <GSM/ifontprov.hpp>
@@ -22,6 +27,9 @@
 #include <GSM/iptrbtnevt.hpp>
 #include <GSM/ikeybevt.hpp>
 #include <GSM/opengl/opengl.hpp>
+
+// This allows us to include just gl/gl.h instead of having to resort to an extension loader
+#define GL_MULTISAMPLE 0x809D
 
 using namespace gsm;
 

@@ -32,6 +32,7 @@ add_library(GSM
 
   opengl/opengl.hpp             src/opengl/opengl.cpp
 
+  src/mswin/mswin.hpp
   src/mswin/mswinsessmgr.hpp    src/mswin/mswinsessmgr.cpp
   src/mswin/mswinsurf.hpp       src/mswin/mswinsurf.cpp
   src/mswin/mswinogl.hpp        src/mswin/mswinogl.cpp
@@ -53,15 +54,17 @@ target_compile_definitions(GSM PUBLIC GSM_STATIC)
 # message("GSM source dir: ${CMAKE_CURRENT_SOURCE_DIR}")
 target_include_directories(GSM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 
-if (WIN32)
-  target_link_libraries(GSM PRIVATE OpenGL32 GLU32)
-else()
-  target_link_libraries(GSM PRIVATE opengl glu)
-endif()
+# OpenGL
 
-#message("CMAKE_CXX_LIBRARY_ARCHITECTURE: ${CMAKE_CXX_LIBRARY_ARCHITECTURE}")
-#message("CMAKE_LIBRARY_ARCHITECTURE: ${CMAKE_LIBRARY_ARCHITECTURE}")
-find_package(GLEW REQUIRED)
-target_link_libraries(GSM PUBLIC ${GLEW_LIBRARY})
-message(${GLEW_INCLUDE_DIR})
-target_include_directories(GSM PUBLIC ${GLEW_INCLUDE_DIR})
+if (OPENGL_BINDINGS EQUAL "GLEW")
+  if (WIN32)
+    target_link_libraries(GSM PRIVATE OpenGL32 GLU32)
+  else()
+    target_link_libraries(GSM PRIVATE opengl glu)
+  endif()
+  ls_link_glew(GSM)
+elseif (OPENGL_BINDINGS EQUAL "GLBINDING")
+  ls_link_glbinding(GSM PUBLIC)
+else()
+  ls_link_glad(GSM PRIVATE)
+endif()
